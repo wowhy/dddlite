@@ -33,6 +33,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -43,14 +44,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\SequentialGuid.cs" />
+    <Compile Include="Core\SequentialGuidType.cs" />
     <Compile Include="DomainEvents\IEvent.cs" />
     <Compile Include="DomainEvents\IEventBus.cs" />
     <Compile Include="DomainEvents\IEventHandler.cs" />
     <Compile Include="DomainServices\IDomainService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\IDbContext.cs" />
     <Compile Include="Repository\IRepository.cs" />
-    <Compile Include="Repository\IUnitWork.cs" />
+    <Compile Include="Repository\IUnitOfWork.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
