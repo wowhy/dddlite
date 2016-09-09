@@ -43,17 +43,40 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\CoreException.cs" />
+    <Compile Include="Core\DisposableObject.cs" />
     <Compile Include="Core\Entity.cs" />
+    <Compile Include="Core\IEntity.cs" />
     <Compile Include="Core\SequentialGuid.cs" />
     <Compile Include="Core\SequentialGuidType.cs" />
+    <Compile Include="Core\SortDirection.cs" />
     <Compile Include="DomainEvents\IEvent.cs" />
     <Compile Include="DomainEvents\IEventBus.cs" />
     <Compile Include="DomainEvents\IEventHandler.cs" />
     <Compile Include="DomainServices\IDomainService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\IRepository.cs" />
-    <Compile Include="Repository\IUnitOfWork.cs" />
+    <Compile Include="Repositories\IRepository.cs" />
+    <Compile Include="Repositories\IRepositoryContext.cs" />
+    <Compile Include="Repositories\IUnitOfWork.cs" />
+    <Compile Include="Repositories\Repository.cs" />
+    <Compile Include="Repositories\RepositoryContext.cs" />
+    <Compile Include="Repositories\RepositoryException.cs" />
+    <Compile Include="Specifications\AndNotSpecification.cs" />
+    <Compile Include="Specifications\AndSpecification.cs" />
+    <Compile Include="Specifications\AnySpecification.cs" />
+    <Compile Include="Specifications\CompositeSpecification.cs" />
+    <Compile Include="Specifications\ExpressionFuncExtender.cs" />
+    <Compile Include="Specifications\Internal\ExpressionSpecification.cs" />
+    <Compile Include="Specifications\ICompositeSpecification.cs" />
+    <Compile Include="Specifications\ISpecificationParser.cs" />
+    <Compile Include="Specifications\NoneSpecification.cs" />
+    <Compile Include="Specifications\NotSpecification.cs" />
+    <Compile Include="Specifications\OrSpecification.cs" />
+    <Compile Include="Specifications\Internal\ParameterRebinder.cs" />
+    <Compile Include="Specifications\SortSpecification.cs" />
+    <Compile Include="Specifications\Specification.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

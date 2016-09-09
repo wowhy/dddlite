@@ -1,11 +1,10 @@
 ﻿namespace Domain.Core
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Entity
+    public class Entity : IEntity<Guid>
     {
         [Key]
         [Column]
