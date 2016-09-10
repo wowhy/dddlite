@@ -9,6 +9,18 @@
     /// <typeparam name="T">The type of the object to which the specification is applied.</typeparam>
     public abstract class Specification<T>
     {
+        #region Public Methods
+        /// <summary>
+        /// Evaluates a LINQ expression to its corresponding specification.
+        /// </summary>
+        /// <param name="expression">The LINQ expression to be evaluated.</param>
+        /// <returns>The specification which represents the same semantics as the given LINQ expression.</returns>
+        public static Specification<T> Eval(Expression<Func<T, bool>> expression)
+        {
+            return new ExpressionSpecification<T>(expression);
+        }
+        #endregion
+
         /// <summary>
         /// Returns a <see cref="System.Boolean"/> value which indicates whether the specification
         /// is satisfied by the given object.

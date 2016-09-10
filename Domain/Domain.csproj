@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Core\CoreException.cs" />
     <Compile Include="Core\DisposableObject.cs" />
+    <Compile Include="Core\DomainExtension.cs" />
     <Compile Include="Core\Entity.cs" />
     <Compile Include="Core\IEntity.cs" />
     <Compile Include="Core\SequentialGuid.cs" />

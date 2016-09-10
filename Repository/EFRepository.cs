@@ -30,12 +30,12 @@
 
         public override TEntity Get(TKey key)
         {
-            return this.DbSet.SingleOrDefault();
+            return this.DbSet.FirstOrDefault(k => key.Equals(k.Id));
         }
 
         public override Task<TEntity> GetAsync(TKey key)
         {
-            return this.DbSet.SingleOrDefaultAsync();
+            return this.DbSet.FirstOrDefaultAsync(k => key.Equals(k.Id));
         }
 
         public override IQueryable<TEntity> FindAll()

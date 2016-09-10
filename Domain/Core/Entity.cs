@@ -8,6 +8,7 @@
     {
         [Key]
         [Column]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
         [ConcurrencyCheck]
@@ -15,7 +16,7 @@
 
         public void NewIdentity()
         {
-            this.Id = SequentialGuid.Create(SequentialGuidType.SequentialAtEnd);
+            this.Id = SequentialGuid.Create(SequentialGuidType.SequentialAsString);
         }
 
         public static TEntity Create<TEntity>()
