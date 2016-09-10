@@ -19,6 +19,26 @@
         {
             return new ExpressionSpecification<T>(expression);
         }
+
+        public static Specification<T> Any()
+        {
+            return new AnySpecification<T>();
+        }
+
+        public static Specification<T> And(Specification<T> left, Specification<T> right)
+        {
+            return new AndSpecification<T>(left, right);
+        }
+
+        public static Specification<T> Or(Specification<T> left, Specification<T> right)
+        {
+            return new OrSpecification<T>(left, right);
+        }
+
+        public static Specification<T> Not(Specification<T> specification)
+        {
+            return new NotSpecification<T>(specification);
+        }
         #endregion
 
         /// <summary>

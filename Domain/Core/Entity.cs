@@ -11,6 +11,7 @@
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [ConcurrencyCheck]
         public long RowVersion { get; set; }
 

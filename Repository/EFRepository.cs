@@ -104,7 +104,10 @@
 
         public override void Update(TEntity entity)
         {
-            this.dbContext.Entry(entity).State = EntityState.Modified;
+            var entry = this.dbContext.Entry(entity);
+            entry.Property(k => k.RowVersion).OriginalValue = entity.RowVersion;
+            entry.Property(k => k.RowVersion).CurrentValue = entity.RowVersion + 1;
+            entry.State = EntityState.Modified;
         }
 
         public override bool Exists(Specification<TEntity> specification)

@@ -4,6 +4,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Domain.Core;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Infrastructure;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -91,6 +92,46 @@
 
             Assert.IsNotNull(blogs);
             Assert.IsTrue(blogs.Count > 0);
+        }
+
+        [TestMethod]
+        public void TestConcurrencyCheck()
+        {
+            var repository = context.GetRepository<Guid, Blog>();
+            var blog = repository.FindAll().First();
+
+            try
+            {
+                blog.RowVersion = 100;
+                repository.Update(blog);
+
+                context.Commit();
+                Assert.IsTrue(false);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                Assert.IsTrue(true);
+            }
+        }
+
+        [TestMethod]
+        public void TestUpdate()
+        {
+            var repository = context.GetRepository<Guid, Blog>();
+            var blog = repository.FindAll().First();
+
+            try
+            {
+                blog.Url = "unit tests";
+                repository.Update(blog);
+
+                context.Commit();
+                Assert.IsTrue(true);
+            }
+            catch (Exception)
+            {
+                Assert.IsTrue(false);
+            }
         }
     }
 }
