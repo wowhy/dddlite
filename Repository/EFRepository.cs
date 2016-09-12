@@ -10,13 +10,12 @@
     using Microsoft.EntityFrameworkCore;
     using Specifications;
 
-    public class EFRepository<TKey, TEntity> : Repository<TKey, TEntity>
-        where TEntity : class, IEntity<TKey>
-        where TKey : IEquatable<TKey>
+    public class EFRepository<TAggregateRoot> : Repository<TAggregateRoot>
+        where TAggregateRoot : class, IAggregateRoot
     {
         private readonly DbContext dbContext;
 
-        protected DbSet<TEntity> DbSet => this.dbContext.Set<TEntity>();
+        protected DbSet<TAggregateRoot> DbSet => this.dbContext.Set<TAggregateRoot>();
 
         public EFRepository(IRepositoryContext context) : base(context)
         {
@@ -28,27 +27,27 @@
             }
         }
 
-        public override TEntity Get(TKey key)
+        public override TAggregateRoot Get(Guid key)
         {
             return this.DbSet.FirstOrDefault(k => key.Equals(k.Id));
         }
 
-        public override Task<TEntity> GetAsync(TKey key)
+        public override Task<TAggregateRoot> GetAsync(Guid key)
         {
             return this.DbSet.FirstOrDefaultAsync(k => key.Equals(k.Id));
         }
 
-        public override IQueryable<TEntity> FindAll()
+        public override IQueryable<TAggregateRoot> FindAll()
         {
-            return this.FindAll(new AnySpecification<TEntity>());
+            return this.FindAll(new AnySpecification<TAggregateRoot>());
         }
 
-        public override IQueryable<TEntity> FindAll(Specification<TEntity> specification)
+        public override IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification)
         {
             return this.FindAll(specification, null);
         }
 
-        public override IQueryable<TEntity> FindAll(Specification<TEntity> specification, SortSpecification<TKey, TEntity> sortSpecification)
+        public override IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification)
         {
             var query = this.DbSet.Where(specification);
             if (sortSpecification?.Count > 0)
@@ -92,17 +91,17 @@
             return query;
         }
 
-        public override void Add(TEntity entity)
+        public override void Add(TAggregateRoot entity)
         {
             this.dbContext.Entry(entity).State = EntityState.Added;
         }
 
-        public override void Remove(TEntity entity)
+        public override void Remove(TAggregateRoot entity)
         {
             this.dbContext.Entry(entity).State = EntityState.Deleted;
         }
 
-        public override void Update(TEntity entity)
+        public override void Update(TAggregateRoot entity)
         {
             var entry = this.dbContext.Entry(entity);
             entry.Property(k => k.RowVersion).OriginalValue = entity.RowVersion;
@@ -110,7 +109,7 @@
             entry.State = EntityState.Modified;
         }
 
-        public override bool Exists(Specification<TEntity> specification)
+        public override bool Exists(Specification<TAggregateRoot> specification)
         {
             return this.DbSet.Where(specification).Any();
         }

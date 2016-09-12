@@ -15,20 +15,18 @@
 
         public Guid Id => this.id;
 
-        protected abstract IRepository<TKey, TEntity> CreateRepository<TKey, TEntity>()
-            where TEntity : class, IEntity<TKey>
-            where TKey : IEquatable<TKey>;
+        protected abstract IRepository<TAggregateRoot> CreateRepository<TAggregateRoot>()
+            where TAggregateRoot : class, IAggregateRoot;
 
         protected IEnumerable<KeyValuePair<Type, object>> CachedRepositories => this.cacheRepositories;
 
         public abstract Task CommitAsync();
         public abstract void Commit();
 
-        public IRepository<TKey, TEntity> GetRepository<TKey, TEntity>()
-            where TEntity : class, IEntity<TKey>
-            where TKey : IEquatable<TKey>
+        public IRepository<TAggregateRoot> GetRepository<TAggregateRoot>()
+            where TAggregateRoot : class, IAggregateRoot
         {
-            return (IRepository<TKey, TEntity>)this.cacheRepositories.GetOrAdd(typeof(TEntity), this.CreateRepository<TKey, TEntity>());
+            return (IRepository<TAggregateRoot>)this.cacheRepositories.GetOrAdd(typeof(TAggregateRoot), this.CreateRepository<TAggregateRoot>());
         }
     }
 }

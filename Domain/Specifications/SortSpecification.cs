@@ -13,10 +13,9 @@
     /// Represents the sort specification in a query that is used for defining the sort field and order.
     /// </summary>
     /// <typeparam name="TKey">The type of the aggregate root key.</typeparam>
-    /// <typeparam name="TEntity">The type of the aggregate root.</typeparam>
-    public sealed class SortSpecification<TKey, TEntity> : IDictionary<string, SortDirection>
-        where TKey : IEquatable<TKey>
-        where TEntity : class, IEntity<TKey>
+    /// <typeparam name="TAggregateRoot">The type of the aggregate root.</typeparam>
+    public sealed class SortSpecification<TAggregateRoot> : IDictionary<string, SortDirection>
+        where TAggregateRoot : class, IAggregateRoot
     {
         #region Nested Internal Classes
         private class DumpMemberAccessNameVisitor : ExpressionVisitor
@@ -37,7 +36,7 @@
 
         private readonly Dictionary<string, SortDirection> sortSpecifications = new Dictionary<string, SortDirection>();
 
-        public static readonly SortSpecification<TKey, TEntity> None = new SortSpecification<TKey, TEntity>() { { x => x.Id, SortDirection.Undefined } };
+        public static readonly SortSpecification<TAggregateRoot> None = new SortSpecification<TAggregateRoot>() { { x => x.Id, SortDirection.Undefined } };
 
         public SortDirection this[string key]
         {
@@ -84,15 +83,15 @@
             }
         }
 
-        private static Expression<Func<TEntity, object>> CreateLambdaExpression(string propertyName)
+        private static Expression<Func<TAggregateRoot, object>> CreateLambdaExpression(string propertyName)
         {
-            var param = Expression.Parameter(typeof(TEntity), "x");
+            var param = Expression.Parameter(typeof(TAggregateRoot), "x");
             Expression body = param;
             foreach (var member in propertyName.Split('.'))
             {
                 body = Expression.Property(body, member);
             }
-            return Expression.Lambda<Func<TEntity, object>>(Expression.Convert(body, typeof(object)), param);
+            return Expression.Lambda<Func<TAggregateRoot, object>>(Expression.Convert(body, typeof(object)), param);
         }
 
         public void Add(KeyValuePair<string, SortDirection> item)
@@ -105,7 +104,7 @@
             sortSpecifications.Add(key, value);
         }
 
-        public void Add(Expression<Func<TEntity, object>> sortExpression, SortDirection SortDirection)
+        public void Add(Expression<Func<TAggregateRoot, object>> sortExpression, SortDirection SortDirection)
         {
             var visitor = new DumpMemberAccessNameVisitor();
             visitor.Visit(sortExpression);
@@ -116,13 +115,13 @@
             }
         }
 
-        public IEnumerable<Tuple<Expression<Func<TEntity, object>>, SortDirection>> Specifications
+        public IEnumerable<Tuple<Expression<Func<TAggregateRoot, object>>, SortDirection>> Specifications
         {
             get
             {
                 foreach (var kvp in sortSpecifications)
                 {
-                    yield return new Tuple<Expression<Func<TEntity, object>>, SortDirection>(CreateLambdaExpression(kvp.Key), kvp.Value);
+                    yield return new Tuple<Expression<Func<TAggregateRoot, object>>, SortDirection>(CreateLambdaExpression(kvp.Key), kvp.Value);
                 }
             }
         }

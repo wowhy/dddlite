@@ -2,10 +2,8 @@
 {
     using System;
 
-    public interface IEntity<TKey> where TKey : IEquatable<TKey>
+    public interface IEntity
     {
-        TKey Id { get; set; }
-
-        long RowVersion { get; set; }
+        Guid Id { get; set; }
     }
 }

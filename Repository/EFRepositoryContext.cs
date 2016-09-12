@@ -30,9 +30,9 @@
             await this.context.SaveChangesAsync();
         }
 
-        protected override IRepository<TKey, TEntity> CreateRepository<TKey, TEntity>()
+        protected override IRepository<TAggregateRoot> CreateRepository<TAggregateRoot>()
         {
-            return new EFRepository<TKey, TEntity>(this);
+            return new EFRepository<TAggregateRoot>(this);
         }
 
         protected override void Dispose(bool disposing)

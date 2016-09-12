@@ -26,7 +26,7 @@
         [TestMethod]
         public void TestAdd()
         {
-            var repository = context.GetRepository<Guid, Blog>();
+            var repository = context.GetRepository<Blog>();
             for (var i = 0; i < 1; i++)
             {
                 var blog = Entity.Create<Blog>();
@@ -41,7 +41,7 @@
         public void TestGet()
         {
             var blog = (context.Context as SampleDbContext).Blogs.First();
-            var repository = context.GetRepository<Guid, Blog>();
+            var repository = context.GetRepository<Blog>();
             var actual = repository.Get(blog.Id);
 
             Assert.IsNotNull(actual);
@@ -52,7 +52,7 @@
         public async Task TestGetAsync()
         {
             var blog = (context.Context as SampleDbContext).Blogs.First();
-            var repository = context.GetRepository<Guid, Blog>();
+            var repository = context.GetRepository<Blog>();
             var actual = await repository.GetAsync(blog.Id);
 
             Assert.IsNotNull(actual);
@@ -62,7 +62,7 @@
         [TestMethod]
         public void TestFind1()
         {
-            var repository = context.GetRepository<Guid, Blog>();
+            var repository = context.GetRepository<Blog>();
             var blogs = repository.FindAll().ToList();
 
             Assert.IsNotNull(blogs);
@@ -72,7 +72,7 @@
         [TestMethod]
         public void TestFind2()
         {
-            var repository = context.GetRepository<Guid, Blog>();
+            var repository = context.GetRepository<Blog>();
             var blogs = repository.FindAll(Specification<Blog>.Eval(k => k.RowVersion == 0)).ToList();
 
             Assert.IsNotNull(blogs);
@@ -82,10 +82,10 @@
         [TestMethod]
         public void TestFind3()
         {
-            var repository = context.GetRepository<Guid, Blog>();
+            var repository = context.GetRepository<Blog>();
             var blogs = repository.FindAll(
                 Specification<Blog>.Eval(k => k.RowVersion == 0),
-                new SortSpecification<Guid, Blog>()
+                new SortSpecification<Blog>()
                 {
                     { "Id", SortDirection.Desc }
                 }).ToList();
@@ -97,7 +97,7 @@
         [TestMethod]
         public void TestConcurrencyCheck()
         {
-            var repository = context.GetRepository<Guid, Blog>();
+            var repository = context.GetRepository<Blog>();
             var blog = repository.FindAll().First();
 
             try
@@ -117,7 +117,7 @@
         [TestMethod]
         public void TestUpdate()
         {
-            var repository = context.GetRepository<Guid, Blog>();
+            var repository = context.GetRepository<Blog>();
             var blog = repository.FindAll().First();
 
             try

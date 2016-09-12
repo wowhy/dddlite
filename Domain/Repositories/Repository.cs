@@ -8,9 +8,8 @@
     using Core;
     using Specifications;
 
-    public abstract class Repository<TKey, TEntity> : IRepository<TKey, TEntity>
-        where TEntity : class, IEntity<TKey>
-        where TKey : IEquatable<TKey>
+    public abstract class Repository<TAggregateRoot> : IRepository<TAggregateRoot>
+        where TAggregateRoot : class, IAggregateRoot
     {
         private readonly IRepositoryContext context;
 
@@ -21,22 +20,22 @@
 
         public IRepositoryContext Context => this.context;
 
-        public abstract TEntity Get(TKey key);
+        public abstract TAggregateRoot Get(Guid key);
 
-        public abstract Task<TEntity> GetAsync(TKey key);
+        public abstract Task<TAggregateRoot> GetAsync(Guid key);
 
-        public abstract IQueryable<TEntity> FindAll();
+        public abstract IQueryable<TAggregateRoot> FindAll();
 
-        public abstract IQueryable<TEntity> FindAll(Specification<TEntity> specification);
+        public abstract IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification);
 
-        public abstract IQueryable<TEntity> FindAll(Specification<TEntity> specification, SortSpecification<TKey, TEntity> sortSpecification);
+        public abstract IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification);
 
-        public abstract void Add(TEntity entity);
+        public abstract void Add(TAggregateRoot entity);
 
-        public abstract void Update(TEntity entity);
+        public abstract void Update(TAggregateRoot entity);
 
-        public abstract void Remove(TEntity entity);
+        public abstract void Remove(TAggregateRoot entity);
 
-        public abstract bool Exists(Specification<TEntity> specification);
+        public abstract bool Exists(Specification<TAggregateRoot> specification);
     }
 }

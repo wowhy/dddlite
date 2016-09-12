@@ -4,16 +4,12 @@
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Entity : IEntity<Guid>
+    public class Entity : IEntity
     {
         [Key]
         [Column]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        [ConcurrencyCheck]
-        public long RowVersion { get; set; }
 
         public void NewIdentity()
         {

@@ -6,26 +6,25 @@
     using Domain.Core;
     using Specifications;
 
-    public interface IRepository<TKey, TEntity>
-        where TEntity : class, IEntity<TKey>
-        where TKey : IEquatable<TKey>
+    public interface IRepository<TAggregateRoot>
+        where TAggregateRoot : class, IAggregateRoot
     {
-        TEntity Get(TKey key);
+        TAggregateRoot Get(Guid key);
 
-        Task<TEntity> GetAsync(TKey key);
+        Task<TAggregateRoot> GetAsync(Guid key);
 
-        IQueryable<TEntity> FindAll();
+        IQueryable<TAggregateRoot> FindAll();
 
-        IQueryable<TEntity> FindAll(Specification<TEntity> specification);
+        IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification);
 
-        IQueryable<TEntity> FindAll(Specification<TEntity> specification, SortSpecification<TKey, TEntity> sortSpecification);
+        IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification);
 
-        void Add(TEntity entity);
+        void Add(TAggregateRoot entity);
 
-        void Update(TEntity entity);
+        void Update(TAggregateRoot entity);
 
-        void Remove(TEntity entity);
+        void Remove(TAggregateRoot entity);
 
-        bool Exists(Specification<TEntity> specification);
+        bool Exists(Specification<TAggregateRoot> specification);
     }
 }
