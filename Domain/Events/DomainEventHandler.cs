@@ -6,8 +6,8 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    public abstract class DomainEventHandler<TEvent> : IDomainEventHandler<Guid, TEvent>
-        where TEvent : DomainEvent
+    public abstract class DomainEventHandler<TEvent> : IDomainEventHandler<TEvent>
+        where TEvent : class, IDomainEvent
     {
         protected DomainEventHandler()
         {

@@ -11,9 +11,8 @@
     {
     }
 
-    public interface IDomainEventHandler<TEntityKey, TEvent> : IHandler<TEvent>, IDomainEventHandler
-        where TEvent : class, IDomainEvent<TEntityKey>
-        where TEntityKey : IEquatable<TEntityKey>
+    public interface IDomainEventHandler<TEvent> : IHandler<TEvent>, IDomainEventHandler
+        where TEvent : class, IDomainEvent
     {
     }
 }

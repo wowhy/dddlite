@@ -7,21 +7,13 @@
     public class Entity : IEntity
     {
         [Key]
-        [Column]
+        [Column(Order = 0)]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
         public void NewIdentity()
         {
             this.Id = SequentialGuid.Create(SequentialGuidType.SequentialAsString);
-        }
-
-        public static TEntity Create<TEntity>()
-            where TEntity : Entity, new()
-        {
-            var entity = new TEntity();
-            entity.NewIdentity();
-            return entity;
         }
     }
 }

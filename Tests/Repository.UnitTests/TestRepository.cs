@@ -21,6 +21,8 @@
             var serviceProvider = context.Context.GetInfrastructure<IServiceProvider>();
             var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
             loggerFactory.AddProvider(new MyLoggerProvider());
+
+            context.Context.Database.EnsureCreated();
         }
 
         [TestMethod]
@@ -29,7 +31,7 @@
             var repository = context.GetRepository<Blog>();
             for (var i = 0; i < 1; i++)
             {
-                var blog = Entity.Create<Blog>();
+                var blog = Blog.Create();
                 blog.Url = "http://localhost/blog/" + blog.Id;
                 repository.Add(blog);
             }

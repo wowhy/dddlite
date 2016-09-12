@@ -5,24 +5,25 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using Core;
 
-    public abstract class DomainEvent : IDomainEvent<Guid>
+    public abstract class DomainEvent : IDomainEvent
     {
         protected DomainEvent() { }
 
-        protected DomainEvent(Guid entityKey)
+        protected DomainEvent(Guid AggregateRootKey)
         {
-            this.Id = Guid.NewGuid();
-            this.EntityKey = entityKey;
+            this.Id = SequentialGuid.Create(SequentialGuidType.SequentialAsString);
+            this.AggregateRootKey = AggregateRootKey;
             this.Timestamp = DateTime.UtcNow;
             this.EventName = this.GetType().FullName;
         }
 
         public Guid Id { get; set; }
 
-        public Guid EntityKey { get; set; }
+        public Guid AggregateRootKey { get; set; }
 
-        public string EntityType { get; set; }
+        public string AggregateRootType { get; set; }
 
         public string EventName { get; set; }
 

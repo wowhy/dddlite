@@ -54,6 +54,8 @@
     <Compile Include="Core\IAggregateRoot.cs" />
     <Compile Include="Core\IEntity.cs" />
     <Compile Include="Core\IHandler.cs" />
+    <Compile Include="Core\IPurgeable.cs" />
+    <Compile Include="Core\ISaga.cs" />
     <Compile Include="Core\SequentialGuid.cs" />
     <Compile Include="Core\SequentialGuidType.cs" />
     <Compile Include="Core\SortDirection.cs" />
@@ -61,6 +63,7 @@
     <Compile Include="Events\DomainEventHandler.cs" />
     <Compile Include="Events\IDomainEvent.cs" />
     <Compile Include="Events\IDomainEventHandler.cs" />
+    <Compile Include="Events\InlineEventHandlerAttribute.cs" />
     <Compile Include="Messaging\IMessageConsumer.cs" />
     <Compile Include="Messaging\IMessagePublisher.cs" />
     <Compile Include="Messaging\IMessageSubscriber.cs" />

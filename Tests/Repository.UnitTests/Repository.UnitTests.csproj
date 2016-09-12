@@ -119,6 +119,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="BlogCreatedEvent.cs" />
     <Compile Include="MyLoggerProvider.cs" />
     <Compile Include="SampleDbContext.cs" />
     <Compile Include="SampleRepositoryContext.cs" />

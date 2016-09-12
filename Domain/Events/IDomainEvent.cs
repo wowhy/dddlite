@@ -6,14 +6,13 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    public interface IDomainEvent<TEntityKey>
-        where TEntityKey : IEquatable<TEntityKey>
+    public interface IDomainEvent
     {
         Guid Id { get; set; }
 
-        TEntityKey EntityKey { get; set; }
+        Guid AggregateRootKey { get; set; }
 
-        string EntityType { get; set; }
+        string AggregateRootType { get; set; }
 
         DateTime Timestamp { get; set; }
     }
