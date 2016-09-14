@@ -61,6 +61,8 @@
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Repositories\RepositoryContext.cs" />
     <Compile Include="Repositories\RepositoryException.cs" />
+    <Compile Include="Services\IDomainService.cs" />
+    <Compile Include="Services\DomainException.cs" />
     <Compile Include="Specifications\AndNotSpecification.cs" />
     <Compile Include="Specifications\AndSpecification.cs" />
     <Compile Include="Specifications\AnySpecification.cs" />
@@ -75,7 +77,9 @@
     <Compile Include="Specifications\SortSpecification.cs" />
     <Compile Include="Specifications\Specification.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Events\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
