@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Core;
-using Domain.Events;
 using Microsoft.EntityFrameworkCore;
 
 namespace Repository.UnitTests
@@ -34,14 +33,7 @@ namespace Repository.UnitTests
         {
             var blog = new Blog();
             blog.NewIdentity();
-            blog.ApplyEvent(new BlogCreatedEvent(blog.Id));
             return blog;
-        }
-
-        [InlineEventHandler]
-        private void HandleUserCreatedEvent(BlogCreatedEvent evnt)
-        {
-            this.CreatedOn = DateTime.Now;
         }
     }
 

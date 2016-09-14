@@ -5,7 +5,6 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using Events;
 
     public interface IAggregateRoot : IEntity
     {
@@ -18,9 +17,5 @@
         Guid? ModifiedById { get; set; }
 
         DateTime? ModifiedOn { get; set; }
-
-        IEnumerable<DomainEvent> UncommittedEvents { get; }
-
-        void Replay(IEnumerable<DomainEvent> events);
     }
 }
