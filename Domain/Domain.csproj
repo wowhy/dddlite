@@ -54,6 +54,9 @@
     <Compile Include="Core\SequentialGuid.cs" />
     <Compile Include="Core\SequentialGuidType.cs" />
     <Compile Include="Core\SortDirection.cs" />
+    <Compile Include="Events\IEvent.cs" />
+    <Compile Include="Events\IEventHandler.cs" />
+    <Compile Include="Messaging\IMessagePublisher.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\IRepository.cs" />
     <Compile Include="Repositories\IRepositoryContext.cs" />
@@ -78,7 +81,7 @@
     <Compile Include="Specifications\Specification.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Events\" />
+    <Folder Include="Commands\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
