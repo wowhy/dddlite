@@ -4,3 +4,4 @@ bin/
 packages/
 *.csproj.user
 .vscode
+*.xproj.user
