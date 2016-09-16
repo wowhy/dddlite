@@ -1,7 +1,6 @@
 ﻿namespace Domain.Repositories
 {
     using System;
-    using System.Runtime.Serialization;
     using Domain.Core;
 
     public class DomainException : CoreException
@@ -18,10 +17,6 @@
 
         public DomainException(string format, params object[] args)
             : base(string.Format(format, args))
-        { }
-
-        protected DomainException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
         { }
     }
 }

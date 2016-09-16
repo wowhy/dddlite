@@ -8,10 +8,9 @@
     using Microsoft.EntityFrameworkCore.Infrastructure;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Xunit;
     using Specifications;
 
-    [TestClass]
     public class TestRepository
     {
         private SampleRepositoryContext context = new SampleRepositoryContext();
@@ -25,7 +24,7 @@
             context.Context.Database.EnsureCreated();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestAdd()
         {
             var repository = context.GetRepository<Blog>();
@@ -39,49 +38,49 @@
             context.Commit();
         }
 
-        [TestMethod]
+        [Fact]
         public void TestGet()
         {
             var blog = (context.Context as SampleDbContext).Blogs.First();
             var repository = context.GetRepository<Blog>();
             var actual = repository.Get(blog.Id);
 
-            Assert.IsNotNull(actual);
-            Assert.AreEqual(blog.Id, actual.Id);
+            Assert.NotNull(actual);
+            Assert.Equal(blog.Id, actual.Id);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task TestGetAsync()
         {
             var blog = (context.Context as SampleDbContext).Blogs.First();
             var repository = context.GetRepository<Blog>();
             var actual = await repository.GetAsync(blog.Id);
 
-            Assert.IsNotNull(actual);
-            Assert.AreEqual(blog.Id, actual.Id);
+            Assert.NotNull(actual);
+            Assert.Equal(blog.Id, actual.Id);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestFind1()
         {
             var repository = context.GetRepository<Blog>();
             var blogs = repository.FindAll().ToList();
 
-            Assert.IsNotNull(blogs);
-            Assert.IsTrue(blogs.Count > 0);
+            Assert.NotNull(blogs);
+            Assert.True(blogs.Count > 0);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestFind2()
         {
             var repository = context.GetRepository<Blog>();
             var blogs = repository.FindAll(Specification<Blog>.Eval(k => k.RowVersion == 0)).ToList();
 
-            Assert.IsNotNull(blogs);
-            Assert.IsTrue(blogs.Count > 0);
+            Assert.NotNull(blogs);
+            Assert.True(blogs.Count > 0);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestFind3()
         {
             var repository = context.GetRepository<Blog>();
@@ -92,11 +91,11 @@
                     { "Id", SortDirection.Desc }
                 }).ToList();
 
-            Assert.IsNotNull(blogs);
-            Assert.IsTrue(blogs.Count > 0);
+            Assert.NotNull(blogs);
+            Assert.True(blogs.Count > 0);
         }
 
-        [TestMethod]
+        [Fact]
         public void TestConcurrencyCheck()
         {
             var repository = context.GetRepository<Blog>();
@@ -108,15 +107,15 @@
                 repository.Update(blog);
 
                 context.Commit();
-                Assert.IsTrue(false);
+                Assert.True(false);
             }
             catch (DbUpdateConcurrencyException)
             {
-                Assert.IsTrue(true);
+                Assert.True(true);
             }
         }
 
-        [TestMethod]
+        [Fact]
         public void TestUpdate()
         {
             var repository = context.GetRepository<Blog>();
@@ -128,11 +127,11 @@
                 repository.Update(blog);
 
                 context.Commit();
-                Assert.IsTrue(true);
+                Assert.True(true);
             }
             catch (Exception)
             {
-                Assert.IsTrue(false);
+                Assert.True(false);
             }
         }
     }

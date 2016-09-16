@@ -18,7 +18,7 @@ namespace Domain.Core
         /// <summary>
         /// Provides cryptographically strong random data for GUID creation.
         /// </summary>
-        private static readonly RNGCryptoServiceProvider RandomGenerator = new RNGCryptoServiceProvider();
+        private static readonly RandomNumberGenerator RandomGenerator = RandomNumberGenerator.Create();
         #endregion
 
         /// <summary>
