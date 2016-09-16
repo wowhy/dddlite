@@ -4,7 +4,9 @@
     "debugType": "portable"
   },
   "dependencies": {
-    "Domain": "*"
+    "Domain": {
+      "target": "project"
+    }
   },
   "frameworks": {
     "netstandard1.6": {
