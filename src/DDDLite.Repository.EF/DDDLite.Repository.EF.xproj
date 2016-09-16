@@ -6,12 +6,11 @@
   </PropertyGroup>
   <Import Project="$(VSToolsPath)\DotNet\Microsoft.DotNet.Props" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>bcd5542f-d938-4f03-8f08-ed56e05a00d9</ProjectGuid>
-    <RootNamespace>Application</RootNamespace>
+    <ProjectGuid>dbf2b852-80ff-491e-bf1f-a9d0aaff56d3</ProjectGuid>
+    <RootNamespace>DDDLite.Repository.EF</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">.\obj</BaseIntermediateOutputPath>
     <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
   </PropertyGroup>
-
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>

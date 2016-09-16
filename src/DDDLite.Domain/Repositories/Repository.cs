@@ -30,11 +30,11 @@
 
         public abstract IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification);
 
-        public abstract void Add(TAggregateRoot entity);
+        public abstract void Insert(TAggregateRoot entity);
 
         public abstract void Update(TAggregateRoot entity);
 
-        public abstract void Remove(TAggregateRoot entity);
+        public abstract void Delete(TAggregateRoot entity);
 
         public abstract bool Exists(Specification<TAggregateRoot> specification);
     }

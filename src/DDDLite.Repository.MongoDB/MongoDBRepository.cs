@@ -1,40 +1,45 @@
-﻿namespace DDDLite.Repository.EF
+﻿namespace DDDLite.Repository.MongoDB
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using System.Threading.Tasks;
-    using DDDLite.Domain.Core;
-    using DDDLite.Domain.Repositories;
-    using Microsoft.EntityFrameworkCore;
-    using DDDLite.Domain.Specifications;
+    using Domain.Specifications;
+    using Domain.Core;
+    using Domain.Repositories;
+    using global::MongoDB.Driver;
+    using Humanizer;
 
-    public class EFRepository<TAggregateRoot> : Repository<TAggregateRoot>
+    public class MongoDBRepository<TAggregateRoot> : Repository<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
-        private readonly DbContext dbContext;
+        private readonly IMongoDBRepositoryContext dbContext;
+        private readonly IMongoCollection<TAggregateRoot> collection;
 
-        protected DbSet<TAggregateRoot> DbSet => this.dbContext.Set<TAggregateRoot>();
-
-        public EFRepository(IRepositoryContext context) : base(context)
+        public MongoDBRepository(IRepositoryContext context) : base(context)
         {
-            this.dbContext = (context as EFRepositoryContext)?.Context;
-
+            this.dbContext = context as IMongoDBRepositoryContext;
             if (this.dbContext == null)
             {
-                throw new RepositoryException("DbContext instance of EntityFrameworkRepositoryContext is invalid.");
+                throw new InvalidCastException("Unable to cast the given repository context instance.");
             }
+
+            this.collection = this.dbContext.GetCollection<TAggregateRoot>();
         }
 
         public override TAggregateRoot Get(Guid key)
         {
-            return this.DbSet.FirstOrDefault(k => key.Equals(k.Id));
+            return this.collection.Find<TAggregateRoot>(k => k.Id == key).FirstOrDefault();
         }
 
         public override Task<TAggregateRoot> GetAsync(Guid key)
         {
-            return this.DbSet.FirstOrDefaultAsync(k => key.Equals(k.Id));
+            return this.collection.Find<TAggregateRoot>(k => k.Id == key).FirstOrDefaultAsync();
+        }
+
+        public override bool Exists(Specification<TAggregateRoot> specification)
+        {
+            return this.collection.Count<TAggregateRoot>(specification) > 0;
         }
 
         public override IQueryable<TAggregateRoot> FindAll()
@@ -49,7 +54,7 @@
 
         public override IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification)
         {
-            var query = this.DbSet.Where(specification);
+            var query = (IQueryable<TAggregateRoot>)this.collection.AsQueryable();
             if (sortSpecification?.Count > 0)
             {
                 var sortSpecifications = sortSpecification.Specifications.ToList();
@@ -57,11 +62,11 @@
 
                 switch (firstSortSpecification.Item2)
                 {
-                    case SortDirection.Asc:
+                    case Domain.Core.SortDirection.Asc:
                         query = query.OrderBy(firstSortSpecification.Item1);
                         break;
 
-                    case SortDirection.Desc:
+                    case Domain.Core.SortDirection.Desc:
                         query = query.OrderByDescending(firstSortSpecification.Item1);
                         break;
 
@@ -74,11 +79,11 @@
                     var spec = sortSpecifications[i];
                     switch (spec.Item2)
                     {
-                        case SortDirection.Asc:
+                        case Domain.Core.SortDirection.Asc:
                             query = query.OrderBy(spec.Item1);
                             break;
 
-                        case SortDirection.Desc:
+                        case Domain.Core.SortDirection.Desc:
                             query = query.OrderByDescending(spec.Item1);
                             break;
 
@@ -93,25 +98,17 @@
 
         public override void Insert(TAggregateRoot entity)
         {
-            this.dbContext.Entry(entity).State = EntityState.Added;
-        }
-
-        public override void Delete(TAggregateRoot entity)
-        {
-            this.dbContext.Entry(entity).State = EntityState.Deleted;
+            throw new NotImplementedException();
         }
 
         public override void Update(TAggregateRoot entity)
         {
-            var entry = this.dbContext.Entry(entity);
-            entry.Property(k => k.RowVersion).OriginalValue = entity.RowVersion;
-            entry.Property(k => k.RowVersion).CurrentValue = entity.RowVersion + 1;
-            entry.State = EntityState.Modified;
+            throw new NotImplementedException();
         }
 
-        public override bool Exists(Specification<TAggregateRoot> specification)
+        public override void Delete(TAggregateRoot entity)
         {
-            return this.DbSet.Where(specification).Any();
+            throw new NotImplementedException();
         }
     }
 }

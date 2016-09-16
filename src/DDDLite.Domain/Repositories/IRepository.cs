@@ -19,11 +19,11 @@
 
         IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification);
 
-        void Add(TAggregateRoot entity);
+        void Insert(TAggregateRoot entity);
 
         void Update(TAggregateRoot entity);
 
-        void Remove(TAggregateRoot entity);
+        void Delete(TAggregateRoot entity);
 
         bool Exists(Specification<TAggregateRoot> specification);
     }

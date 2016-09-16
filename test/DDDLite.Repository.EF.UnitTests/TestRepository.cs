@@ -32,7 +32,7 @@
             {
                 var blog = Blog.Create();
                 blog.Url = "http://localhost/blog/" + blog.Id;
-                repository.Add(blog);
+                repository.Insert(blog);
             }
 
             context.Commit();
