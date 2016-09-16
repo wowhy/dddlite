@@ -8545,13 +8545,13 @@
     },
     "Domain/1.0.0": {
       "type": "project",
-      "path": "../../Domain/project.json",
-      "msbuildProject": "../../Domain/Domain.xproj"
+      "path": "../../src/Domain/project.json",
+      "msbuildProject": "../../src/Domain/Domain.xproj"
     },
     "Repository/1.0.0": {
       "type": "project",
-      "path": "../../Repository/project.json",
-      "msbuildProject": "../../Repository/Repository.xproj"
+      "path": "../../src/Repository/project.json",
+      "msbuildProject": "../../src/Repository/Repository.xproj"
     }
   },
   "projectFileDependencyGroups": {
