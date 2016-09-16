@@ -13,5 +13,14 @@ namespace DDDLite.Repository.MongoDB
 
         IMongoCollection<TAggregateRoot> GetCollection<TAggregateRoot>()
             where TAggregateRoot : class, IAggregateRoot;
+
+        void RegisterInsert<TAggregateRoot>(TAggregateRoot entity)
+            where TAggregateRoot : class, IAggregateRoot;
+
+        void RegisterUpdate<TAggregateRoot>(TAggregateRoot entity)
+            where TAggregateRoot : class, IAggregateRoot;
+
+        void RegisterDelete<TAggregateRoot>(TAggregateRoot entity)
+            where TAggregateRoot : class, IAggregateRoot;
     }
 }

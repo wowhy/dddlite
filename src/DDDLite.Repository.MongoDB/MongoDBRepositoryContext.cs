@@ -69,7 +69,7 @@
             return (IMongoCollection<TAggregateRoot>)this.mapCollections[type];
         }
 
-        internal void Insert<TAggregateRoot>(TAggregateRoot entity)
+        internal void RegisterInsert<TAggregateRoot>(TAggregateRoot entity)
             where TAggregateRoot : class, IAggregateRoot
         {
             this.actions.Enqueue(() =>
@@ -79,7 +79,7 @@
             });
         }
 
-        internal void Update<TAggregateRoot>(TAggregateRoot entity)
+        internal void RegisterUpdate<TAggregateRoot>(TAggregateRoot entity)
             where TAggregateRoot : class, IAggregateRoot
         {
             this.actions.Enqueue(() =>
@@ -89,7 +89,7 @@
             });
         }
 
-        internal void Delete<TAggregateRoot>(TAggregateRoot entity)
+        internal void RegisterDelete<TAggregateRoot>(TAggregateRoot entity)
             where TAggregateRoot : class, IAggregateRoot
         {
             this.actions.Enqueue(() =>

@@ -98,17 +98,17 @@
 
         public override void Insert(TAggregateRoot entity)
         {
-            throw new NotImplementedException();
+            this.dbContext.RegisterInsert(entity);
         }
 
         public override void Update(TAggregateRoot entity)
         {
-            throw new NotImplementedException();
+            this.dbContext.RegisterUpdate(entity);
         }
 
         public override void Delete(TAggregateRoot entity)
         {
-            throw new NotImplementedException();
+            this.dbContext.RegisterDelete(entity);
         }
     }
 }
