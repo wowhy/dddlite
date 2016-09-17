@@ -1,4 +1,4 @@
-﻿namespace DDDLite.Domain.Repositories
+﻿namespace DDDLite.Repositories
 {
     using System;
     using System.Threading.Tasks;

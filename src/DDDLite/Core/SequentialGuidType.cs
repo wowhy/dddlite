@@ -3,7 +3,7 @@
 //     Copyright © Jeremy H. Todd 2011
 // </copyright>
 //-----------------------------------------------------------------------
-namespace DDDLite.Domain.Core
+namespace DDDLite.Core
 {
     using System;
 

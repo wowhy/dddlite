@@ -1,9 +1,9 @@
-﻿namespace DDDLite.Domain.Repositories
+﻿namespace DDDLite.Repositories
 {
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using DDDLite.Domain.Core;
+    using Core;
     using Specifications;
 
     public interface IRepository<TAggregateRoot>

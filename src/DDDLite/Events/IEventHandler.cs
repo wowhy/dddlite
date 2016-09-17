@@ -1,4 +1,4 @@
-﻿namespace DDDLite.Domain.Events
+﻿namespace DDDLite.Events
 {
     using System;
     using System.Collections.Generic;

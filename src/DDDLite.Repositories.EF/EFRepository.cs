@@ -1,14 +1,14 @@
-﻿namespace DDDLite.Repository.EF
+﻿namespace DDDLite.Repositories.EF
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using DDDLite.Domain.Core;
-    using DDDLite.Domain.Repositories;
+    using DDDLite.Core;
+    using DDDLite.Repositories;
     using Microsoft.EntityFrameworkCore;
-    using DDDLite.Domain.Specifications;
+    using DDDLite.Specifications;
 
     public class EFRepository<TAggregateRoot> : Repository<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot

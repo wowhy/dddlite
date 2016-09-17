@@ -12,7 +12,7 @@
     "DDDLite": {
       "target": "project"
     },
-    "DDDLite.Repository.EF": {
+    "DDDLite.Repositories.EF": {
       "target": "project"
     }
   },

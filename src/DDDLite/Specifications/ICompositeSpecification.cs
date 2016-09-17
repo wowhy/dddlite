@@ -1,4 +1,4 @@
-﻿namespace DDDLite.Domain.Specifications
+﻿namespace DDDLite.Specifications
 {
     /// <summary>
     /// Represents that the implemented classes are composite specifications.

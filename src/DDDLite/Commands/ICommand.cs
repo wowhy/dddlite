@@ -1,4 +1,4 @@
-﻿namespace DDDLite.Domain.Commands
+﻿namespace DDDLite.Commands
 {
     using System;
     using System.Collections.Generic;

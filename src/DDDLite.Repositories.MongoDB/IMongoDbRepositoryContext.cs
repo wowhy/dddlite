@@ -1,8 +1,8 @@
-namespace DDDLite.Repository.MongoDB
+namespace DDDLite.Repositories.MongoDB
 {
     using System;
-    using DDDLite.Domain.Repositories;
-    using Domain.Core;
+    using DDDLite.Repositories;
+    using DDDLite.Core;
     using global::MongoDB.Driver;
 
     public interface IMongoDBRepositoryContext : IRepositoryContext

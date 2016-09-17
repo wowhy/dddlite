@@ -1,15 +1,15 @@
-﻿namespace DDDLite.Repository.EF.UnitTests
+﻿namespace DDDLite.Repositories.EF.UnitTests
 {
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using DDDLite.Domain.Core;
+    using DDDLite.Core;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore.Infrastructure;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Xunit;
-    using DDDLite.Domain.Specifications;
+    using DDDLite.Specifications;
 
     public class TestRepository
     {

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DDDLite.Domain.Core;
+using DDDLite.Core;
 using Microsoft.EntityFrameworkCore;
 
-namespace DDDLite.Repository.EF.UnitTests
+namespace DDDLite.Repositories.EF.UnitTests
 {
     public class SampleDbContext : DbContext
     {

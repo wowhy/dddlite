@@ -1,4 +1,4 @@
-﻿namespace DDDLite.Domain.Specifications
+﻿namespace DDDLite.Specifications
 {
     using System.Collections.Generic;
     using System.Linq.Expressions;

@@ -1,4 +1,4 @@
-﻿namespace DDDLite.Domain.Services
+﻿namespace DDDLite.Services
 {
     using System;
     using System.Collections.Generic;

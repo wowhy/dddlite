@@ -1,7 +1,7 @@
-﻿namespace DDDLite.Domain.Repositories
+﻿namespace DDDLite.Repositories
 {
     using System;
-    using DDDLite.Domain.Core;
+    using Core;
 
     public class DomainException : CoreException
     {

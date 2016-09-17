@@ -1,11 +1,11 @@
-﻿namespace DDDLite.Repository.EF
+﻿namespace DDDLite.Repositories.EF
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
-    using DDDLite.Domain.Repositories;
+    using DDDLite.Repositories;
     using Microsoft.EntityFrameworkCore;
 
     public class EFRepositoryContext : RepositoryContext

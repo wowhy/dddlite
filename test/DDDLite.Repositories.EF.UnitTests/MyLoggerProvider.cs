@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace DDDLite.Repository.EF.UnitTests
+namespace DDDLite.Repositories.EF.UnitTests
 {
     public class MyLoggerProvider : ILoggerProvider
     {

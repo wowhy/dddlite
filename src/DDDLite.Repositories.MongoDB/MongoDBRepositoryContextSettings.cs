@@ -1,4 +1,4 @@
-﻿namespace DDDLite.Repository.MongoDB
+﻿namespace DDDLite.Repositories.MongoDB
 {
     using System;
     using System.Collections.Generic;

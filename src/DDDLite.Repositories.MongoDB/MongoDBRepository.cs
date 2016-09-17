@@ -1,12 +1,12 @@
-﻿namespace DDDLite.Repository.MongoDB
+﻿namespace DDDLite.Repositories.MongoDB
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Domain.Specifications;
-    using Domain.Core;
-    using Domain.Repositories;
+    using DDDLite.Specifications;
+    using DDDLite.Core;
+    using DDDLite.Repositories;
     using global::MongoDB.Driver;
     using Humanizer;
 
@@ -62,11 +62,11 @@
 
                 switch (firstSortSpecification.Item2)
                 {
-                    case Domain.Core.SortDirection.Asc:
+                    case DDDLite.Core.SortDirection.Asc:
                         query = query.OrderBy(firstSortSpecification.Item1);
                         break;
 
-                    case Domain.Core.SortDirection.Desc:
+                    case DDDLite.Core.SortDirection.Desc:
                         query = query.OrderByDescending(firstSortSpecification.Item1);
                         break;
 
@@ -79,11 +79,11 @@
                     var spec = sortSpecifications[i];
                     switch (spec.Item2)
                     {
-                        case Domain.Core.SortDirection.Asc:
+                        case DDDLite.Core.SortDirection.Asc:
                             query = query.OrderBy(spec.Item1);
                             break;
 
-                        case Domain.Core.SortDirection.Desc:
+                        case DDDLite.Core.SortDirection.Desc:
                             query = query.OrderByDescending(spec.Item1);
                             break;
 
