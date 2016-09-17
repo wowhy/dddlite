@@ -28,6 +28,7 @@ namespace DDDLite.Repositories.EF.UnitTests
             public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
             {
                 Debug.WriteLine(formatter(state, exception));
+                Console.WriteLine(formatter(state, exception));
             }
 
             public IDisposable BeginScope<TState>(TState state)
