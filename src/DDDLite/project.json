@@ -3,11 +3,7 @@
   "buildOptions": {
     "debugType": "portable"
   },
-  "dependencies": {
-    "DDDLite.Domain": {
-      "target": "project"
-    }
-  },
+  "dependencies": {},
   "frameworks": {
     "netstandard1.6": {
       "dependencies": {

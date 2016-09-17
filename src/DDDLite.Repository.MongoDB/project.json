@@ -1,7 +1,7 @@
 ﻿{
   "version": "1.0.0-*",
   "dependencies": {
-    "DDDLite.Domain": {
+    "DDDLite": {
       "target": "project"
     },
     "MongoDB.Driver": "2.3.0-rc1",

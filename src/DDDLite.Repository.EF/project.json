@@ -4,7 +4,7 @@
     "debugType": "portable"
   },
   "dependencies": {
-    "DDDLite.Domain": {
+    "DDDLite": {
       "target": "project"
     },
     "Microsoft.EntityFrameworkCore": "1.0.1",

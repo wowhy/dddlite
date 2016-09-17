@@ -5,13 +5,10 @@
     "emitEntryPoint": true
   },
   "dependencies": {
-    "DDDLite.Application": {
+    "DDDLite": {
       "target": "project"
     },
     "DDDLite.Repository.EF": {
-      "target": "project"
-    },
-    "DDDLite.Infrastructure": {
       "target": "project"
     }
   },
