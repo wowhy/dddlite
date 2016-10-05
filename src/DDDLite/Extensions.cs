@@ -1,18 +1,49 @@
 ﻿namespace DDDLite
 {
     using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
     using System.Linq;
+
     using AutoMapper;
     using AutoMapper.QueryableExtensions;
 
     public static class Extensions
     {
-        public static IEnumerable<T> Page<T>(this IQueryable<T> @this, int page = 1, int limit = 10)
+        public static IQueryable<T> Page<T>(this IQueryable<T> @this, int page = 1, int limit = 10)
         {
             return @this.Skip((page - 1) * limit).Take(limit);
         }
 
+        public static PagedResult<T> AsPagedResult<T>(this IQueryable<T> @this, int page = 1, int limit = 10)
+        {
+            return new PagedResult<T>
+            {
+                Data = @this.Page(page, limit).ToList(),
+                Total = @this.Count()
+            };
+        }
+
+
+        public static bool TryValidate(this object @this)
+        {
+            return Extensions.TryValidate(@this, new List<ValidationResult>());
+        }
+
+        public static bool TryValidate(this object @this, ICollection<ValidationResult> validationErrors)
+        {
+            var context = new ValidationContext(@this, null, null);
+            return Validator.TryValidateObject(@this, context, validationErrors, true);
+        }
+
         #region Projections
+        public static PagedResult<TDestination> ProjectToPagedResult<TDestination>(
+            this IQueryable queryable,
+            int page = 1,
+            int limit = 10)
+        {
+            return queryable.ProjectTo<TDestination>().AsPagedResult(page, limit);
+        }
+
         public static List<TDestination> ProjectToList<TDestination>(this IQueryable queryable, IConfigurationProvider config)
         {
             return queryable.ProjectTo<TDestination>(config).ToList();

@@ -1,0 +1,25 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "debugType": "portable"
+  },
+  "dependencies": {
+    "Microsoft.EntityFrameworkCore": "1.0.0",
+    "Microsoft.EntityFrameworkCore.Relational": "1.0.0",
+    "Npgsql.EntityFrameworkCore.PostgreSQL": "1.0.1",
+    "DDDLite": {
+      "target": "project"
+    },
+    "DDDLite.EntityFramework": {
+      "target": "project"
+    }
+  },
+  "frameworks": {
+    "netstandard1.6": {
+      "dependencies": {
+        "NETStandard.Library": "1.6.0"
+      }
+    },
+    "net451": {}
+  }
+}

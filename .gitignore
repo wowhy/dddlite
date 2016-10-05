@@ -5,4 +5,4 @@ packages/
 *.csproj.user
 .vscode
 *.xproj.user
-.lock.json
+project.lock.json

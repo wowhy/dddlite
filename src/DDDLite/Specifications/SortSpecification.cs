@@ -5,8 +5,8 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Linq.Expressions;
-    using System.Text;
-    using System.Threading.Tasks;
+
+    using Domain;
 
     /// <summary>
     /// Represents the sort specification in a query that is used for defining the sort field and order.
