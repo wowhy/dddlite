@@ -17,6 +17,13 @@ namespace Sample.WebApi.Controllers
         [HttpGet]
         public string Get()
         {
+            return this.env.EnvironmentName;
+        }
+
+        [HttpGet]
+        [Route("exception")]
+        public void ThrowException()
+        {
             throw new Exception("测试异常信息！");
         }
     }
