@@ -1,5 +1,7 @@
 namespace DDDLite.WebApi
 {
+    using System;
+    using System.Threading.Tasks;
     using System.Text;
 
     using Microsoft.AspNetCore.Mvc.Filters;
@@ -8,9 +10,20 @@ namespace DDDLite.WebApi
 
     using Commands.Validation;
 
-    public class ApiExceptionFilter : IExceptionFilter
+
+    public class ApiExceptionFilter : IExceptionFilter, IAsyncExceptionFilter
     {
         public async void OnException(ExceptionContext context)
+        {
+            await this.DoFilter(context);
+        }
+
+        public Task OnExceptionAsync(ExceptionContext context)
+        {
+            return this.DoFilter(context);
+        }
+
+        private async Task DoFilter(ExceptionContext context)
         {
             var error = context.Exception;
             var response = context.HttpContext.Response;

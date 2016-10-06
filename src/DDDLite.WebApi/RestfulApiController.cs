@@ -35,7 +35,7 @@ namespace DDDLite.WebApi
             var mapper = Mapper.Configuration.FindTypeMapFor(typeof(TAggregateRoot), typeof(TDTO));
             if (mapper == null)
             {
-                this.configuration = new MapperConfiguration(cfg => 
+                this.configuration = new MapperConfiguration(cfg =>
                 {
                     cfg.CreateMap<TAggregateRoot, TDTO>();
                 });

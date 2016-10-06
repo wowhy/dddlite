@@ -20,6 +20,12 @@ namespace Sample.WebApi.Controllers
             return this.env.EnvironmentName;
         }
 
+        [HttpPost]
+        public string Post()
+        {
+            return "hello, world!";
+        }
+
         [HttpGet]
         [Route("exception")]
         public void ThrowException()

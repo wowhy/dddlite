@@ -3,9 +3,9 @@ namespace Sample.WebApi
     using System;
     using System.Reflection;
 
-    using AutoMapper;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc.Cors;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
@@ -39,6 +39,7 @@ namespace Sample.WebApi
                 config =>
                 {
                     config.Filters.Add(new ApiExceptionFilter());
+                    config.Filters.Add(new ApiCorsFilter());
                 }
             );
 

@@ -80,9 +80,9 @@ namespace DDDLite.WebApi
 
             Console.WriteLine();
 
-            AutoMapper.Mapper.Initialize(cfg => 
+            AutoMapper.Mapper.Initialize(cfg =>
             {
-                cfg.AddProfiles(assembly);             
+                cfg.AddProfiles(assembly);
             });
         }
 
