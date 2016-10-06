@@ -17,8 +17,7 @@ namespace Sample.WebApi.Controllers
         [HttpGet]
         public string Get()
         {
-            Console.WriteLine(env.ApplicationName);
-            return env.ApplicationName;
+            throw new Exception("测试异常信息！");
         }
     }
 }

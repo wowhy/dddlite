@@ -1,7 +1,6 @@
 namespace Sample.WebApi.Controllers
 {
     using System;
-    using System.Collections.Generic;
 
     using Microsoft.AspNetCore.Mvc;
 
@@ -11,18 +10,20 @@ namespace Sample.WebApi.Controllers
     using Sample.Core.CommandStack.Application;
     using Sample.Core.QueryStack.Application;
 
-    public class BlogDTO
+    public class PostDTO
     {
-        public List<Post> Posts { get; set; }
+        public string Title { get; set; }
+
+        public string Blog_Title { get; set; }
     }
 
-    [Route("api/blogs")]
-    public class BlogController : RestfulApiController<Blog, BlogDTO>
+    [Route("api/posts")]
+    public class PostController : RestfulApiController<Post, PostDTO>
     {
-        public BlogController(
+        public PostController(
             IServiceProvider serviceProvider,
-            IBlogCommandService commandService,
-            IBlogQueryService queryService) :
+            IPostCommandService commandService,
+            IPostQueryService queryService) :
             base(serviceProvider, commandService, queryService)
         {
         }

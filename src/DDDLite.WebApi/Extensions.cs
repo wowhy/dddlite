@@ -1,17 +1,10 @@
 namespace DDDLite.WebApi
 {
     using System;
-    using System.Text;
     using System.Reflection;
     using System.Linq;
 
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Diagnostics;
-
-    using Commands.Validation;
-    using Newtonsoft.Json;
 
     public static class Extensions
     {
@@ -86,6 +79,11 @@ namespace DDDLite.WebApi
             }
 
             Console.WriteLine();
+
+            AutoMapper.Mapper.Initialize(cfg => 
+            {
+                cfg.AddProfiles(assembly);             
+            });
         }
 
         public static void AddRepositoryContext<TInterface, TRepositoryContext>(this IServiceCollection @this)
@@ -100,43 +98,6 @@ namespace DDDLite.WebApi
             where TRepository : class
         {
             @this.AddScoped<TRepository>(provider => func(provider.GetService<TContext>()));
-        }
-
-        public static void UseWebApiExceptionHandler(this IApplicationBuilder @this)
-        {
-            @this.UseExceptionHandler(errorApp =>
-            {
-                errorApp.Run(async context =>
-                {
-                    var error = context.Features.Get<IExceptionHandlerFeature>();
-                    if (error != null)
-                    {
-                        dynamic result;
-
-                        context.Response.ContentType = "application/json";
-                        if (error.Error is ValidationException)
-                        {
-                            context.Response.StatusCode = 400;
-                            result = new
-                            {
-                                message = error.Error.Message,
-                                details = ((ValidationException)error.Error).Details
-                            };
-                        }
-                        else
-                        {
-                            context.Response.StatusCode = 500;
-                            result = new
-                            {
-                                message = error.Error.Message,
-                                details = error.Error.InnerException == null ? new string[0] : new string[] { error.Error.InnerException.Message }
-                            };
-                        }
-
-                        await context.Response.WriteAsync(JsonConvert.SerializeObject((object)result), Encoding.UTF8);
-                    }
-                });
-            });
         }
     }
 }

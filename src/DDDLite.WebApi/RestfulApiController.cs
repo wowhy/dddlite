@@ -3,6 +3,7 @@ namespace DDDLite.WebApi
     using System;
     using System.Linq;
 
+    using AutoMapper;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -20,6 +21,8 @@ namespace DDDLite.WebApi
         private readonly IDomainCommandService<TAggregateRoot> commandService;
         private readonly IQueryService<TAggregateRoot> queryService;
 
+        private readonly IConfigurationProvider configuration;
+
         protected RestfulApiController(
             IServiceProvider serviceProvider,
             IDomainCommandService<TAggregateRoot> commandService,
@@ -28,6 +31,19 @@ namespace DDDLite.WebApi
             this.serviceProvider = serviceProvider;
             this.commandService = commandService;
             this.queryService = queryService;
+
+            var mapper = Mapper.Configuration.FindTypeMapFor(typeof(TAggregateRoot), typeof(TDTO));
+            if (mapper == null)
+            {
+                this.configuration = new MapperConfiguration(cfg => 
+                {
+                    cfg.CreateMap<TAggregateRoot, TDTO>();
+                });
+            }
+            else
+            {
+                this.configuration = Mapper.Configuration;
+            }
         }
 
         protected IServiceProvider ServiceProvider => this.serviceProvider;
@@ -40,7 +56,7 @@ namespace DDDLite.WebApi
         public virtual IQueryable<TDTO> Get()
         {
             // TODO: 实现查询接口
-            return this.queryService.FindAll().ProjectToQueryable<TDTO>();
+            return this.queryService.FindAll().ProjectToQueryable<TDTO>(this.configuration);
         }
 
         [HttpGet("{id}")]

@@ -35,7 +35,12 @@ namespace Sample.WebApi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(
+                config =>
+                {
+                    config.Filters.Add(new ApiExceptionFilter());
+                }
+            );
 
             // register command repository context
             services.AddDbContext<SampleDomainDbContext>(options => options.UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=hongyuan;Database=sample;"));
@@ -54,17 +59,10 @@ namespace Sample.WebApi
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            app.UseWebApiExceptionHandler();
-
             app.UseMvc();
             app.UseCors("*");
 
             service.GetService<SampleDomainDbContext>().Database.EnsureCreated();
-
-            Mapper.Initialize(cfg =>
-            {
-                cfg.CreateMap<Blog, Blog>();
-            });
         }
     }
 }
