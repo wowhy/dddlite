@@ -1,8 +1,9 @@
 ﻿namespace DDDLite.Commands
 {
+    using Common;
     using Validation;
 
-    public interface ICommand
+    public interface ICommand : IMessage
     {
         void Validate();
 

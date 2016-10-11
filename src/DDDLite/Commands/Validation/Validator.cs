@@ -5,7 +5,7 @@ namespace DDDLite.Commands.Validation
     public abstract class Validator<TCommand> : IValidator
         where TCommand : ICommand
     {
-        public virtual int Priority => 1;
+        public virtual int Priority => 0;
 
         public void Validate(ICommand cmd)
         {

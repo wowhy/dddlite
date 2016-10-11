@@ -16,7 +16,7 @@ namespace Sample.Core.Domain.Validation
 
         public override void DoValidate(BlogCreateCommand cmd)
         {
-            if (cmd.Data.Title == "test")
+            if (cmd.AggregateRoot.Title == "test")
             {
                 throw new ValidationException("禁止创建测试数据");
             }

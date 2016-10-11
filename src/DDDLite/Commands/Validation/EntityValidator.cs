@@ -7,15 +7,15 @@ namespace DDDLite.Commands.Validation
     using Commands;
     using Domain;
 
-    public class EntityValidator<TData> : IValidator
-        where TData : class, IAggregateRoot
-    {
-        public int Priority => int.MaxValue;
 
-        public void Validate(ICommand cmd)
+    public class EntityValidator<TAggregateRoot> : Validation.Validator<IDomainCommand<TAggregateRoot>>
+        where TAggregateRoot : class, IAggregateRoot
+    {
+        public override int Priority => int.MaxValue;
+
+        public override void DoValidate(IDomainCommand<TAggregateRoot> cmd)
         {
-            var innerCmd = cmd as IDomainCommand<TData>;
-            var entity = innerCmd.Data;
+            var entity = cmd.AggregateRoot;
 
             var validationErrors = new List<ValidationResult>();
             var isValid = entity.TryValidate(validationErrors);

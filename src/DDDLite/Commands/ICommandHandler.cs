@@ -1,8 +1,9 @@
 ﻿namespace DDDLite.Commands
 {
-    public interface ICommandHandler<TCommand>
+    using DDDLite.Common;
+
+    public interface ICommandHandler<in TCommand> : IHandler<TCommand>
         where TCommand : ICommand
     {
-        void Handle(TCommand cmd);
     }
 }

@@ -1,6 +1,7 @@
 namespace DDDLite.CommandStack.Application
 {
     using System;
+    using System.Threading.Tasks;
 
     using AutoMapper;
 
@@ -39,9 +40,9 @@ namespace DDDLite.CommandStack.Application
             this.repository = context.GetRepository<TAggregateRoot>();
         }
 
-        public void Handle(ICreateCommand<TAggregateRoot> cmd)
+        public Task Handle(ICreateCommand<TAggregateRoot> cmd)
         {
-            var entity = cmd.Data;
+            var entity = cmd.AggregateRoot;
 
             entity.CreatedById = cmd.OperatorId;
             entity.CreatedOn = DateTime.Now;
@@ -49,10 +50,10 @@ namespace DDDLite.CommandStack.Application
             cmd.Validate();
 
             this.repository.Create(entity);
-            this.context.Commit();
+            return this.context.CommitAsync();
         }
 
-        public void Handle(IUpdateCommand<TAggregateRoot> cmd)
+        public Task Handle(IUpdateCommand<TAggregateRoot> cmd)
         {
             var entity = this.repository.GetById(cmd.AggregateRootId);
             this.CheckEntityNotNull(entity);
@@ -62,15 +63,15 @@ namespace DDDLite.CommandStack.Application
             entity.RowVersion = cmd.RowVersion;
 
             // map new value to orgin
-            mapper.Map(cmd.Data, entity);
+            mapper.Map(cmd.AggregateRoot, entity);
 
             cmd.Validate();
 
             this.repository.Update(entity);
-            this.context.Commit();
+            return this.context.CommitAsync();
         }
 
-        public void Handle(IDeleteCommand<TAggregateRoot> cmd)
+        public Task Handle(IDeleteCommand<TAggregateRoot> cmd)
         {
             var entity = this.repository.GetById(cmd.AggregateRootId);
             this.CheckEntityNotNull(entity);
@@ -82,7 +83,7 @@ namespace DDDLite.CommandStack.Application
             cmd.Validate();
 
             this.repository.Delete(entity);
-            this.context.Commit();
+            return this.context.CommitAsync();
         }
 
         protected void CheckEntityNotNull(TAggregateRoot entity)

@@ -72,7 +72,7 @@ namespace DDDLite.WebApi
             var cmd = this.serviceProvider.GetService<ICreateCommand<TAggregateRoot>>();
 
             entity.NewIdentity();
-            cmd.Data = entity;
+            cmd.AggregateRoot = entity;
 
             this.commandService.Handle(cmd);
             return this.Created("", entity);
@@ -84,7 +84,7 @@ namespace DDDLite.WebApi
             var cmd = this.serviceProvider.GetService<IUpdateCommand<TAggregateRoot>>();
 
             cmd.AggregateRootId = id;
-            cmd.Data = entity;
+            cmd.AggregateRoot = entity;
             cmd.RowVersion = long.Parse(ifMatch);
 
             this.commandService.Handle(cmd);

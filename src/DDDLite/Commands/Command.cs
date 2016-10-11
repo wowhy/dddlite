@@ -1,9 +1,10 @@
 namespace DDDLite.Commands
 {
+    using Common;
     using Validation;
     using System.Linq;
 
-    public abstract class Command : ICommand
+    public abstract class Command : Message, ICommand
     {
         private readonly ValidationCollection validators = new ValidationCollection();
 
