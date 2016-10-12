@@ -1,6 +1,6 @@
 ﻿namespace DDDLite.CommandStack.DomainServices
 {
-    using Repository;
+    using Domain;
 
     public interface IDomanService
     {

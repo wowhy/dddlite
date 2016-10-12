@@ -7,7 +7,6 @@ namespace DDDLite.CommandStack.Application
 
     using Domain;
     using Commands;
-    using Repository;
 
     public class DomainCommandService<TAggregateRoot> : IDomainCommandService<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot

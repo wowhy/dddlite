@@ -4,7 +4,6 @@
     using System.Linq;
 
     using Domain;
-    using Repository;
     using Specifications;
 
     public interface IQueryService

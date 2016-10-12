@@ -1,9 +1,7 @@
-﻿namespace DDDLite.QueryStack.Repository
+﻿namespace DDDLite.Domain
 {
     using System;
     using System.Linq;
-
-    using Domain;
 
     public interface IQueryRepositoryContext
     {

@@ -1,9 +1,8 @@
-﻿namespace DDDLite.QueryStack.Repository
+﻿namespace DDDLite.Domain
 {
     using System;
     using System.Linq;
-    
-    using Domain;
+
     using Specifications;
 
     public interface IQueryRepository<TAggregateRoot>

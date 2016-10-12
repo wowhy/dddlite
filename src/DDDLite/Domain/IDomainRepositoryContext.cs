@@ -1,9 +1,7 @@
-﻿namespace DDDLite.CommandStack.Repository
+﻿namespace DDDLite.Domain
 {
     using System;
     using System.Threading.Tasks;
-
-    using Domain;
 
     public interface IDomainRepositoryContext
     {

@@ -1,22 +1,28 @@
-namespace DDDLite.QueryStack.Repository
+namespace DDDLite.Domain
 {
     using System;
     using System.Linq;
+    using System.Threading.Tasks;
 
-    using Domain;
     using Specifications;
 
-    public abstract class QueryRepository<TAggregateRoot> : IQueryRepository<TAggregateRoot>
+    public abstract class DomainRepository<TAggregateRoot> : IDomainRepository<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
-        private readonly IQueryRepositoryContext context;
+        private readonly IDomainRepositoryContext context;
 
-        public IQueryRepositoryContext Context => this.context;
+        public IDomainRepositoryContext Context => this.context;
 
-        protected QueryRepository(IQueryRepositoryContext context)
+        protected DomainRepository(IDomainRepositoryContext context)
         {
             this.context = context;
         }
+
+        public abstract void Create(TAggregateRoot entity);
+
+        public abstract void Update(TAggregateRoot entity);
+
+        public abstract void Delete(TAggregateRoot entity);
 
         public abstract TAggregateRoot GetById(Guid id);
 
@@ -31,6 +37,8 @@ namespace DDDLite.QueryStack.Repository
         }
 
         public abstract IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification);
+
+        public abstract Task<TAggregateRoot> GetByIdAsync(Guid id);
 
         public abstract bool Exist(Specification<TAggregateRoot> specification);
     }
