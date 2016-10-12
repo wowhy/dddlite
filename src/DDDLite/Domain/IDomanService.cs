@@ -1,7 +1,5 @@
-﻿namespace DDDLite.CommandStack.DomainServices
+﻿namespace DDDLite.Domain
 {
-    using Domain;
-
     public interface IDomanService
     {
         IDomainRepositoryContext Context { get; }

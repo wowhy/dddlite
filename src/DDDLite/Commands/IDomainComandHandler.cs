@@ -1,28 +1,16 @@
 namespace DDDLite.Commands
 {
+    using System.Collections.Generic;
+    
     using Domain;
+    using Validation;
 
-    public interface IDomainCommandHandler<TCommand, TData> : ICommandHandler<TCommand>
-        where TCommand : IDomainCommand<TData>
-        where TData : class, IAggregateRoot
+    public interface IDomainCommandHandler<TCommand, TAggregateRoot> : ICommandHandler<TCommand>
+        where TCommand : IDomainCommand<TAggregateRoot>
+        where TAggregateRoot : class, IAggregateRoot
     {
-    }
+        ICollection<IValidator> Validators { get; }
 
-    public interface ICreateCommandHandler<TCommand, TData> : IDomainCommandHandler<TCommand, TData>
-        where TCommand : ICreateCommand<TData>
-        where TData : class, IAggregateRoot
-    {
-    }
-
-    public interface IUpdateCommandHandler<TCommand, TData> : IDomainCommandHandler<TCommand, TData>
-        where TCommand : IUpdateCommand<TData>
-        where TData : class, IAggregateRoot
-    {
-    }
-
-    public interface IDeleteCommandHandler<TCommand, TData> : IDomainCommandHandler<TCommand, TData>
-        where TCommand : IDeleteCommand<TData>
-        where TData : class, IAggregateRoot
-    {
+        void Validate(TCommand command);
     }
 }
