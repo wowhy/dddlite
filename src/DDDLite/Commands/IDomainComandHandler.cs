@@ -1,7 +1,7 @@
 namespace DDDLite.Commands
 {
     using System.Collections.Generic;
-    
+
     using Domain;
     using Validation;
 
@@ -9,6 +9,10 @@ namespace DDDLite.Commands
         where TCommand : IDomainCommand<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
+        IDomainRepositoryContext Context { get; }
+
+        IDomainRepository<TAggregateRoot> Repository { get; }
+
         ICollection<IValidator> Validators { get; }
 
         void Validate(TCommand command);

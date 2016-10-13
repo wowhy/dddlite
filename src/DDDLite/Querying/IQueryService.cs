@@ -1,4 +1,4 @@
-﻿namespace DDDLite.QueryStack.Application
+﻿namespace DDDLite.Querying
 {
     using System;
     using System.Linq;

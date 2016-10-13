@@ -4,6 +4,6 @@ namespace DDDLite.Common
     
     public interface IHandler<in TMessage>
     {
-        Task Handle(TMessage message);
+        Task HandleAsync(TMessage message);
     }
 }
