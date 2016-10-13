@@ -1,10 +1,10 @@
-namespace DDDLite.EntityFramework.CommandStack.Repository
+namespace DDDLite.EntityFramework.Repository
 {
     using System.Threading.Tasks;
 
     using Microsoft.EntityFrameworkCore;
 
-    using DDDLite.CommandStack.Repository;
+    using DDDLite.Domain;
 
     public class EFDomainRepositoryContext : DomainRepositoryContext, IEFDomainRepositoryContext
     {

@@ -1,8 +1,8 @@
-namespace DDDLite.EntityFramework.QueryStack.Repository
+namespace DDDLite.EntityFramework.Repository
 {
     using Microsoft.EntityFrameworkCore;
 
-    using DDDLite.QueryStack.Repository;
+    using DDDLite.Domain;
 
     public interface IEFQueryRepositoryContext : IQueryRepositoryContext
     {

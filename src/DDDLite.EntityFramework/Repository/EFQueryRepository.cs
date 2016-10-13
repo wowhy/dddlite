@@ -1,10 +1,9 @@
-namespace DDDLite.EntityFramework.QueryStack.Repository
+namespace DDDLite.EntityFramework.Repository
 {
     using System;
     using System.Linq;
 
     using DDDLite.Domain;
-    using DDDLite.QueryStack.Repository;
     using DDDLite.Specifications;
 
     public class EFQueryRepository<TAggregateRoot> : QueryRepository<TAggregateRoot>

@@ -1,4 +1,4 @@
-namespace DDDLite.EntityFramework.CommandStack.Repository
+namespace DDDLite.EntityFramework.Repository
 {
     using System;
     using System.Linq;
@@ -8,7 +8,6 @@ namespace DDDLite.EntityFramework.CommandStack.Repository
 
 
     using DDDLite.Domain;
-    using DDDLite.CommandStack.Repository;
     using DDDLite.Specifications;
 
     public class EFDomainRepository<TAggregateRoot> : DomainRepository<TAggregateRoot>

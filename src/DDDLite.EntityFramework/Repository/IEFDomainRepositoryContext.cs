@@ -1,8 +1,8 @@
-namespace DDDLite.EntityFramework.CommandStack.Repository
+namespace DDDLite.EntityFramework.Repository
 {
     using Microsoft.EntityFrameworkCore;
 
-    using DDDLite.CommandStack.Repository;
+    using DDDLite.Domain;
 
     public interface IEFDomainRepositoryContext : IDomainRepositoryContext
     {

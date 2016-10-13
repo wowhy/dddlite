@@ -1,10 +1,10 @@
-namespace DDDLite.EntityFramework.QueryStack.Repository
+namespace DDDLite.EntityFramework.Repository
 {
     using System.Linq;
 
     using Microsoft.EntityFrameworkCore;
 
-    using DDDLite.QueryStack.Repository;
+    using DDDLite.Domain;
 
     public class EFQueryRepositoryContext : QueryRepositoryContext, IEFQueryRepositoryContext
     {
