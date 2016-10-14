@@ -1,7 +1,7 @@
-using System;
-
 namespace DDDLite.Common
 {
+    using System;
+    
     public abstract class Message : IMessage
     {
         public Guid Id { get; set; }

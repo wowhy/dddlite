@@ -6,6 +6,7 @@ namespace DDDLite.Commands
     using System.Threading.Tasks;
 
     using Common;
+    using Messaging;
 
     public class CommandService : DisposableObject, ICommandService
     {

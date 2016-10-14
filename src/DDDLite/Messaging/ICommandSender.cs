@@ -1,7 +1,5 @@
-namespace DDDLite.Commands
+namespace DDDLite.Messaging
 {
-    using Common;
-
     public interface ICommandSender : IMessagePublisher
     {
     }

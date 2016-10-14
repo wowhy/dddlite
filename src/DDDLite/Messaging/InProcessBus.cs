@@ -1,16 +1,16 @@
-namespace DDDLite.Commands
+namespace DDDLite.Messaging
 {
     using System;
-    
+
     using Common;
 
-    public class InProcessCommandBus : DisposableObject, ICommandSender, IMessageSubscriber
+    public class InProcessBus : DisposableObject, IMessagePublisher, IMessageSubscriber
     {
         private bool subscribed = false;
 
         public event EventHandler<MessageReceivedEventArgs> MessageReceived;
 
-        public void Publish<TMessage>(TMessage message)
+        public virtual void Publish<TMessage>(TMessage message)
         {
             if (subscribed)
             {
@@ -18,7 +18,7 @@ namespace DDDLite.Commands
             }
         }
 
-        public void Subscribe()
+        public virtual void Subscribe()
         {
             this.subscribed = true;
         }
