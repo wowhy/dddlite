@@ -10,7 +10,7 @@
     "DDDLite": {
       "target": "project"
     },
-    "DDDLite.EntityFramework": {
+    "DDDLite.Repository.EntityFramework": {
       "target": "project"
     }
   },

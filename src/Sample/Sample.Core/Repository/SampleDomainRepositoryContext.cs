@@ -1,8 +1,8 @@
-namespace Sample.Core.CommandStack.Repository
+namespace Sample.Core.Repository
 {
     using Microsoft.EntityFrameworkCore;
 
-    using DDDLite.EntityFramework.CommandStack.Repository;
+    using DDDLite.Repository.EntityFramework;
 
     using Domain;
 

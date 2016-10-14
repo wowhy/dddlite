@@ -1,8 +1,8 @@
-namespace Sample.Core.QueryStack.Repository
+namespace Sample.Core.Repository
 {
     using Microsoft.EntityFrameworkCore;
 
-    using DDDLite.EntityFramework.QueryStack.Repository;
+    using DDDLite.Repository.EntityFramework;
 
     using Domain;
 

@@ -1,6 +1,6 @@
-namespace Sample.Core.QueryStack.Application
+namespace Sample.Core.Querying
 {
-    using DDDLite.QueryStack.Application;
+    using DDDLite.Querying;
 
     using Domain;
 

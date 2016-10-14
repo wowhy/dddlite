@@ -1,9 +1,9 @@
-namespace Sample.Core.Domain.Validation
+namespace Sample.Core.Commands.Validation
 {
     using DDDLite.Commands.Validation;
-    using DDDLite.CommandStack.Repository;
+    using DDDLite.Repository;
 
-    using Commands;
+    using Domain;
 
     public class BlogCreateValidator : Validator<BlogCreateCommand>
     {

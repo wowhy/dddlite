@@ -6,10 +6,11 @@ namespace DDDLite.Commands
     using Repository;
     using Validation;
 
-    public class DeleteCommandHandler<TAggregateRoot> :
-        DomainCommandHandler<DeleteCommand<TAggregateRoot>, TAggregateRoot>
-        , IDeleteCommandHandler<DeleteCommand<TAggregateRoot>, TAggregateRoot>
-        where TAggregateRoot : class, IAggregateRoot, new()
+    public class DeleteCommandHandler<TCommand, TAggregateRoot> :
+        DomainCommandHandler<TCommand, TAggregateRoot>
+        , IDeleteCommandHandler<TCommand, TAggregateRoot>
+        where TCommand : IDeleteCommand<TAggregateRoot>
+        where TAggregateRoot : class, IAggregateRoot
     {
         public DeleteCommandHandler(IDomainRepositoryContext context) : this(context, null)
         {
@@ -20,7 +21,7 @@ namespace DDDLite.Commands
         {
         }
 
-        public override Task DoHandleAsync(DeleteCommand<TAggregateRoot> command)
+        public override Task DoHandleAsync(TCommand command)
         {
             var entity = this.Repository.GetById(command.AggregateRootId);
 

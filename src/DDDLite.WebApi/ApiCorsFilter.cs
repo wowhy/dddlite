@@ -1,10 +1,8 @@
 namespace DDDLite.WebApi
 {
-    using System;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Cors.Infrastructure;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Cors.Internal;
     using Microsoft.AspNetCore.Mvc.Filters;
 
     public class ApiCorsFilter : IAuthorizationFilter, IAsyncAuthorizationFilter, IOrderedFilter
@@ -27,14 +25,16 @@ namespace DDDLite.WebApi
 
             if (string.CompareOrdinal(request.Method, "OPTIONS") == 0)
             {
-                Console.WriteLine("OPTIONS: {0}", request.Path);
                 context.Result = new StatusCodeResult(200);
             }
         }
 
-        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
+        public Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            this.OnAuthorization(context);
+            return Task.Run(() =>
+            {
+                this.OnAuthorization(context);
+            });
         }
     }
 }

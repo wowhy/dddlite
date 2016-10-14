@@ -1,12 +1,12 @@
-namespace Sample.Core.Common
+namespace Sample.Core.Repository
 {
     using Microsoft.EntityFrameworkCore;
 
     using Domain;
 
-    public class SampleDbContext : DbContext
+    public abstract class SampleDbContext : DbContext
     {
-        public SampleDbContext(DbContextOptions options) : base(options)
+        protected SampleDbContext(DbContextOptions options) : base(options)
         {
         }
 

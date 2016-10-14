@@ -1,8 +1,6 @@
-namespace Sample.Core.CommandStack.Repository
+namespace Sample.Core.Repository
 {
     using Microsoft.EntityFrameworkCore;
-
-    using Common;
     
     public class SampleDomainDbContext : SampleDbContext
     {

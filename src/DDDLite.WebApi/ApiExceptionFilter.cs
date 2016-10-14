@@ -1,6 +1,5 @@
 namespace DDDLite.WebApi
 {
-    using System;
     using System.Threading.Tasks;
     using System.Text;
 

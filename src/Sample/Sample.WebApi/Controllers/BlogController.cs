@@ -6,10 +6,9 @@ namespace Sample.WebApi.Controllers
     using Microsoft.AspNetCore.Mvc;
 
     using DDDLite.WebApi;
+    using DDDLite.Messaging;
 
     using Sample.Core.Domain;
-    using Sample.Core.CommandStack.Application;
-    using Sample.Core.QueryStack.Application;
 
     public class BlogDTO
     {
@@ -21,9 +20,8 @@ namespace Sample.WebApi.Controllers
     {
         public BlogController(
             IServiceProvider serviceProvider,
-            IBlogCommandService commandService,
-            IBlogQueryService queryService) :
-            base(serviceProvider, commandService, queryService)
+            ICommandSender commandSender) :
+            base(serviceProvider, commandSender)
         {
         }
     }

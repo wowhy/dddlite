@@ -36,7 +36,7 @@ namespace DDDLite.Commands
                     var _type = CommandHandlerType.MakeGenericType(type);
                     return new Tuple<Type, MethodInfo>(
                         _type,
-                        _type.GetTypeInfo().GetMethod("HandleAsync")
+                        _type.GetTypeInfo().GetInterface("IHandler`1").GetTypeInfo().GetMethod("HandleAsync", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
                     );
                 });
 

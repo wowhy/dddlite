@@ -1,8 +1,6 @@
-namespace Sample.Core.QueryStack.Repository
+namespace Sample.Core.Repository
 {
     using Microsoft.EntityFrameworkCore;
-
-    using Common;
 
     public class SampleReadonlyDbContext : SampleDbContext
     {

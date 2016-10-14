@@ -11,43 +11,53 @@ namespace DDDLite.WebApi
         public static void AddAssembly(this IServiceCollection @this, Assembly assembly)
         {
             var types = assembly.GetTypes();
-            var commandServiceTypes = types.Where(k => k.Name.EndsWith("CommandService") && k.GetTypeInfo().IsClass);
+            var commandHandlerTypes = types.Where(k => k.Name.EndsWith("CommandHandler") && k.GetTypeInfo().IsClass);
             var commandTypes = types.Where(k => k.Name.EndsWith("Command") && k.GetTypeInfo().IsClass);
             var validationTypes = types.Where(k => k.Name.EndsWith("Validator") && k.GetTypeInfo().IsClass);
             var queryServiceTypes = types.Where(k => k.Name.EndsWith("QueryService") && k.GetTypeInfo().IsClass);
 
-            Console.WriteLine("注册命令服务");
-            foreach (var type in commandServiceTypes)
+            Console.WriteLine("Register CommandHandlers");
+            foreach (var type in commandHandlerTypes)
             {
                 Console.WriteLine("type: " + type.FullName);
                 var typeInfo = type.GetTypeInfo();
-                var interfaceType = typeInfo.GetInterface("I" + type.Name);
-                if (interfaceType == null)
+                var interfaceType = typeInfo.GetInterface("ICommandHandler`1");
+                var interfaceTypes = typeInfo.GetInterfaces();
+
+                if (type.Name.EndsWith("CreateCommandHandler"))
                 {
-                    Console.WriteLine("未找到符合契约的接口!");
-                    continue;
+                    @this.AddScoped(interfaceType, type);
                 }
-
-                @this.AddScoped(interfaceType, type);
+                else if (type.Name.EndsWith("UpdateCommandHandler"))
+                {
+                    @this.AddScoped(interfaceType, type);
+                }
+                else if (type.Name.EndsWith("DeleteCommandHandler"))
+                {
+                    @this.AddScoped(interfaceType, type);
+                }
+                else
+                {
+                    @this.AddScoped(interfaceType, type);
+                }
             }
+            Console.WriteLine();
 
-            Console.WriteLine("注册命令");
+            Console.WriteLine("Register Commands");
             foreach (var type in commandTypes)
             {
                 Console.WriteLine("type: " + type.FullName);
+                var typeInfo = type.GetTypeInfo();
                 if (type.Name.EndsWith("CreateCommand"))
                 {
-                    var typeInfo = type.GetTypeInfo();
                     @this.AddScoped(typeInfo.GetInterface("ICreateCommand`1"), type);
                 }
                 else if (type.Name.EndsWith("UpdateCommand"))
                 {
-                    var typeInfo = type.GetTypeInfo();
                     @this.AddScoped(typeInfo.GetInterface("IUpdateCommand`1"), type);
                 }
                 else if (type.Name.EndsWith("DeleteCommand"))
                 {
-                    var typeInfo = type.GetTypeInfo();
                     @this.AddScoped(typeInfo.GetInterface("IDeleteCommand`1"), type);
                 }
                 else
@@ -55,15 +65,17 @@ namespace DDDLite.WebApi
                     @this.AddScoped(type);
                 }
             }
+            Console.WriteLine();
 
-            Console.WriteLine("注册校验规则");
+            Console.WriteLine("Register Validations");
             foreach (var type in validationTypes)
             {
                 Console.WriteLine("type: " + type.FullName);
                 @this.AddScoped(type);
             }
+            Console.WriteLine();
 
-            Console.WriteLine("注册查询服务");
+            Console.WriteLine("Register Querying Services");
             foreach (var type in queryServiceTypes)
             {
                 Console.WriteLine("type: " + type.FullName);
@@ -71,13 +83,13 @@ namespace DDDLite.WebApi
                 var interfaceType = typeInfo.GetInterface("I" + type.Name);
                 if (interfaceType == null)
                 {
-                    Console.WriteLine("未找到符合契约的接口!");
-                    continue;
+                    @this.AddScoped(type);
                 }
-
-                @this.AddScoped(interfaceType, type);
+                else
+                {
+                    @this.AddScoped(interfaceType, type);
+                }
             }
-
             Console.WriteLine();
 
             AutoMapper.Mapper.Initialize(cfg =>

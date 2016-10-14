@@ -5,21 +5,24 @@ namespace Sample.WebApi
 
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc.Cors;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.EntityFrameworkCore;
 
-    using DDDLite.CommandStack.Repository;
+    using DDDLite.Commands;
+    using DDDLite.Messaging;
+    using DDDLite.Repository;
     using DDDLite.WebApi;
 
     using Core.Domain;
-    using Core.CommandStack.Repository;
-    using Core.QueryStack.Repository;
+    using Core.Repository;
 
     public class Startup
     {
+        private ICommandService commandService;
+        private InProcessCommandBus commandBus;
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -43,6 +46,10 @@ namespace Sample.WebApi
                 }
             );
 
+            // register command sender
+            this.commandBus = new InProcessCommandBus();
+            services.AddSingleton<ICommandSender>((provider) => this.commandBus);
+
             // register command repository context
             services.AddDbContext<SampleDomainDbContext>(options => options.UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=hongyuan;Database=sample;"));
             services.AddRepositoryContext<ISampleDomainRepositoryContext, SampleDomainRepositoryContext>();
@@ -64,6 +71,9 @@ namespace Sample.WebApi
             app.UseCors("*");
 
             service.GetService<SampleDomainDbContext>().Database.EnsureCreated();
+
+            this.commandService = new CommandService(this.commandBus, service);
+            this.commandBus.Subscribe();
         }
     }
 }

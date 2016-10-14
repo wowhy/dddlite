@@ -7,63 +7,58 @@ namespace DDDLite.WebApi
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.DependencyInjection;
 
-    using Domain;
     using Commands;
-    using CommandStack.Application;
-    using QueryStack.Application;
-    using Specifications;
+    using Domain;
+    using Messaging;
 
     public abstract class RestfulApiController<TAggregateRoot, TDTO> : Controller
         where TAggregateRoot : class, IAggregateRoot
         where TDTO : class
     {
-        private readonly IServiceProvider serviceProvider;
-        private readonly IDomainCommandService<TAggregateRoot> commandService;
-        private readonly IQueryService<TAggregateRoot> queryService;
+        private static readonly IConfigurationProvider configuration;
 
-        private readonly IConfigurationProvider configuration;
+        private static readonly IMapper mapper;
 
-        protected RestfulApiController(
-            IServiceProvider serviceProvider,
-            IDomainCommandService<TAggregateRoot> commandService,
-            IQueryService<TAggregateRoot> queryService)
+        static RestfulApiController()
         {
-            this.serviceProvider = serviceProvider;
-            this.commandService = commandService;
-            this.queryService = queryService;
-
-            var mapper = Mapper.Configuration.FindTypeMapFor(typeof(TAggregateRoot), typeof(TDTO));
-            if (mapper == null)
+            var typeMapper = Mapper.Configuration.FindTypeMapFor(typeof(TAggregateRoot), typeof(TDTO));
+            if (typeMapper == null)
             {
-                this.configuration = new MapperConfiguration(cfg =>
+                configuration = new MapperConfiguration(cfg =>
                 {
                     cfg.CreateMap<TAggregateRoot, TDTO>();
                 });
             }
             else
             {
-                this.configuration = Mapper.Configuration;
+                mapper = Mapper.Instance;
+                configuration = Mapper.Configuration;
             }
+        }
+
+        private readonly IServiceProvider serviceProvider;
+        private readonly ICommandSender commandSender;
+
+        protected RestfulApiController(IServiceProvider serviceProvider, ICommandSender commandSender)
+        {
+            this.serviceProvider = serviceProvider;
+            this.commandSender = commandSender;
         }
 
         protected IServiceProvider ServiceProvider => this.serviceProvider;
 
-        protected IDomainCommandService<TAggregateRoot> CommandService => this.commandService;
-
-        protected IQueryService<TAggregateRoot> QueryService => this.queryService;
+        protected ICommandSender CommandSender => this.commandSender;
 
         [HttpGet]
         public virtual IQueryable<TDTO> Get()
         {
-            // TODO: 实现查询接口
-            return this.queryService.FindAll().ProjectToQueryable<TDTO>(this.configuration);
+            throw new NotImplementedException();
         }
 
         [HttpGet("{id}")]
         public virtual TDTO Get(Guid id)
         {
-            // TODO: 实现查询接口
-            return this.queryService.FindAll(Specification<TAggregateRoot>.Eval(k => k.Id == id)).ProjectToFirstOrDefault<TDTO>();
+            throw new NotImplementedException();
         }
 
         [HttpPost]
@@ -72,10 +67,15 @@ namespace DDDLite.WebApi
             var cmd = this.serviceProvider.GetService<ICreateCommand<TAggregateRoot>>();
 
             entity.NewIdentity();
-            cmd.AggregateRoot = entity;
 
-            this.commandService.Handle(cmd);
-            return this.Created("", entity);
+            cmd.AggregateRoot = entity;
+            cmd.AggregateRootId = entity.Id;
+            cmd.RowVersion = 0;
+            // cmd.OperatorId = createdById;
+
+            this.commandSender.Publish(cmd);
+
+            return this.NoContent();
         }
 
         [HttpPut("{id}")]
@@ -86,8 +86,10 @@ namespace DDDLite.WebApi
             cmd.AggregateRootId = id;
             cmd.AggregateRoot = entity;
             cmd.RowVersion = long.Parse(ifMatch);
+            // cmd.OperatorId = modifiedById;
 
-            this.commandService.Handle(cmd);
+            this.commandSender.Publish(cmd);
+
             return this.NoContent();
         }
 
@@ -98,8 +100,10 @@ namespace DDDLite.WebApi
 
             cmd.AggregateRootId = id;
             cmd.RowVersion = long.Parse(ifMatch);
+            // cmd.OperatorId = deletedById;
 
-            this.commandService.Handle(cmd);
+            this.commandSender.Publish(cmd);
+
             return this.NoContent();
         }
     }

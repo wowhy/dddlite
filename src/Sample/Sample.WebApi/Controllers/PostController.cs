@@ -5,10 +5,9 @@ namespace Sample.WebApi.Controllers
     using Microsoft.AspNetCore.Mvc;
 
     using DDDLite.WebApi;
+    using DDDLite.Messaging;
 
     using Sample.Core.Domain;
-    using Sample.Core.CommandStack.Application;
-    using Sample.Core.QueryStack.Application;
 
     public class PostDTO
     {
@@ -22,9 +21,8 @@ namespace Sample.WebApi.Controllers
     {
         public PostController(
             IServiceProvider serviceProvider,
-            IPostCommandService commandService,
-            IPostQueryService queryService) :
-            base(serviceProvider, commandService, queryService)
+            ICommandSender commandSender) :
+            base(serviceProvider, commandSender)
         {
         }
     }

@@ -6,10 +6,11 @@ namespace DDDLite.Commands
     using Repository;
     using Validation;
 
-    public class UpdateCommandHandler<TAggregateRoot> :
-        DomainCommandHandler<UpdateCommand<TAggregateRoot>, TAggregateRoot>
-        , IUpdateCommandHandler<UpdateCommand<TAggregateRoot>, TAggregateRoot>
-        where TAggregateRoot : class, IAggregateRoot, new()
+    public class UpdateCommandHandler<TCommand, TAggregateRoot> :
+        DomainCommandHandler<TCommand, TAggregateRoot>
+        , IUpdateCommandHandler<TCommand, TAggregateRoot>
+        where TCommand : IUpdateCommand<TAggregateRoot>
+        where TAggregateRoot : class, IAggregateRoot
     {
         public UpdateCommandHandler(IDomainRepositoryContext context) : this(context, null)
         {
@@ -21,7 +22,7 @@ namespace DDDLite.Commands
             this.Validators.Add(new EntityValidator<TAggregateRoot>());
         }
 
-        public override Task DoHandleAsync(UpdateCommand<TAggregateRoot> command)
+        public override Task DoHandleAsync(TCommand command)
         {
             var entity = this.Repository.GetById(command.AggregateRootId);
 

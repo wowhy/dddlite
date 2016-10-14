@@ -4,7 +4,7 @@ namespace DDDLite.Commands
 
     public interface ICreateCommandHandler<TCommand, TAggregateRoot> : IDomainCommandHandler<TCommand, TAggregateRoot>
         where TCommand : ICreateCommand<TAggregateRoot>
-        where TAggregateRoot : class, IAggregateRoot
+        where TAggregateRoot : class, IAggregateRoot, new()
     {
     }
 }
