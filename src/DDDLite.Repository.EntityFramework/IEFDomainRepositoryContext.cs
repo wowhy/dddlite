@@ -1,10 +1,10 @@
-namespace DDDLite.EntityFramework.Repository
+namespace DDDLite.Repository.EntityFramework
 {
     using Microsoft.EntityFrameworkCore;
 
     using DDDLite.Domain;
 
-    public interface IEFQueryRepositoryContext : IQueryRepositoryContext
+    public interface IEFDomainRepositoryContext : IDomainRepositoryContext
     {
         DbContext DbContext { get; }
     }

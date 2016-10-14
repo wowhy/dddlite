@@ -1,4 +1,4 @@
-namespace DDDLite.EntityFramework.Repository
+namespace DDDLite.Repository.EntityFramework
 {
     using System.Threading.Tasks;
 

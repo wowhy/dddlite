@@ -1,9 +1,10 @@
-﻿namespace DDDLite.Domain
+﻿namespace DDDLite.Repository
 {
     using System;
     using System.Linq;
     using System.Threading.Tasks;
 
+    using Domain;
     using Specifications;
 
     public interface IDomainRepository<TAggregateRoot>

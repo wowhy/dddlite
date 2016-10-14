@@ -1,7 +1,9 @@
-﻿namespace DDDLite.Domain
+﻿namespace DDDLite.Repository
 {
     using System;
     using System.Threading.Tasks;
+
+    using Domain;
 
     public interface IDomainRepositoryContext
     {

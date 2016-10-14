@@ -4,6 +4,7 @@ namespace DDDLite.Querying
     using System.Linq;
 
     using Domain;
+    using Repository;
     using Specifications;
 
     public abstract class QueryService<TAggregateRoot> : IQueryService<TAggregateRoot>

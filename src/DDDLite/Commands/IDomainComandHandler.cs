@@ -3,6 +3,7 @@ namespace DDDLite.Commands
     using System.Collections.Generic;
 
     using Domain;
+    using Repository;
     using Validation;
 
     public interface IDomainCommandHandler<TCommand, TAggregateRoot> : ICommandHandler<TCommand>

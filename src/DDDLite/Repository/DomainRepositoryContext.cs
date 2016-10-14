@@ -1,34 +1,37 @@
-namespace DDDLite.Domain
+namespace DDDLite.Repository
 {
     using System;
     using System.Collections.Concurrent;
-    using System.Linq;
+    using System.Threading.Tasks;
 
-    public abstract class QueryRepositoryContext : IQueryRepositoryContext
+    using Domain;
+
+    public abstract class DomainRepositoryContext : IDomainRepositoryContext
     {
         private readonly Guid id;
         private readonly ConcurrentDictionary<Type, object> cachedRepositories = new ConcurrentDictionary<Type, object>();
 
-        protected QueryRepositoryContext()
+        protected DomainRepositoryContext()
         {
             this.id = Guid.NewGuid();
         }
 
         public Guid Id => this.id;
 
-        public abstract IQueryable<TAggregateRoot> GetQueryableModel<TAggregateRoot>()
+        public abstract IDomainRepository<TAggregateRoot> CreateRepository<TAggregateRoot>()
             where TAggregateRoot : class, IAggregateRoot;
 
-        public abstract IQueryRepository<TAggregateRoot> CreateRepository<TAggregateRoot>()
-            where TAggregateRoot : class, IAggregateRoot;
-
-        public virtual IQueryRepository<TAggregateRoot> GetRepository<TAggregateRoot>()
+        public virtual IDomainRepository<TAggregateRoot> GetRepository<TAggregateRoot>()
             where TAggregateRoot : class, IAggregateRoot
         {
-            return (IQueryRepository<TAggregateRoot>)this.cachedRepositories.GetOrAdd(
+            return (IDomainRepository<TAggregateRoot>)this.cachedRepositories.GetOrAdd(
                 typeof(TAggregateRoot),
                 this.CreateRepository<TAggregateRoot>());
         }
+
+        public abstract void Commit();
+
+        public abstract Task CommitAsync();
 
         public override string ToString() => this.id.ToString();
     }

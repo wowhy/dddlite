@@ -1,8 +1,10 @@
-namespace DDDLite.Domain
+namespace DDDLite.Repository
 {
     using System;
     using System.Linq;
 
+
+    using Domain;
     using Specifications;
 
     public abstract class QueryRepository<TAggregateRoot> : IQueryRepository<TAggregateRoot>

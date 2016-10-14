@@ -3,8 +3,11 @@ namespace DDDLite.Commands
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    
     using AutoMapper;
+
     using Domain;
+    using Repository;
     using Validation;
 
     public abstract class DomainCommandHandler<TCommand, TAggregateRoot> : IDomainCommandHandler<TCommand, TAggregateRoot>

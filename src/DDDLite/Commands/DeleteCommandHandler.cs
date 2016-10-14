@@ -3,6 +3,7 @@ namespace DDDLite.Commands
     using System.Threading.Tasks;
 
     using Domain;
+    using Repository;
     using Validation;
 
     public class DeleteCommandHandler<TAggregateRoot> :

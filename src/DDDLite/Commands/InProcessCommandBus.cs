@@ -1,6 +1,7 @@
 namespace DDDLite.Commands
 {
     using System;
+    
     using Common;
 
     public class InProcessCommandBus : DisposableObject, ICommandSender, IMessageSubscriber
