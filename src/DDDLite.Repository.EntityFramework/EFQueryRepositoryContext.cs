@@ -24,7 +24,7 @@ namespace DDDLite.Repository.EntityFramework
 
         public override IQueryable<TAggregateRoot> GetQueryableModel<TAggregateRoot>()
         {
-            return this.dbContext.Set<TAggregateRoot>();
+            return this.dbContext.Set<TAggregateRoot>().AsNoTracking();
         }
     }
 }
