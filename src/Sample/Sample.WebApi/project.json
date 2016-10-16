@@ -10,11 +10,10 @@
     }
   },
   "dependencies": {
-    "Microsoft.AspNetCore.Mvc": "1.0.0",
+    "Microsoft.AspNetCore.Mvc": "1.0.1",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.0.1",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
     "Microsoft.AspNetCore.Diagnostics": "1.0.0",
-
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0",
     "Microsoft.Extensions.Configuration.FileExtensions": "1.0.0",
     "Microsoft.Extensions.Configuration.Json": "1.0.0",
@@ -22,11 +21,9 @@
     "Microsoft.Extensions.Logging.Console": "1.0.0",
     "Microsoft.Extensions.Logging.Debug": "1.0.0",
     "Microsoft.Extensions.Options.ConfigurationExtensions": "1.0.0",
-
-    "Microsoft.EntityFrameworkCore": "1.0.0",
-    "Microsoft.EntityFrameworkCore.Relational": "1.0.0",
-    "Npgsql.EntityFrameworkCore.PostgreSQL": "1.0.1",
-
+    "Microsoft.EntityFrameworkCore": "1.0.1",
+    "Microsoft.EntityFrameworkCore.Relational": "1.0.1",
+    "Npgsql.EntityFrameworkCore.PostgreSQL": "1.0.2",
     "DDDLite": {
       "target": "project"
     },
@@ -53,5 +50,6 @@
     "net451": {
       "dependencies": {}
     }
-  }
+  },
+  "userSecretsId": "aspnet-Sample.WebApi-20161016080145"
 }

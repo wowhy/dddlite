@@ -4,9 +4,9 @@
     "debugType": "portable"
   },
   "dependencies": {
-    "Microsoft.EntityFrameworkCore": "1.0.0",
-    "Microsoft.EntityFrameworkCore.Relational": "1.0.0",
-    "Npgsql.EntityFrameworkCore.PostgreSQL": "1.0.1",
+    "Microsoft.EntityFrameworkCore": "1.0.1",
+    "Microsoft.EntityFrameworkCore.Relational": "1.0.1",
+    "Npgsql.EntityFrameworkCore.PostgreSQL": "1.0.2",
     "DDDLite": {
       "target": "project"
     },
