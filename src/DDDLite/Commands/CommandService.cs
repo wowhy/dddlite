@@ -12,7 +12,11 @@ namespace DDDLite.Commands
     {
         public readonly static Type CommandHandlerType = typeof(ICommandHandler<>);
 
-        private ConcurrentDictionary<Type, Tuple<Type, MethodInfo>> handlers = new ConcurrentDictionary<Type, Tuple<Type, MethodInfo>>();
+        public readonly static ConcurrentDictionary<Type, Tuple<Type, MethodInfo>> HandlerTypeCache = new ConcurrentDictionary<Type, Tuple<Type, MethodInfo>>();
+
+
+        private bool disposed;
+
 
         public IMessageSubscriber Subscriber { get; protected set; }
 
@@ -23,7 +27,7 @@ namespace DDDLite.Commands
             this.Subscriber = subscriber;
             this.ServiceProvider = serviceProvider;
 
-            subscriber.MessageReceived += async (sender, e) =>
+            subscriber.MessageReceived += (sender, e) =>
             {
                 if (this.ServiceProvider == null)
                 {
@@ -31,12 +35,28 @@ namespace DDDLite.Commands
                 }
 
                 var messageType = e.Message.GetType();
-                var handlerType = handlers.GetOrAdd(messageType, type =>
+                var handlerType = HandlerTypeCache.GetOrAdd(messageType, type =>
                 {
-                    var _type = CommandHandlerType.MakeGenericType(type);
+                    var baseType = type;
+                    if (type.GetTypeInfo().GetInterface("ICreateCommand`1") != null)
+                    {
+                        baseType = type.GetTypeInfo().GetInterface("ICreateCommand`1");
+                    }
+
+                    if (type.GetTypeInfo().GetInterface("IUpdateCommand`1") != null)
+                    {
+                        baseType = type.GetTypeInfo().GetInterface("IUpdateCommand`1");
+                    }
+
+                    if (type.GetTypeInfo().GetInterface("IDeleteCommand`1") != null)
+                    {
+                        baseType = type.GetTypeInfo().GetInterface("IDeleteCommand`1");
+                    }
+
+                    var _type = CommandHandlerType.MakeGenericType(baseType);
                     return new Tuple<Type, MethodInfo>(
                         _type,
-                        _type.GetTypeInfo().GetInterface("IHandler`1").GetTypeInfo().GetMethod("HandleAsync", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
+                        _type.GetTypeInfo().GetInterface("IHandler`1").GetTypeInfo().GetMethod("Handle", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)
                     );
                 });
 
@@ -52,8 +72,27 @@ namespace DDDLite.Commands
                     return;
                 }
 
-                await (Task)handlerType.Item2.Invoke(handler, new[] { e.Message });
+                try
+                {
+                    handlerType.Item2.Invoke(handler, new[] { e.Message });
+                }
+                catch (Exception ex)
+                {
+                    throw ex.InnerException;
+                }
             };
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (!disposed)
+                {
+                    this.Subscriber.Dispose();
+                    disposed = true;
+                }
+            }
         }
     }
 }

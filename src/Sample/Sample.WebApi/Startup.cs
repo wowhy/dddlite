@@ -10,19 +10,19 @@ namespace Sample.WebApi
     using Microsoft.Extensions.Logging;
     using Microsoft.EntityFrameworkCore;
 
+    using AutoMapper;
+
     using DDDLite.Commands;
     using DDDLite.Messaging;
     using DDDLite.Repository;
     using DDDLite.WebApi;
+    using DDDLite.Config;
 
     using Core.Domain;
     using Core.Repository;
 
     public class Startup
     {
-        private ICommandService commandService;
-        private InProcessCommandBus commandBus;
-
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -47,8 +47,10 @@ namespace Sample.WebApi
             );
 
             // register command sender
-            this.commandBus = new InProcessCommandBus();
-            services.AddSingleton<ICommandSender>((provider) => this.commandBus);
+            services.AddSingleton<InProcessCommandBus>();
+            services.AddSingleton<ICommandSender>((provider) => provider.GetService<InProcessCommandBus>());
+            services.AddSingleton<IMessageSubscriber>((provider) => provider.GetService<InProcessCommandBus>());
+            services.AddSingleton<ICommandService>((provider) => new CommandService(provider.GetService<IMessageSubscriber>(), provider));
 
             // register command repository context
             services.AddDbContext<SampleDomainDbContext>(options => options.UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=hongyuan;Database=sample;"));
@@ -59,7 +61,13 @@ namespace Sample.WebApi
             services.AddDbContext<SampleReadonlyDbContext>(options => options.UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=hongyuan;Database=sample;"));
             services.AddRepositoryContext<ISampleQueryRepositoryContext, SampleQueryRepositoryContext>();
 
-            services.AddAssembly(Assembly.Load(new AssemblyName("Sample.Core")));
+            var assembly = Assembly.Load(new AssemblyName("Sample.Core"));
+            var register = new Register(services);
+            register.RegisterCommands(assembly);
+            register.RegisterValidators(assembly);
+            register.RegisterCommandHandlers(assembly);
+            register.RegisterQueryServices(assembly);
+            register.RegisterAutoMapper(assembly);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider service)
@@ -71,9 +79,7 @@ namespace Sample.WebApi
             app.UseCors("*");
 
             service.GetService<SampleDomainDbContext>().Database.EnsureCreated();
-
-            this.commandService = new CommandService(this.commandBus, service);
-            this.commandBus.Subscribe();
+            service.GetService<ICommandService>().Subscriber.Subscribe();
         }
     }
 }
