@@ -4,8 +4,6 @@ namespace DDDLite.Repository.EntityFramework
 
     using Microsoft.EntityFrameworkCore;
 
-    using DDDLite.Domain;
-
     public class EFQueryRepositoryContext : QueryRepositoryContext, IEFQueryRepositoryContext
     {
         private readonly DbContext dbContext;
