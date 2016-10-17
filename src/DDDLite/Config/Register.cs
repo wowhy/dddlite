@@ -29,19 +29,19 @@
                 var typeInfo = type.GetTypeInfo();
                 if (type.Name.EndsWith("CreateCommand"))
                 {
-                    this.services.AddScoped(typeInfo.GetInterface("ICreateCommand`1"), type);
+                    this.services.AddTransient(typeInfo.GetInterface("ICreateCommand`1"), type);
                 }
                 else if (type.Name.EndsWith("UpdateCommand"))
                 {
-                    this.services.AddScoped(typeInfo.GetInterface("IUpdateCommand`1"), type);
+                    this.services.AddTransient(typeInfo.GetInterface("IUpdateCommand`1"), type);
                 }
                 else if (type.Name.EndsWith("DeleteCommand"))
                 {
-                    this.services.AddScoped(typeInfo.GetInterface("IDeleteCommand`1"), type);
+                    this.services.AddTransient(typeInfo.GetInterface("IDeleteCommand`1"), type);
                 }
                 else
                 {
-                    this.services.AddScoped(type);
+                    this.services.AddTransient(type);
                 }
             }
             Console.WriteLine();

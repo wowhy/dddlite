@@ -47,12 +47,10 @@ namespace DDDLite.WebApi
             var entity = this.queryService.GetById(id);
             if (entity != null)
             {
-                return this.Json(entity);
+                return this.Ok(entity);
             }
-            else
-            {
-                return this.NotFound();
-            }
+
+            return this.NotFound();
         }
 
         [HttpPost]
