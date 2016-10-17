@@ -10,55 +10,49 @@ namespace DDDLite.WebApi
     using Commands;
     using Domain;
     using Messaging;
+    using Querying;
 
-    public abstract class RestfulApiController<TAggregateRoot, TDTO> : Controller
-        where TAggregateRoot : class, IAggregateRoot
-        where TDTO : class
+    public abstract class RestfulApiController<TAggregateRoot> : Controller
+        where TAggregateRoot : class, IAggregateRoot, new()
     {
-        private static readonly IConfigurationProvider configuration;
-
-        private static readonly IMapper mapper;
-
-        static RestfulApiController()
-        {
-            var typeMapper = Mapper.Configuration.FindTypeMapFor(typeof(TAggregateRoot), typeof(TDTO));
-            if (typeMapper == null)
-            {
-                configuration = new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<TAggregateRoot, TDTO>();
-                });
-            }
-            else
-            {
-                mapper = Mapper.Instance;
-                configuration = Mapper.Configuration;
-            }
-        }
-
         private readonly IServiceProvider serviceProvider;
         private readonly ICommandSender commandSender;
+        private readonly IQueryService<TAggregateRoot> queryService;
 
-        protected RestfulApiController(IServiceProvider serviceProvider, ICommandSender commandSender)
+        protected RestfulApiController(
+            IServiceProvider serviceProvider,
+            ICommandSender commandSender,
+            IQueryService<TAggregateRoot> queryService)
         {
             this.serviceProvider = serviceProvider;
             this.commandSender = commandSender;
+            this.queryService = queryService;
         }
 
         protected IServiceProvider ServiceProvider => this.serviceProvider;
 
         protected ICommandSender CommandSender => this.commandSender;
 
+        protected IQueryService<TAggregateRoot> QueryService => this.queryService;
+
         [HttpGet]
-        public virtual IQueryable<TDTO> Get()
+        public virtual IQueryable<TAggregateRoot> Get()
         {
-            throw new NotImplementedException();
+            return this.queryService.FindAll();
         }
 
         [HttpGet("{id}")]
-        public virtual TDTO Get(Guid id)
+        public virtual IActionResult Get(Guid id)
         {
-            throw new NotImplementedException();
+            var entity = this.queryService.GetById(id);
+            if (entity != null)
+            {
+                return this.Json(entity);
+            }
+            else
+            {
+                return this.NotFound();
+            }
         }
 
         [HttpPost]

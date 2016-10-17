@@ -28,6 +28,11 @@ namespace DDDLite.Querying
             return this.repository.GetById(id);
         }
 
+        public virtual TDTO GetById<TDTO>(Guid id)
+        {
+            return this.repository.FindAll(Specification<TAggregateRoot>.Eval(k => k.Id == id)).ProjectToFirstOrDefault<TDTO>();
+        }
+
         public virtual IQueryable<TAggregateRoot> FindAll()
         {
             return this.repository.FindAll();

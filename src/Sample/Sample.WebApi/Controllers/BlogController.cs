@@ -8,20 +8,17 @@ namespace Sample.WebApi.Controllers
     using DDDLite.WebApi;
     using DDDLite.Messaging;
 
-    using Sample.Core.Domain;
-
-    public class BlogDTO
-    {
-        public List<Post> Posts { get; set; }
-    }
+    using Core.Domain;
+    using Core.Querying;
 
     [Route("api/blogs")]
-    public class BlogController : RestfulApiController<Blog, BlogDTO>
+    public class BlogController : RestfulApiController<Blog>
     {
         public BlogController(
             IServiceProvider serviceProvider,
-            ICommandSender commandSender) :
-            base(serviceProvider, commandSender)
+            ICommandSender commandSender,
+            IBlogQueryService queryService) :
+            base(serviceProvider, commandSender, queryService)
         {
         }
     }

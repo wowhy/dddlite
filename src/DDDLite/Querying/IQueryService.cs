@@ -19,6 +19,8 @@
 
         TAggregateRoot GetById(Guid id);
 
+        TDTO GetById<TDTO>(Guid id);
+
         IQueryable<TAggregateRoot> FindAll();
 
         IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification);

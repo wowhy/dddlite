@@ -7,7 +7,8 @@ namespace Sample.WebApi.Controllers
     using DDDLite.WebApi;
     using DDDLite.Messaging;
 
-    using Sample.Core.Domain;
+    using Core.Domain;
+    using Core.Querying;
 
     public class PostDTO
     {
@@ -17,12 +18,13 @@ namespace Sample.WebApi.Controllers
     }
 
     [Route("api/posts")]
-    public class PostController : RestfulApiController<Post, PostDTO>
+    public class PostController : RestfulApiController<Post>
     {
         public PostController(
             IServiceProvider serviceProvider,
-            ICommandSender commandSender) :
-            base(serviceProvider, commandSender)
+            ICommandSender commandSender,
+            IPostQueryService queryService) :
+            base(serviceProvider, commandSender, queryService)
         {
         }
     }
