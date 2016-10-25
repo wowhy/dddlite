@@ -4,7 +4,7 @@ namespace DDDLite.Domain
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class AggregateRoot : Entity, IAggregateRoot
+    public abstract class AggregateRoot : Entity, IAggregateRoot
     {
         [ConcurrencyCheck]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

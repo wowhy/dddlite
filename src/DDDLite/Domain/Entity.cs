@@ -4,7 +4,7 @@ namespace DDDLite.Domain
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Entity : IEntity
+    public abstract class Entity : IEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

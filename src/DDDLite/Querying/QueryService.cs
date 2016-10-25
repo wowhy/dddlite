@@ -1,15 +1,18 @@
 namespace DDDLite.Querying
 {
     using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.Contracts;
     using System.Linq;
-
     using Domain;
     using Repository;
-    using Specifications;
 
     public abstract class QueryService<TAggregateRoot> : IQueryService<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
+        public static readonly ICollection<Sorter> EmptySorters = new List<Sorter>();
+        public static readonly ICollection<Filter> EmptyFilters = new List<Filter>();
+
         private readonly IQueryRepositoryContext context;
         private readonly IQueryRepository<TAggregateRoot> repository;
 
@@ -23,55 +26,53 @@ namespace DDDLite.Querying
 
         public IQueryRepository<TAggregateRoot> Repository => this.repository;
 
-        public virtual TAggregateRoot GetById(Guid id)
+        public virtual TDTO GetById<TDTO>(Guid id) where TDTO : class, new()
         {
-            return this.repository.GetById(id);
+            return this.Repository.GetById<TDTO>(id);
         }
 
-        public virtual TDTO GetById<TDTO>(Guid id)
+        public virtual IQueryable<TDTO> Find<TDTO>() where TDTO : class, new()
         {
-            return this.repository.FindAll(Specification<TAggregateRoot>.Eval(k => k.Id == id)).ProjectToFirstOrDefault<TDTO>();
+            return this.Find<TDTO>(EmptyFilters, EmptySorters);
         }
 
-        public virtual IQueryable<TAggregateRoot> FindAll()
+        public virtual IQueryable<TDTO> Find<TDTO>(ICollection<Sorter> sorters) where TDTO : class, new()
         {
-            return this.repository.FindAll();
+            return this.Find<TDTO>(EmptyFilters, sorters);
         }
 
-        public virtual IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification)
+        public virtual IQueryable<TDTO> Find<TDTO>(ICollection<Filter> filters) where TDTO : class, new()
         {
-            return this.repository.FindAll(specification);
+            return this.Find<TDTO>(filters, EmptySorters);
         }
 
-        public virtual IQueryable<TAggregateRoot> FindAll(
-            Specification<TAggregateRoot> specification,
-            SortSpecification<TAggregateRoot> sortSpecification
-        )
+        public virtual IQueryable<TDTO> Find<TDTO>(ICollection<Filter> filters, ICollection<Sorter> sorters) where TDTO : class, new()
         {
-            return this.repository.FindAll(specification, sortSpecification);
+            Contract.Requires<ArgumentNullException>(filters != null);
+            Contract.Requires<ArgumentNullException>(sorters != null);
+            return this.Repository.FindAll<TDTO>(filters.ToSpecification<TAggregateRoot>(), sorters.ToSpecification<TAggregateRoot>());
         }
 
-        public virtual PagedResult<TAggregateRoot> Page(int page, int limit)
+        public PagedResult<TDTO> Page<TDTO>(int page, int limit) where TDTO : class, new()
         {
-            return this.repository.FindAll().AsPagedResult(page, limit);
+            return this.Page<TDTO>(page, limit, EmptyFilters, EmptySorters);
         }
 
-        public virtual PagedResult<TAggregateRoot> Page(
-            int page,
-            int limit,
-            Specification<TAggregateRoot> specification)
+        public PagedResult<TDTO> Page<TDTO>(int page, int limit, ICollection<Filter> filters) where TDTO : class, new()
         {
-            return this.repository.FindAll(specification).AsPagedResult(page, limit);
+            return this.Page<TDTO>(page, limit, filters, EmptySorters);
         }
 
-        public virtual PagedResult<TAggregateRoot> Page(
-            int page,
-            int limit,
-            Specification<TAggregateRoot> specification,
-            SortSpecification<TAggregateRoot> sortSpecification
-        )
+        public virtual PagedResult<TDTO> Page<TDTO>(int page, int limit, ICollection<Sorter> sorters) where TDTO : class, new()
         {
-            return this.repository.FindAll(specification, sortSpecification).AsPagedResult(page, limit);
+            return this.Page<TDTO>(page, limit, EmptyFilters, sorters);
+        }
+
+        public PagedResult<TDTO> Page<TDTO>(int page, int limit, ICollection<Filter> filters, ICollection<Sorter> sorters) where TDTO : class, new()
+        {
+            Contract.Requires<ArgumentNullException>(filters != null);
+            Contract.Requires<ArgumentNullException>(sorters != null);
+            return this.Repository.FindAll<TDTO>(filters.ToSpecification<TAggregateRoot>(), sorters.ToSpecification<TAggregateRoot>()).AsPagedResult(page, limit);
         }
     }
 }

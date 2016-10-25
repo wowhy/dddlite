@@ -1,11 +1,11 @@
 ﻿namespace DDDLite.Querying
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using Domain;
     using Repository;
-    using Specifications;
 
     public interface IQueryService
     {
@@ -17,32 +17,22 @@
     {
         IQueryRepository<TAggregateRoot> Repository { get; }
 
-        TAggregateRoot GetById(Guid id);
+        TDTO GetById<TDTO>(Guid id) where TDTO : class, new();
 
-        TDTO GetById<TDTO>(Guid id);
+        IQueryable<TDTO> Find<TDTO>() where TDTO : class, new();
 
-        IQueryable<TAggregateRoot> FindAll();
+        IQueryable<TDTO> Find<TDTO>(ICollection<Filter> filters) where TDTO : class, new();
 
-        IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification);
+        IQueryable<TDTO> Find<TDTO>(ICollection<Sorter> sorters) where TDTO : class, new();
 
-        IQueryable<TAggregateRoot> FindAll(
-            Specification<TAggregateRoot> specification,
-            SortSpecification<TAggregateRoot> sortSpecification
-        );
+        IQueryable<TDTO> Find<TDTO>(ICollection<Filter> filters, ICollection<Sorter> sorters) where TDTO : class, new();
 
-        PagedResult<TAggregateRoot> Page(int page, int limit);
+        PagedResult<TDTO> Page<TDTO>(int page, int limit) where TDTO : class, new();
 
-        PagedResult<TAggregateRoot> Page(
-            int page,
-            int limit,
-            Specification<TAggregateRoot> specification
-        );
+        PagedResult<TDTO> Page<TDTO>(int page, int limit, ICollection<Filter> filters) where TDTO : class, new();
 
-        PagedResult<TAggregateRoot> Page(
-            int page,
-            int limit,
-            Specification<TAggregateRoot> specification,
-            SortSpecification<TAggregateRoot> sortSpecification
-        );
+        PagedResult<TDTO> Page<TDTO>(int page, int limit, ICollection<Sorter> sorters) where TDTO : class, new();
+
+        PagedResult<TDTO> Page<TDTO>(int page, int limit, ICollection<Filter> filters, ICollection<Sorter> sorters) where TDTO : class, new();
     }
 }
