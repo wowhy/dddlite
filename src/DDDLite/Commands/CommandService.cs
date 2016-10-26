@@ -3,7 +3,6 @@ namespace DDDLite.Commands
     using System;
     using System.Collections.Concurrent;
     using System.Reflection;
-    using System.Threading.Tasks;
 
     using Common;
     using Messaging;

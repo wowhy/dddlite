@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading.Tasks;
 
     using AutoMapper;
 
@@ -22,24 +21,7 @@
 
         static AggregateCommandHandler()
         {
-            if (Mapper.Configuration.FindTypeMapFor<TAggregateRoot, TAggregateRoot>() != null)
-            {
-                mapper = Mapper.Instance;
-            }
-            else
-            {
-                IConfigurationProvider config = new MapperConfiguration(cfg =>
-                {
-                    cfg.CreateMap<TAggregateRoot, TAggregateRoot>()
-                       .ForMember(k => k.Id, k => k.Ignore())
-                       .ForMember(k => k.CreatedById, k => k.Ignore())
-                       .ForMember(k => k.CreatedOn, k => k.Ignore())
-                       .ForMember(k => k.ModifiedById, k => k.Ignore())
-                       .ForMember(k => k.ModifiedOn, k => k.Ignore())
-                       .ForMember(k => k.RowVersion, k => k.Ignore());
-                });
-                mapper = new Mapper(config);
-            }
+            mapper = MapperHelper.GetOrCreateMapper<TAggregateRoot>();
         }
 
         private IDomainRepositoryContext context;
@@ -55,27 +37,6 @@
         public IDomainRepositoryContext Context => this.context;
 
         public IDomainRepository<TAggregateRoot> Repository => this.repository;
-
-        public void AddValidator(Type commandType, IValidator validator)
-        {
-            List<IValidator> list;
-            if (this.validators.ContainsKey(commandType))
-            {
-                list = this.validators[commandType];
-            }
-            else
-            {
-                list = new List<IValidator>();
-                this.validators.Add(commandType, list);
-            }
-
-            list.Add(validator);
-        }
-
-        public List<IValidator> GetValidators(Type commandType)
-        {
-            return this.validators[commandType];
-        }
 
         public virtual void Validate(IDeleteCommand<TAggregateRoot> command)
         {
@@ -142,7 +103,33 @@
             mapper.Map<TAggregateRoot, TAggregateRoot>(source, destination);
         }
 
-        private void DoValidate(ICommand command)
+        protected void AddValidator<TCommand>(IValidator validator) where TCommand : class, ICommand
+        {
+            this.AddValidator(typeof(TCommand), validator);
+        }
+
+        protected void AddValidator(Type commandType, IValidator validator)
+        {
+            List<IValidator> list;
+            if (this.validators.ContainsKey(commandType))
+            {
+                list = this.validators[commandType];
+            }
+            else
+            {
+                list = new List<IValidator>();
+                this.validators.Add(commandType, list);
+            }
+
+            list.Add(validator);
+        }
+
+        protected List<IValidator> GetValidators(Type commandType)
+        {
+            return this.validators[commandType];
+        }
+
+        protected virtual void DoValidate(ICommand command)
         {
             var validators = this.GetValidators(command.GetType());
             if (validators != null)
