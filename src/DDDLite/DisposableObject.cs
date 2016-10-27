@@ -1,4 +1,4 @@
-namespace DDDLite.Common
+namespace DDDLite
 {
     using System;
 

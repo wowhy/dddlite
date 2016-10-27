@@ -1,7 +1,5 @@
-namespace DDDLite.Common
+namespace DDDLite
 {
-    using System.Threading.Tasks;
-    
     public interface IHandler<in TMessage>
     {
         void Handle(TMessage message);

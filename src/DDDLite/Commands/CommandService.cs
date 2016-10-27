@@ -4,7 +4,6 @@ namespace DDDLite.Commands
     using System.Collections.Concurrent;
     using System.Reflection;
 
-    using Common;
     using Messaging;
 
     public class CommandService : DisposableObject, ICommandService

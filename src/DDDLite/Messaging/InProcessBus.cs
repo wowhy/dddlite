@@ -2,8 +2,6 @@ namespace DDDLite.Messaging
 {
     using System;
 
-    using Common;
-
     public class InProcessBus : DisposableObject, IMessagePublisher, IMessageSubscriber
     {
         private bool subscribed = false;

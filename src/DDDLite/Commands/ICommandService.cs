@@ -2,7 +2,6 @@ namespace DDDLite.Commands
 {
     using System;
 
-    using Common;
     using Messaging;
 
     public interface ICommandService : IDisposable
