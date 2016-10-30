@@ -50,7 +50,7 @@ namespace DDDLite.Querying
         {
             Contract.Requires<ArgumentNullException>(filters != null);
             Contract.Requires<ArgumentNullException>(sorters != null);
-            return this.Repository.FindAll<TDTO>(filters.ToSpecification<TAggregateRoot>(), sorters.ToSpecification<TAggregateRoot>());
+            return this.Repository.Find<TDTO>(filters.ToSpecification<TAggregateRoot>(), sorters.ToSpecification<TAggregateRoot>());
         }
 
         public PagedResult<TDTO> Page<TDTO>(int page, int limit) where TDTO : class, new()
@@ -72,7 +72,7 @@ namespace DDDLite.Querying
         {
             Contract.Requires<ArgumentNullException>(filters != null);
             Contract.Requires<ArgumentNullException>(sorters != null);
-            return this.Repository.FindAll<TDTO>(filters.ToSpecification<TAggregateRoot>(), sorters.ToSpecification<TAggregateRoot>()).AsPagedResult(page, limit);
+            return this.Repository.Find<TDTO>(filters.ToSpecification<TAggregateRoot>(), sorters.ToSpecification<TAggregateRoot>()).AsPagedResult(page, limit);
         }
     }
 }

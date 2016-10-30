@@ -27,17 +27,17 @@ namespace DDDLite.Repository
 
         public abstract TAggregateRoot GetById(Guid id);
 
-        public virtual IQueryable<TAggregateRoot> FindAll()
+        public virtual IQueryable<TAggregateRoot> Find()
         {
-            return this.FindAll(Specification<TAggregateRoot>.Any(), null);
+            return this.Find(Specification<TAggregateRoot>.Any(), null);
         }
 
-        public virtual IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification)
+        public virtual IQueryable<TAggregateRoot> Find(Specification<TAggregateRoot> specification)
         {
-            return this.FindAll(specification, null);
+            return this.Find(specification, null);
         }
 
-        public abstract IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification);
+        public abstract IQueryable<TAggregateRoot> Find(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification);
 
         public abstract Task<TAggregateRoot> GetByIdAsync(Guid id);
 

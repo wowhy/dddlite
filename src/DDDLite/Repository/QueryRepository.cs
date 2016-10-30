@@ -19,18 +19,20 @@ namespace DDDLite.Repository
             this.context = context;
         }
 
+        public abstract IQueryable<TAggregateRoot> QueryModel { get; }
+
         public abstract TDTO GetById<TDTO>(Guid id) where TDTO : class, new();
 
-        public virtual IQueryable<TDTO> FindAll<TDTO>() where TDTO : class, new()
+        public virtual IQueryable<TDTO> Find<TDTO>() where TDTO : class, new()
         {
-            return this.FindAll<TDTO>(Specification<TAggregateRoot>.Any(), null);
+            return this.Find<TDTO>(Specification<TAggregateRoot>.Any(), null);
         }
 
-        public virtual IQueryable<TDTO> FindAll<TDTO>(Specification<TAggregateRoot> specification) where TDTO : class, new()
+        public virtual IQueryable<TDTO> Find<TDTO>(Specification<TAggregateRoot> specification) where TDTO : class, new()
         {
-            return this.FindAll<TDTO>(specification, null);
+            return this.Find<TDTO>(specification, null);
         }
 
-        public abstract IQueryable<TDTO> FindAll<TDTO>(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification) where TDTO : class, new();
+        public abstract IQueryable<TDTO> Find<TDTO>(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification) where TDTO : class, new();
     }
 }

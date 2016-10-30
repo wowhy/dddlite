@@ -22,11 +22,11 @@
 
         TAggregateRoot GetById(Guid id);
 
-        IQueryable<TAggregateRoot> FindAll();
+        IQueryable<TAggregateRoot> Find();
 
-        IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification);
+        IQueryable<TAggregateRoot> Find(Specification<TAggregateRoot> specification);
 
-        IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification);
+        IQueryable<TAggregateRoot> Find(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification);
 
         Task<TAggregateRoot> GetByIdAsync(Guid id);
     }

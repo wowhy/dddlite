@@ -11,12 +11,14 @@
     {
         IQueryRepositoryContext Context { get; }
 
+        IQueryable<TAggregateRoot> QueryModel { get; }
+
         TDTO GetById<TDTO>(Guid id) where TDTO : class, new();
 
-        IQueryable<TDTO> FindAll<TDTO>() where TDTO : class, new();
+        IQueryable<TDTO> Find<TDTO>() where TDTO : class, new();
 
-        IQueryable<TDTO> FindAll<TDTO>(Specification<TAggregateRoot> specification) where TDTO : class, new();
+        IQueryable<TDTO> Find<TDTO>(Specification<TAggregateRoot> specification) where TDTO : class, new();
 
-        IQueryable<TDTO> FindAll<TDTO>(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification) where TDTO : class, new();
+        IQueryable<TDTO> Find<TDTO>(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification) where TDTO : class, new();
     }
 }
