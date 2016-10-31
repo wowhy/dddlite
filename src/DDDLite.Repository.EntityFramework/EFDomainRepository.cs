@@ -31,6 +31,15 @@ namespace DDDLite.Repository.EntityFramework
             entry.State = EntityState.Added;
         }
 
+        public override void Update(TAggregateRoot entity)
+        {
+            var entry = this.dbContext.Entry(entity);
+            var property = entry.Property(k => k.RowVersion);
+            property.OriginalValue = entity.RowVersion;
+            property.CurrentValue = entity.RowVersion + 1;
+            entry.State = EntityState.Modified;
+        }
+
         public override void Delete(TAggregateRoot entity)
         {
             var entry = this.dbContext.Entry(entity);
@@ -45,7 +54,7 @@ namespace DDDLite.Repository.EntityFramework
             return this.dbContext.Set<TAggregateRoot>().Any(specification);
         }
 
-        public override IQueryable<TAggregateRoot> FindAll(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification)
+        public override IQueryable<TAggregateRoot> Find(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification)
         {
             var query = this.dbContext.Set<TAggregateRoot>().Where(specification);
             if (sortSpecification?.Count > 0)
@@ -96,15 +105,6 @@ namespace DDDLite.Repository.EntityFramework
         public override Task<TAggregateRoot> GetByIdAsync(Guid id)
         {
             return this.dbContext.Set<TAggregateRoot>().FirstOrDefaultAsync(k => k.Id == id);
-        }
-
-        public override void Update(TAggregateRoot entity)
-        {
-            var entry = this.dbContext.Entry(entity);
-            var property = entry.Property(k => k.RowVersion);
-            property.OriginalValue = entity.RowVersion;
-            property.CurrentValue = entity.RowVersion + 1;
-            entry.State = EntityState.Modified;
         }
     }
 }

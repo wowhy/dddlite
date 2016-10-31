@@ -1,6 +1,8 @@
-namespace DDDLite.Domain
+namespace DDDLite.Mappers
 {
     using AutoMapper;
+
+    using Domain;
 
     public static class MapperHelper
     {
@@ -17,17 +19,23 @@ namespace DDDLite.Domain
                 IConfigurationProvider config = new MapperConfiguration(cfg =>
                 {
                     cfg.CreateMap<TAggregateRoot, TAggregateRoot>()
-                       .ForMember(k => k.Id, k => k.Ignore())
-                       .ForMember(k => k.CreatedById, k => k.Ignore())
-                       .ForMember(k => k.CreatedOn, k => k.Ignore())
-                       .ForMember(k => k.ModifiedById, k => k.Ignore())
-                       .ForMember(k => k.ModifiedOn, k => k.Ignore())
-                       .ForMember(k => k.RowVersion, k => k.Ignore());
+                       .UseAggregateRootMap();
                 });
                 mapper = new Mapper(config);
             }
 
             return mapper;
+        }
+
+        public static void UseAggregateRootMap<TAggregateRoot>(this IMappingExpression<TAggregateRoot, TAggregateRoot> @this)
+            where TAggregateRoot : class, IAggregateRoot
+        {
+            @this.ForMember(k => k.Id, k => k.Ignore())
+                .ForMember(k => k.CreatedById, k => k.Ignore())
+                .ForMember(k => k.CreatedOn, k => k.Ignore())
+                .ForMember(k => k.ModifiedById, k => k.Ignore())
+                .ForMember(k => k.ModifiedOn, k => k.Ignore())
+                .ForMember(k => k.RowVersion, k => k.Ignore());
         }
     }
 }

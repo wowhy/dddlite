@@ -2,10 +2,11 @@ namespace DDDLite.Repository.EntityFramework
 {
     using Microsoft.EntityFrameworkCore;
 
-    using DDDLite.Domain;
+    using System.Linq;
 
     public interface IEFQueryRepositoryContext : IQueryRepositoryContext
     {
-        DbContext DbContext { get; }
+        IQueryable<TEntity> FromSql<TEntity>(string sql, params object[] parameters)
+            where TEntity : class;
     }
 }

@@ -53,12 +53,12 @@ namespace Sample.WebApi
             services.AddSingleton<ICommandService>((provider) => new CommandService(provider.GetService<IMessageSubscriber>(), provider));
 
             // register command repository context
-            services.AddDbContext<SampleDomainDbContext>(options => options.UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=hongyuan;Database=sample;"));
+            services.AddDbContext<SampleDomainDbContext>(options => options.UseNpgsql(this.Configuration.GetConnectionString("WriteConnection")));
             services.AddRepositoryContext<ISampleDomainRepositoryContext, SampleDomainRepositoryContext>();
             services.AddRepository<ISampleDomainRepositoryContext, IDomainRepository<Blog>>(context => context.GetRepository<Blog>());
 
             // register query repository context
-            services.AddDbContext<SampleReadonlyDbContext>(options => options.UseNpgsql("Host=localhost;Port=5432;Username=postgres;Password=hongyuan;Database=sample;"));
+            services.AddDbContext<SampleReadonlyDbContext>(options => options.UseNpgsql(this.Configuration.GetConnectionString("ReadConnection")));
             services.AddRepositoryContext<ISampleQueryRepositoryContext, SampleQueryRepositoryContext>();
 
             var assembly = Assembly.Load(new AssemblyName("Sample.Core"));

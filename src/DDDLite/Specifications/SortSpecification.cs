@@ -34,7 +34,7 @@
 
         private readonly Dictionary<string, SortDirection> sortSpecifications = new Dictionary<string, SortDirection>();
 
-        public static readonly SortSpecification<T> None = new SortSpecification<T>() { { x => null, SortDirection.Undefined } };
+        public static readonly SortSpecification<T> None = new SortSpecification<T>();
 
         public SortDirection this[string key]
         {

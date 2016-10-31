@@ -9,16 +9,10 @@ namespace Sample.WebApi.Controllers
 
     using Core.Domain;
     using Core.Querying;
-
-    public class PostDTO
-    {
-        public string Title { get; set; }
-
-        public string Blog_Title { get; set; }
-    }
+    using Core.DTO;
 
     [Route("api/posts")]
-    public class PostController : RestfulApiController<Post>
+    public class PostController : RestfulApiController<Post, PostDTO>
     {
         public PostController(
             IServiceProvider serviceProvider,

@@ -10,9 +10,10 @@ namespace Sample.WebApi.Controllers
 
     using Core.Domain;
     using Core.Querying;
+    using Core.DTO;
 
     [Route("api/blogs")]
-    public class BlogController : RestfulApiController<Blog>
+    public class BlogController : RestfulApiController<Blog, BlogDTO>
     {
         public BlogController(
             IServiceProvider serviceProvider,

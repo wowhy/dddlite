@@ -8,21 +8,27 @@ namespace DDDLite.Repository.EntityFramework
     {
         private readonly DbContext dbContext;
 
+        protected DbContext DbContext => this.dbContext;
+
         public EFQueryRepositoryContext(DbContext context)
         {
             this.dbContext = context;
         }
-
-        public DbContext DbContext => this.dbContext;
 
         public override IQueryRepository<TAggregateRoot> CreateRepository<TAggregateRoot>()
         {
             return new EFQueryRepository<TAggregateRoot>(this);
         }
 
-        public override IQueryable<TAggregateRoot> GetQueryableModel<TAggregateRoot>()
+        public override IQueryable<TAggregateRoot> GetQueryModel<TAggregateRoot>()
         {
             return this.dbContext.Set<TAggregateRoot>().AsNoTracking();
+        }
+
+        public IQueryable<TEntity> FromSql<TEntity>(string sql, params object[] parameters)
+            where TEntity : class
+        {
+            return this.dbContext.Set<TEntity>().FromSql<TEntity>(sql, parameters).AsNoTracking();
         }
     }
 }

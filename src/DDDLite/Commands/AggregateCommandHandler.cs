@@ -9,6 +9,7 @@
     using Domain;
     using Repository;
     using Validation;
+    using Mappers;
 
     public abstract class AggregateCommandHandler<TAggregateRoot>
         : ICommandHandler<ICreateCommand<TAggregateRoot>>
@@ -17,13 +18,6 @@
 
         where TAggregateRoot : class, IAggregateRoot, new()
     {
-        private static IMapper mapper;
-
-        static AggregateCommandHandler()
-        {
-            mapper = MapperHelper.GetOrCreateMapper<TAggregateRoot>();
-        }
-
         private IDomainRepositoryContext context;
         private IDomainRepository<TAggregateRoot> repository;
         private Dictionary<Type, List<IValidator>> validators = new Dictionary<Type, List<IValidator>>();
@@ -100,7 +94,7 @@
 
         public virtual void Map(TAggregateRoot source, TAggregateRoot destination)
         {
-            mapper.Map<TAggregateRoot, TAggregateRoot>(source, destination);
+            Mapper.Map(source, destination);
         }
 
         protected void AddValidator<TCommand>(IValidator validator) where TCommand : class, ICommand

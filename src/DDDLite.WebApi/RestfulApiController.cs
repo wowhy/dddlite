@@ -12,8 +12,9 @@ namespace DDDLite.WebApi
     using Messaging;
     using Querying;
 
-    public abstract class RestfulApiController<TAggregateRoot> : Controller
+    public abstract class RestfulApiController<TAggregateRoot, TDTO> : Controller
         where TAggregateRoot : class, IAggregateRoot, new()
+        where TDTO : class, new()
     {
         private readonly IServiceProvider serviceProvider;
         private readonly ICommandSender commandSender;
@@ -36,15 +37,15 @@ namespace DDDLite.WebApi
         protected IQueryService<TAggregateRoot> QueryService => this.queryService;
 
         [HttpGet]
-        public virtual IQueryable<TAggregateRoot> Get()
+        public virtual IQueryable<TDTO> Get()
         {
-            return this.queryService.FindAll();
+            return this.queryService.Find<TDTO>();
         }
 
         [HttpGet("{id}")]
         public virtual IActionResult Get(Guid id)
         {
-            var entity = this.queryService.GetById(id);
+            var entity = this.queryService.GetById<TDTO>(id);
             if (entity != null)
             {
                 return this.Ok(entity);

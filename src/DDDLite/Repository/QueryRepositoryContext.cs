@@ -18,7 +18,7 @@ namespace DDDLite.Repository
 
         public Guid Id => this.id;
 
-        public abstract IQueryable<TAggregateRoot> GetQueryableModel<TAggregateRoot>()
+        public abstract IQueryable<TAggregateRoot> GetQueryModel<TAggregateRoot>()
             where TAggregateRoot : class, IAggregateRoot;
 
         public abstract IQueryRepository<TAggregateRoot> CreateRepository<TAggregateRoot>()

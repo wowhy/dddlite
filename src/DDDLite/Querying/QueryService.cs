@@ -48,8 +48,6 @@ namespace DDDLite.Querying
 
         public virtual IQueryable<TDTO> Find<TDTO>(ICollection<Filter> filters, ICollection<Sorter> sorters) where TDTO : class, new()
         {
-            Contract.Requires<ArgumentNullException>(filters != null);
-            Contract.Requires<ArgumentNullException>(sorters != null);
             return this.Repository.Find<TDTO>(filters.ToSpecification<TAggregateRoot>(), sorters.ToSpecification<TAggregateRoot>());
         }
 
@@ -70,8 +68,6 @@ namespace DDDLite.Querying
 
         public PagedResult<TDTO> Page<TDTO>(int page, int limit, ICollection<Filter> filters, ICollection<Sorter> sorters) where TDTO : class, new()
         {
-            Contract.Requires<ArgumentNullException>(filters != null);
-            Contract.Requires<ArgumentNullException>(sorters != null);
             return this.Repository.Find<TDTO>(filters.ToSpecification<TAggregateRoot>(), sorters.ToSpecification<TAggregateRoot>()).AsPagedResult(page, limit);
         }
     }

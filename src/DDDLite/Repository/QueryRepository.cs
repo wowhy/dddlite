@@ -19,9 +19,12 @@ namespace DDDLite.Repository
             this.context = context;
         }
 
-        public abstract IQueryable<TAggregateRoot> QueryModel { get; }
+        public IQueryable<TAggregateRoot> QueryModel => this.Context.GetQueryModel<TAggregateRoot>();
 
-        public abstract TDTO GetById<TDTO>(Guid id) where TDTO : class, new();
+        public virtual TDTO GetById<TDTO>(Guid id) where TDTO : class, new()
+        {
+            return this.QueryModel.Where(k => k.Id == id).Take(1).ProjectToFirstOrDefault<TDTO>();
+        }
 
         public virtual IQueryable<TDTO> Find<TDTO>() where TDTO : class, new()
         {
@@ -33,6 +36,47 @@ namespace DDDLite.Repository
             return this.Find<TDTO>(specification, null);
         }
 
-        public abstract IQueryable<TDTO> Find<TDTO>(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification) where TDTO : class, new();
+        public virtual IQueryable<TDTO> Find<TDTO>(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification) where TDTO : class, new()
+        {
+            var query = this.QueryModel.Where(specification);
+            if (sortSpecification?.Count > 0)
+            {
+                var sortSpecificationList = sortSpecification.Specifications.ToList();
+                var firstSpecification = sortSpecificationList[0];
+                switch (firstSpecification.Item2)
+                {
+                    case SortDirection.Asc:
+                        query = query.OrderBy(firstSpecification.Item1);
+                        break;
+
+                    case SortDirection.Desc:
+                        query = query.OrderByDescending(firstSpecification.Item1);
+                        break;
+
+                    default:
+                        return query.ProjectToQueryable<TDTO>();
+                }
+
+                for (var i = 1; i < sortSpecificationList.Count; i++)
+                {
+                    var spec = sortSpecificationList[0];
+                    switch (spec.Item2)
+                    {
+                        case SortDirection.Asc:
+                            query = query.OrderBy(spec.Item1);
+                            break;
+
+                        case SortDirection.Desc:
+                            query = query.OrderByDescending(spec.Item1);
+                            break;
+
+                        default:
+                            continue;
+                    }
+                }
+            }
+
+            return query.ProjectToQueryable<TDTO>();
+        }
     }
 }
