@@ -15,10 +15,9 @@ namespace Sample.WebApi.Controllers
     public class PostController : RestfulApiController<Post, PostDTO>
     {
         public PostController(
-            IServiceProvider serviceProvider,
             ICommandSender commandSender,
             IPostQueryService queryService) :
-            base(serviceProvider, commandSender, queryService)
+            base(commandSender, queryService)
         {
         }
     }

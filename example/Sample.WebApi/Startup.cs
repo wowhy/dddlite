@@ -63,7 +63,6 @@ namespace Sample.WebApi
 
             var assembly = Assembly.Load(new AssemblyName("Sample.Core"));
             var register = new Register(services);
-            register.RegisterCommands(assembly);
             register.RegisterValidators(assembly);
             register.RegisterCommandHandlers(assembly);
             register.RegisterQueryServices(assembly);

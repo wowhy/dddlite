@@ -1,11 +1,8 @@
 namespace DDDLite.WebApi
 {
     using System;
-    using System.Reflection;
-    using System.Linq;
 
     using Microsoft.Extensions.DependencyInjection;
-    using Commands;
 
     public static class Extensions
     {

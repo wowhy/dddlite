@@ -2,7 +2,7 @@
 {
     using AutoMapper;
 
-    using DDDLite.Mappers;
+    using DDDLite.Config;
 
     using Domain;
     using DTO;

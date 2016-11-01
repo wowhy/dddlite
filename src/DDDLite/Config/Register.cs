@@ -17,36 +17,6 @@
             this.services = services;
         }
 
-        public void RegisterCommands(Assembly assembly)
-        {
-            var types = assembly.GetTypes();
-            var commandTypes = types.Where(k => k.Name.EndsWith("Command") && k.GetTypeInfo().IsClass && !k.GetTypeInfo().IsAbstract);
-
-            Console.WriteLine("Register Commands");
-            foreach (var type in commandTypes)
-            {
-                Console.WriteLine("type: " + type.FullName);
-                var typeInfo = type.GetTypeInfo();
-                if (type.Name.EndsWith("CreateCommand"))
-                {
-                    this.services.AddTransient(typeInfo.GetInterface("ICreateCommand`1"), type);
-                }
-                else if (type.Name.EndsWith("UpdateCommand"))
-                {
-                    this.services.AddTransient(typeInfo.GetInterface("IUpdateCommand`1"), type);
-                }
-                else if (type.Name.EndsWith("DeleteCommand"))
-                {
-                    this.services.AddTransient(typeInfo.GetInterface("IDeleteCommand`1"), type);
-                }
-                else
-                {
-                    this.services.AddTransient(type);
-                }
-            }
-            Console.WriteLine();
-        }
-
         public void RegisterValidators(Assembly assembly)
         {
             var types = assembly.GetTypes();

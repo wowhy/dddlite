@@ -16,10 +16,9 @@ namespace Sample.WebApi.Controllers
     public class BlogController : RestfulApiController<Blog, BlogDTO>
     {
         public BlogController(
-            IServiceProvider serviceProvider,
             ICommandSender commandSender,
             IBlogQueryService queryService) :
-            base(serviceProvider, commandSender, queryService)
+            base(commandSender, queryService)
         {
         }
     }

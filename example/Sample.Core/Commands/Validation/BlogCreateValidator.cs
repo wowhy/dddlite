@@ -1,11 +1,12 @@
 namespace Sample.Core.Commands.Validation
 {
+    using DDDLite.Commands;
     using DDDLite.Commands.Validation;
     using DDDLite.Repository;
 
     using Domain;
 
-    public class BlogCreateValidator : Validator<BlogCreateCommand>
+    public class BlogCreateValidator : Validator<CreateCommand<Blog>>
     {
         private readonly IDomainRepository<Blog> repository;
 
@@ -14,7 +15,7 @@ namespace Sample.Core.Commands.Validation
             this.repository = repository;
         }
 
-        public override void DoValidate(BlogCreateCommand cmd)
+        public override void DoValidate(CreateCommand<Blog> cmd)
         {
             if (cmd.AggregateRoot.Title == "test")
             {

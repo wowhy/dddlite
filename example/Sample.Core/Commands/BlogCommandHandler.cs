@@ -10,12 +10,11 @@
 
     public class BlogCommandHandler : AggregateCommandHandler<Blog>
     {
-        public BlogCommandHandler(ISampleDomainRepositoryContext context
-            , BlogCreateValidator createValidaotr) : base(context)
+        public BlogCommandHandler(
+            ISampleDomainRepositoryContext context, 
+            BlogCreateValidator createValidator) : base(context)
         {
-            this.AddValidator(typeof(BlogCreateCommand), new EntityValidator<Blog>());
-            this.AddValidator(typeof(BlogCreateCommand), createValidaotr);
-            this.AddValidator(typeof(BlogUpdateCommand), new EntityValidator<Blog>());
+            this.AddValidator(typeof(CreateCommand<Blog>), createValidator);
         }
     }
 }

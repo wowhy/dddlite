@@ -9,8 +9,7 @@
     using Domain;
     using Repository;
     using Validation;
-    using Mappers;
-
+    
     public abstract class AggregateCommandHandler<TAggregateRoot>
         : ICommandHandler<ICreateCommand<TAggregateRoot>>
         , ICommandHandler<IUpdateCommand<TAggregateRoot>>
@@ -26,6 +25,9 @@
         {
             this.context = context;
             this.repository = context.GetRepository<TAggregateRoot>();
+
+            this.AddValidator(typeof(CreateCommand<TAggregateRoot>), new EntityValidator<TAggregateRoot>());
+            this.AddValidator(typeof(UpdateCommand<TAggregateRoot>), new EntityValidator<TAggregateRoot>());
         }
 
         public IDomainRepositoryContext Context => this.context;
@@ -49,9 +51,10 @@
 
         public virtual void Handle(IDeleteCommand<TAggregateRoot> command)
         {
-            this.Validate(command);
-
             var entity = this.Repository.GetById(command.AggregateRootId);
+
+            this.AssertEntityNotNull(entity);
+            this.Validate(command);            
 
             entity.RowVersion = command.RowVersion;
 
@@ -61,10 +64,10 @@
 
         public virtual void Handle(IUpdateCommand<TAggregateRoot> command)
         {
-            this.Validate(command);
-
             var entity = this.Repository.GetById(command.AggregateRootId);
 
+            this.AssertEntityNotNull(entity);
+            this.Validate(command);
             this.Map(command.AggregateRoot, entity);
 
             entity.ModifiedById = command.OperatorId;
@@ -120,7 +123,9 @@
 
         protected List<IValidator> GetValidators(Type commandType)
         {
-            return this.validators[commandType];
+            var validators = default(List<IValidator>);
+            this.validators.TryGetValue(commandType, out validators);
+            return validators;
         }
 
         protected virtual void DoValidate(ICommand command)
@@ -132,6 +137,14 @@
                 {
                     validator.Validate(command);
                 }
+            }
+        }
+
+        private void AssertEntityNotNull(TAggregateRoot entity)
+        {
+            if(entity == null)
+            {
+                throw new ValidationException("数据不存在，参数错误或当期数据已被删除！");
             }
         }
     }

@@ -1,4 +1,4 @@
-namespace DDDLite.Mappers
+namespace DDDLite.Config
 {
     using AutoMapper;
 

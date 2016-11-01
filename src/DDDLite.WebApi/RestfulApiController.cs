@@ -3,7 +3,6 @@ namespace DDDLite.WebApi
     using System;
     using System.Linq;
 
-    using AutoMapper;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -16,30 +15,25 @@ namespace DDDLite.WebApi
         where TAggregateRoot : class, IAggregateRoot, new()
         where TDTO : class, new()
     {
-        private readonly IServiceProvider serviceProvider;
         private readonly ICommandSender commandSender;
         private readonly IQueryService<TAggregateRoot> queryService;
 
         protected RestfulApiController(
-            IServiceProvider serviceProvider,
             ICommandSender commandSender,
             IQueryService<TAggregateRoot> queryService)
         {
-            this.serviceProvider = serviceProvider;
             this.commandSender = commandSender;
             this.queryService = queryService;
         }
-
-        protected IServiceProvider ServiceProvider => this.serviceProvider;
 
         protected ICommandSender CommandSender => this.commandSender;
 
         protected IQueryService<TAggregateRoot> QueryService => this.queryService;
 
         [HttpGet]
-        public virtual IQueryable<TDTO> Get()
+        public virtual IActionResult Get()
         {
-            return this.queryService.Find<TDTO>();
+            return this.Ok(this.queryService.Find<TDTO>());
         }
 
         [HttpGet("{id}")]
@@ -57,7 +51,7 @@ namespace DDDLite.WebApi
         [HttpPost]
         public virtual IActionResult Post([FromBody] TAggregateRoot entity)
         {
-            var cmd = this.serviceProvider.GetService<ICreateCommand<TAggregateRoot>>();
+            var cmd = new CreateCommand<TAggregateRoot>();
 
             entity.NewIdentity();
 
@@ -74,7 +68,7 @@ namespace DDDLite.WebApi
         [HttpPut("{id}")]
         public virtual IActionResult Put(Guid id, [FromBody] TAggregateRoot entity, [FromHeader(Name = "If-Match")] string ifMatch)
         {
-            var cmd = this.serviceProvider.GetService<IUpdateCommand<TAggregateRoot>>();
+            var cmd = new UpdateCommand<TAggregateRoot>();
 
             cmd.AggregateRootId = id;
             cmd.AggregateRoot = entity;
@@ -89,7 +83,7 @@ namespace DDDLite.WebApi
         [HttpDelete("{id}")]
         public virtual IActionResult Delete(Guid id, [FromHeader(Name = "If-Match")] string ifMatch)
         {
-            var cmd = this.serviceProvider.GetService<IDeleteCommand<TAggregateRoot>>();
+            var cmd = new DeleteCommand<TAggregateRoot>();
 
             cmd.AggregateRootId = id;
             cmd.RowVersion = long.Parse(ifMatch);

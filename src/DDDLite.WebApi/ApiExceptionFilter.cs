@@ -39,22 +39,20 @@ namespace DDDLite.WebApi
             if (error is ValidationException)
             {
                 response.StatusCode = 400;
-                await response.WriteAsync(JsonConvert.SerializeObject(
-                    new
-                    {
-                        message = error.Message,
-                        details = ((ValidationException)error).Details
-                    }), Encoding.UTF8);
+                await response.WriteAsync(
+                    JsonConvert.SerializeObject(new ErrorMessage(error.Message, ((ValidationException)error).Details)), 
+                    Encoding.UTF8);
             }
             else
             {
                 response.StatusCode = 500;
-                await response.WriteAsync(JsonConvert.SerializeObject(
-                    new
-                    {
-                        message = error.Message,
-                        details = error.InnerException == null ? new string[0] : new string[] { error.InnerException.Message }
-                    }), Encoding.UTF8);
+                await response.WriteAsync(
+                    JsonConvert.SerializeObject(
+                        new ErrorMessage(
+                            error.Message, 
+                            error.InnerException == null ? new string[0] : new string[] { error.InnerException.Message })
+                        ), 
+                    Encoding.UTF8);
             }
         }
     }
