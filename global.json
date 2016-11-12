@@ -1,5 +1,6 @@
 {
-    "projects": [
+  "projects": [
+        "example",
         "src",
         "test"
     ]
