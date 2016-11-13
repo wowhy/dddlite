@@ -1,4 +1,4 @@
-namespace DDDLite.Domain
+namespace DDDLite
 {
     public interface ILogicalDelete
     {

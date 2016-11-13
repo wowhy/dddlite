@@ -5,11 +5,10 @@
     using System.Linq;
 
     using AutoMapper;
-
-    using Domain;
+    using Events;
     using Repository;
     using Validation;
-    
+
     public abstract class AggregateCommandHandler<TAggregateRoot>
         : ICommandHandler<ICreateCommand<TAggregateRoot>>
         , ICommandHandler<IUpdateCommand<TAggregateRoot>>
@@ -17,20 +16,16 @@
 
         where TAggregateRoot : class, IAggregateRoot, new()
     {
-        private IDomainRepositoryContext context;
         private IDomainRepository<TAggregateRoot> repository;
         private Dictionary<Type, List<IValidator>> validators = new Dictionary<Type, List<IValidator>>();
 
-        protected AggregateCommandHandler(IDomainRepositoryContext context)
+        protected AggregateCommandHandler(IDomainRepository<TAggregateRoot> repository)
         {
-            this.context = context;
-            this.repository = context.GetRepository<TAggregateRoot>();
+            this.repository = repository;
 
             this.AddValidator(typeof(CreateCommand<TAggregateRoot>), new EntityValidator<TAggregateRoot>());
             this.AddValidator(typeof(UpdateCommand<TAggregateRoot>), new EntityValidator<TAggregateRoot>());
         }
-
-        public IDomainRepositoryContext Context => this.context;
 
         public IDomainRepository<TAggregateRoot> Repository => this.repository;
 
@@ -54,12 +49,12 @@
             var entity = this.Repository.GetById(command.AggregateRootId);
 
             this.AssertEntityNotNull(entity);
-            this.Validate(command);            
+            this.Validate(command);
 
             entity.RowVersion = command.RowVersion;
+            entity.RaiseEvent(new DeletedEvent<TAggregateRoot>());
 
-            this.Repository.Delete(entity);
-            this.Context.Commit();
+            this.Repository.Save(entity);
         }
 
         public virtual void Handle(IUpdateCommand<TAggregateRoot> command)
@@ -73,9 +68,9 @@
             entity.ModifiedById = command.OperatorId;
             entity.ModifiedOn = command.Timestamp;
             entity.RowVersion = command.RowVersion;
+            entity.RaiseEvent(new UpdatedEvent<TAggregateRoot>());
 
-            this.Repository.Update(entity);
-            this.Context.Commit();
+            this.Repository.Save(entity);
         }
 
         public virtual void Handle(ICreateCommand<TAggregateRoot> command)
@@ -90,9 +85,9 @@
             entity.CreatedById = command.OperatorId;
             entity.CreatedOn = command.Timestamp;
             entity.RowVersion = command.RowVersion;
+            entity.RaiseEvent(new CreatedEvent<TAggregateRoot>());
 
-            this.Repository.Create(entity);
-            this.Context.Commit();
+            this.Repository.Save(entity);
         }
 
         public virtual void Map(TAggregateRoot source, TAggregateRoot destination)
@@ -142,7 +137,7 @@
 
         private void AssertEntityNotNull(TAggregateRoot entity)
         {
-            if(entity == null)
+            if (entity == null)
             {
                 throw new ValidationException("数据不存在，参数错误或当期数据已被删除！");
             }

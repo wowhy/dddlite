@@ -1,4 +1,4 @@
-namespace DDDLite.Domain
+namespace DDDLite
 {
     using System;
     using System.ComponentModel.DataAnnotations;

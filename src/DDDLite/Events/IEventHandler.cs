@@ -1,7 +1,10 @@
 namespace DDDLite.Events
 {
-    public interface IEventHandler<in TEvent> : IHandler<TEvent>
-        where TEvent : class, IEvent
+    public interface IEventHandler
+    {
+    }
+
+    public interface IEventHandler<in TEvent> : IHandler<TEvent>, IEventHandler
     {
     }
 }

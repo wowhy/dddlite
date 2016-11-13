@@ -7,7 +7,6 @@ namespace DDDLite.WebApi
     using Microsoft.Extensions.DependencyInjection;
 
     using Commands;
-    using Domain;
     using Messaging;
     using Querying;
 

@@ -3,23 +3,16 @@ namespace DDDLite.Repository
     using System;
     using System.Linq;
 
-
-    using Domain;
     using Specifications;
 
     public abstract class QueryRepository<TAggregateRoot> : IQueryRepository<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
-        private readonly IQueryRepositoryContext context;
-
-        public IQueryRepositoryContext Context => this.context;
-
-        protected QueryRepository(IQueryRepositoryContext context)
+        protected QueryRepository()
         {
-            this.context = context;
         }
 
-        public IQueryable<TAggregateRoot> QueryModel => this.Context.GetQueryModel<TAggregateRoot>();
+        public abstract IQueryable<TAggregateRoot> QueryModel { get; }
 
         public virtual TDTO GetById<TDTO>(Guid id) where TDTO : class, new()
         {

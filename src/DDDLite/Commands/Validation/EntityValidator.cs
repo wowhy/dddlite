@@ -5,7 +5,6 @@ namespace DDDLite.Commands.Validation
     using System.Linq;
 
     using Commands;
-    using Domain;
 
 
     public class EntityValidator<TAggregateRoot> : Validation.Validator<IDomainCommand<TAggregateRoot>>

@@ -2,8 +2,6 @@ namespace DDDLite.Config
 {
     using AutoMapper;
 
-    using Domain;
-
     public static class MapperHelper
     {
         public static IMapper GetOrCreateMapper<TAggregateRoot>()

@@ -1,17 +1,20 @@
 namespace DDDLite.Repository.EntityFramework
 {
-    using System;
     using System.Linq;
 
-    using DDDLite.Domain;
-    using DDDLite.Specifications;
+    using DDDLite;
+    using Microsoft.EntityFrameworkCore;
 
     public class EFQueryRepository<TAggregateRoot> : QueryRepository<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
-        public EFQueryRepository(IQueryRepositoryContext context)
-            : base(context)
+        private DbContext context;
+
+        public EFQueryRepository(DbContext context)
         {
+            this.context = context;
         }
+
+        public override IQueryable<TAggregateRoot> QueryModel => this.context.Set<TAggregateRoot>();
     }
 }

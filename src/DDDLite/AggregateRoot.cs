@@ -1,4 +1,4 @@
-namespace DDDLite.Domain
+namespace DDDLite
 {
     using System;
     using System.Collections.Generic;
@@ -6,9 +6,9 @@ namespace DDDLite.Domain
     using System.ComponentModel.DataAnnotations.Schema;
     using Events;
 
-    public abstract class AggregateRoot : Entity, Domain.IAggregateRoot
+    public abstract class AggregateRoot : Entity, IAggregateRoot
     {        
-        private readonly Queue<IEvent> uncommitedEvents = new Queue<IEvent>();
+        private readonly Queue<IDomainEvent> uncommitedEvents = new Queue<IDomainEvent>();
    
         [ConcurrencyCheck]
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
@@ -22,15 +22,18 @@ namespace DDDLite.Domain
 
         public DateTime? ModifiedOn { get; set; }
 
-        public IEnumerable<IEvent> UncommittedEvents => this.uncommitedEvents;
+        public IEnumerable<IDomainEvent> UncommittedEvents => this.uncommitedEvents;
 
-        public void RaiseEvent<TEvent>(TEvent e) where TEvent : IEvent
+        public void RaiseEvent<TEvent>(TEvent e) where TEvent : class, IDomainEvent
         {
             this.ApplyEvent(e);
         }
 
-        protected void ApplyEvent<TEvent>(TEvent e) where TEvent : IEvent
+        protected void ApplyEvent<TEvent>(TEvent e) where TEvent : class, IDomainEvent
         {
+            e.AggregateRootId = this.Id;
+            e.AggregateRoot = this;
+            e.AggregateRootType = this.GetType().FullName;
             this.uncommitedEvents.Enqueue(e);
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace DDDLite.Domain
+﻿namespace DDDLite
 {
     using System;
     using System.Collections.Generic;
@@ -16,8 +16,8 @@
 
         DateTime? ModifiedOn { get; set; }
 
-        IEnumerable<IEvent> UncommittedEvents { get; }
+        IEnumerable<IDomainEvent> UncommittedEvents { get; }
 
-        void RaiseEvent<TEvent>(TEvent e) where TEvent : IEvent;
+        void RaiseEvent<TEvent>(TEvent e) where TEvent : class, IDomainEvent;
     }
 }

@@ -3,8 +3,6 @@ namespace DDDLite.Specifications
     using System;
     using System.Linq.Expressions;
 
-    using Domain;
-
     public class UndeletedSpecification<T> : Specification<T>
         where T : ILogicalDelete
     {

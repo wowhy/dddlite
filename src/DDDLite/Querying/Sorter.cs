@@ -1,7 +1,5 @@
 namespace DDDLite.Querying
 {
-    using Domain;
-
     public sealed class Sorter
     {
         public string Property { get; set; }

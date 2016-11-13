@@ -2,10 +2,19 @@ namespace DDDLite.Events
 {
     using System;
 
-    public interface IDomainEvent : IEvent
+    public interface IDomainEvent : IMessage
     {
-        Guid AggregateRootId { get; set;}
+        Guid AggregateRootId { get; set; }
 
-        Object AggregateRoot { get; set; }
+        object AggregateRoot { get; set; }
+
+        string AggregateRootType { get; set; }
+
+        string EventName { get; set; }
+    }
+
+    public interface IDomainEvent<TAggregateRoot> : IDomainEvent
+        where TAggregateRoot : class, IAggregateRoot
+    {
     }
 }

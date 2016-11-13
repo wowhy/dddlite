@@ -2,28 +2,33 @@ namespace DDDLite.Repository
 {
     using System;
     using System.Linq;
-    using System.Threading.Tasks;
 
-    using Domain;
+    using Messaging;
     using Specifications;
 
     public abstract class DomainRepository<TAggregateRoot> : IDomainRepository<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
-        private readonly IDomainRepositoryContext context;
+        private readonly IEventPublisher eventPublisher;
 
-        public IDomainRepositoryContext Context => this.context;
-
-        protected DomainRepository(IDomainRepositoryContext context)
+        protected DomainRepository(IEventPublisher eventPublisher)
         {
-            this.context = context;
+            this.eventPublisher = eventPublisher;
         }
 
-        public abstract void Create(TAggregateRoot entity);
+        public virtual void Save(TAggregateRoot entity)
+        {
+            this.DoSave(entity);
+            if (this.eventPublisher != null)
+            {
+                foreach (var e in entity.UncommittedEvents)
+                {
+                    this.eventPublisher.Publish(e);
+                }
+            }
+        }
 
-        public abstract void Update(TAggregateRoot entity);
-
-        public abstract void Delete(TAggregateRoot entity);
+        protected abstract void DoSave(TAggregateRoot entity);
 
         public abstract TAggregateRoot GetById(Guid id);
 
@@ -38,8 +43,6 @@ namespace DDDLite.Repository
         }
 
         public abstract IQueryable<TAggregateRoot> Find(Specification<TAggregateRoot> specification, SortSpecification<TAggregateRoot> sortSpecification);
-
-        public abstract Task<TAggregateRoot> GetByIdAsync(Guid id);
 
         public abstract bool Exist(Specification<TAggregateRoot> specification);
     }

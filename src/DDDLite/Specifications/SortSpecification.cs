@@ -6,8 +6,6 @@
     using System.Linq;
     using System.Linq.Expressions;
 
-    using Domain;
-
     /// <summary>
     /// Represents the sort specification in a query that is used for defining the sort field and order.
     /// </summary>

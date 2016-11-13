@@ -1,4 +1,4 @@
-﻿namespace DDDLite.Domain
+﻿namespace DDDLite
 {
     /// <summary>
     /// Represents the sort order in a sorted query.

@@ -2,36 +2,37 @@ namespace DDDLite.Repository.EntityFramework
 {
     using System;
     using System.Linq;
-    using System.Threading.Tasks;
 
     using Microsoft.EntityFrameworkCore;
 
 
-    using DDDLite.Domain;
+    using DDDLite;
     using DDDLite.Specifications;
+    using Events;
+    using Messaging;
 
     public class EFDomainRepository<TAggregateRoot> : DomainRepository<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
         private readonly DbContext dbContext;
 
-        public EFDomainRepository(IDomainRepositoryContext context)
-            : base(context)
+        public EFDomainRepository(DbContext context, IEventPublisher eventPublisher)
+            : base(eventPublisher)
         {
-            this.dbContext = (context as EFDomainRepositoryContext)?.DbContext;
+            this.dbContext = context;
             if (this.dbContext == null)
             {
                 throw new CoreException("context参数不正确");
             }
         }
 
-        public override void Create(TAggregateRoot entity)
+        public void Create(TAggregateRoot entity)
         {
             var entry = this.dbContext.Entry(entity);
             entry.State = EntityState.Added;
         }
 
-        public override void Update(TAggregateRoot entity)
+        public void Update(TAggregateRoot entity)
         {
             var entry = this.dbContext.Entry(entity);
             var property = entry.Property(k => k.RowVersion);
@@ -40,13 +41,41 @@ namespace DDDLite.Repository.EntityFramework
             entry.State = EntityState.Modified;
         }
 
-        public override void Delete(TAggregateRoot entity)
+        public void Delete(TAggregateRoot entity)
         {
             var entry = this.dbContext.Entry(entity);
             var property = entry.Property(k => k.RowVersion);
             property.OriginalValue = entity.RowVersion;
             property.CurrentValue = entity.RowVersion + 1;
             entry.State = EntityState.Deleted;
+        }
+
+        protected override void DoSave(TAggregateRoot entity)
+        {
+            var lastEvent = entity.UncommittedEvents.LastOrDefault();
+            if (lastEvent != null && lastEvent is DeletedEvent<TAggregateRoot>)
+            {
+                this.Delete(entity);
+            }
+            else
+            {
+                if (EntityState.Detached == this.dbContext.Entry(entity).State)
+                {
+                    var saved = this.Exist(Specification<TAggregateRoot>.Eval(k => k.Id == entity.Id));
+                    if (saved)
+                    {
+                        this.Update(entity);
+                    }
+                    else
+                    {
+                        this.Create(entity);
+                    }
+                }
+                else
+                {
+                    this.Update(entity);
+                }
+            }
         }
 
         public override bool Exist(Specification<TAggregateRoot> specification)
@@ -100,11 +129,6 @@ namespace DDDLite.Repository.EntityFramework
         public override TAggregateRoot GetById(Guid id)
         {
             return this.dbContext.Set<TAggregateRoot>().FirstOrDefault(k => k.Id == id);
-        }
-
-        public override Task<TAggregateRoot> GetByIdAsync(Guid id)
-        {
-            return this.dbContext.Set<TAggregateRoot>().FirstOrDefaultAsync(k => k.Id == id);
         }
     }
 }

@@ -3,7 +3,6 @@ namespace DDDLite.Querying
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Domain;
     using Repository;
 
     public abstract class QueryService<TAggregateRoot> : IQueryService<TAggregateRoot>
@@ -12,16 +11,12 @@ namespace DDDLite.Querying
         public static readonly ICollection<Sorter> EmptySorters = new List<Sorter>();
         public static readonly ICollection<Filter> EmptyFilters = new List<Filter>();
 
-        private readonly IQueryRepositoryContext context;
         private readonly IQueryRepository<TAggregateRoot> repository;
 
-        protected QueryService(IQueryRepositoryContext context)
+        protected QueryService(IQueryRepository<TAggregateRoot> repository)
         {
-            this.context = context;
-            this.repository = context.GetRepository<TAggregateRoot>();
+            this.repository = repository;
         }
-
-        public IQueryRepositoryContext Context => this.context;
 
         public IQueryRepository<TAggregateRoot> Repository => this.repository;
 
