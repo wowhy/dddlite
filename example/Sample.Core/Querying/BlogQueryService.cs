@@ -1,13 +1,14 @@
 namespace Sample.Core.Querying
 {
+    using DDDLite.Repository;
     using DDDLite.Querying;
 
-    using Domain;
+    using Entity;
     using Repository;
 
     public class BlogQueryService : QueryService<Blog>, IBlogQueryService
     {
-        public BlogQueryService(ISampleQueryRepositoryContext context) : base(context)
+        public BlogQueryService(IQueryRepository<Blog> repository) : base(repository)
         {
         }
     }

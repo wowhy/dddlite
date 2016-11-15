@@ -2,7 +2,7 @@ namespace Sample.Core.Repository
 {
     using Microsoft.EntityFrameworkCore;
 
-    using Domain;
+    using Entity;
 
     public abstract class SampleDbContext : DbContext
     {

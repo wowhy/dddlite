@@ -4,7 +4,7 @@
 
     using DDDLite.Config;
 
-    using Domain;
+    using Entity;
     using DTO;
 
     public class AllMapperHereProfile : Profile

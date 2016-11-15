@@ -4,17 +4,15 @@
     using DDDLite.Commands.Validation;
     using DDDLite.Repository;
 
-    using Domain;
+    using Entity;
     using Repository;
     using Validation;
 
     public class BlogCommandHandler : AggregateCommandHandler<Blog>
     {
-        public BlogCommandHandler(
-            ISampleDomainRepositoryContext context, 
-            BlogCreateValidator createValidator) : base(context)
+        public BlogCommandHandler(IDomainRepository<Blog> repository) : base(repository)
         {
-            this.AddValidator(typeof(CreateCommand<Blog>), createValidator);
+            this.AddValidator(typeof(CreateCommand<Blog>), new BlogCreateValidator(repository));
         }
     }
 }

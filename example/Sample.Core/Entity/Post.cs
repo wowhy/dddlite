@@ -1,8 +1,8 @@
-namespace Sample.Core.Domain
+namespace Sample.Core.Entity
 {
     using System;
 
-    using DDDLite.Domain;
+    using DDDLite;
 
     public class Post : AggregateRoot
     {

@@ -11,18 +11,14 @@ namespace DDDLite.Messaging
     {
         private bool disposed;
 
-
         public IMessageSubscriber Subscriber { get; private set; }
 
-        public IServiceProvider ServiceProvider { get; private set; }
+        private readonly Dictionary<Type, Func<ICommandHandler>> handlerCreators;
 
-        private readonly Dictionary<Type, Func<IServiceProvider, ICommandHandler>> handlerCreators;
-
-        public CommandConsumer(IMessageSubscriber subscriber, IServiceProvider serviceProvider, IEnumerable<KeyValuePair<Type, Func<IServiceProvider, ICommandHandler>>> handlerCreators)
+        public CommandConsumer(IMessageSubscriber subscriber, IEnumerable<KeyValuePair<Type, Func<ICommandHandler>>> handlerCreators)
         {
             this.Subscriber = subscriber;
-            this.ServiceProvider = serviceProvider;
-            this.handlerCreators = new Dictionary<Type, Func<IServiceProvider, ICommandHandler>>();
+            this.handlerCreators = new Dictionary<Type, Func<ICommandHandler>>();
 
             if (handlerCreators != null)
             {
@@ -38,7 +34,7 @@ namespace DDDLite.Messaging
                 if (this.handlerCreators.ContainsKey(messageType))
                 {
                     var creator = this.handlerCreators[messageType];
-                    var handler = creator(this.ServiceProvider);
+                    var handler = creator();
                     if (handler != null)
                     {
                         var method = handler.GetType().GetTypeInfo().GetMethod("Handle", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
@@ -53,6 +49,14 @@ namespace DDDLite.Messaging
                                 throw ex.InnerException;
                             }
                         }
+                        else
+                        {
+                            throw new CoreException("命令无法找到符合条件的方法！");
+                        }
+                    }
+                    else
+                    {
+                        throw new CoreException("无法找到相关命令！");
                     }
                 }
             };

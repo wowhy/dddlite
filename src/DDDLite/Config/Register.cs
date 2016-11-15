@@ -17,20 +17,6 @@
             this.services = services;
         }
 
-        public void RegisterValidators(Assembly assembly)
-        {
-            var types = assembly.GetTypes();
-            var validationTypes = types.Where(k => k.Name.EndsWith("Validator") && k.GetTypeInfo().IsClass && !k.GetTypeInfo().IsAbstract);
-
-            Console.WriteLine("Register Validators");
-            foreach (var type in validationTypes)
-            {
-                Console.WriteLine("type: " + type.FullName);
-                this.services.AddScoped(type);
-            }
-            Console.WriteLine();
-        }
-
         public void RegisterCommandHandlers(Assembly assembly)
         {
             var types = assembly.GetTypes();
@@ -41,7 +27,7 @@
             {
                 Console.WriteLine("type: " + type.FullName);
                 var typeInfo = type.GetTypeInfo();
-                var interfaceTypes = typeInfo.GetInterfaces().Where(k => k.GetGenericTypeDefinition() == typeof(ICommandHandler<>));
+                var interfaceTypes = typeInfo.GetInterfaces().Where(k => k.IsConstructedGenericType && k.GetGenericTypeDefinition() == typeof(ICommandHandler<>));
                 foreach (var interfaceType in interfaceTypes)
                 {
                     this.services.AddScoped(interfaceType, type);

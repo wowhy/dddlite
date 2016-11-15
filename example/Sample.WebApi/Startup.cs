@@ -1,6 +1,7 @@
 namespace Sample.WebApi
 {
     using System;
+    using System.Collections.Generic;
     using System.Reflection;
 
     using Microsoft.AspNetCore.Builder;
@@ -18,8 +19,9 @@ namespace Sample.WebApi
     using DDDLite.WebApi;
     using DDDLite.Config;
 
-    using Core.Domain;
+    using Core.Entity;
     using Core.Repository;
+    using Core.Querying;
 
     public class Startup
     {
@@ -48,22 +50,25 @@ namespace Sample.WebApi
 
             // register command sender
             services.AddSingleton<InProcessCommandBus>();
-            services.AddSingleton<ICommandSender>((provider) => provider.GetService<InProcessCommandBus>());
             services.AddSingleton<IMessageSubscriber>((provider) => provider.GetService<InProcessCommandBus>());
-            services.AddSingleton<ICommandService>((provider) => new CommandService(provider.GetService<IMessageSubscriber>(), provider));
+            services.AddSingleton<ICommandSender>((provider) => provider.GetService<InProcessCommandBus>());
+            services.AddSingleton<IEventPublisher>((provider) => null);
+            services.AddSingleton<ICommandConsumer>((provider) => new CommandConsumer(provider.GetService<IMessageSubscriber>(), new Dictionary<Type, Func<ICommandHandler>>
+            {
+                { typeof(CreateCommand<Blog>), () => provider.GetService<ICommandHandler<ICreateCommand<Blog>>>() }
+            }));
 
             // register command repository context
-            services.AddDbContext<SampleDomainDbContext>(options => options.UseNpgsql(this.Configuration.GetConnectionString("WriteConnection")));
-            services.AddRepositoryContext<ISampleDomainRepositoryContext, SampleDomainRepositoryContext>();
-            services.AddRepository<ISampleDomainRepositoryContext, IDomainRepository<Blog>>(context => context.GetRepository<Blog>());
+            services.AddDbContext<SampleMasterDbContext>(options => options.UseNpgsql(this.Configuration.GetConnectionString("WriteConnection")));
+            services.AddScoped<IDomainRepository<Blog>, SampleDomainRepository<Blog>>();
 
             // register query repository context
             services.AddDbContext<SampleReadonlyDbContext>(options => options.UseNpgsql(this.Configuration.GetConnectionString("ReadConnection")));
-            services.AddRepositoryContext<ISampleQueryRepositoryContext, SampleQueryRepositoryContext>();
+            services.AddScoped<IQueryRepository<Blog>, SampleQueryRepository<Blog>>();
 
             var assembly = Assembly.Load(new AssemblyName("Sample.Core"));
             var register = new Register(services);
-            register.RegisterValidators(assembly);
+            
             register.RegisterCommandHandlers(assembly);
             register.RegisterQueryServices(assembly);
             register.RegisterAutoMapper(assembly);
@@ -77,8 +82,9 @@ namespace Sample.WebApi
             app.UseMvc();
             app.UseCors("*");
 
-            service.GetService<SampleDomainDbContext>().Database.EnsureCreated();
-            service.GetService<ICommandService>().Subscriber.Subscribe();
+            service.GetService<SampleMasterDbContext>().Database.EnsureCreated();
+            service.GetService<ICommandConsumer>().Subscriber.Subscribe();
+            service.GetService<IBlogQueryService>();
         }
     }
 }

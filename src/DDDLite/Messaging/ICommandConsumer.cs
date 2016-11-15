@@ -4,6 +4,5 @@ namespace DDDLite.Messaging
     
     public interface ICommandConsumer : IMessageConsumer
     {
-        IServiceProvider ServiceProvider { get; }
     }
 }

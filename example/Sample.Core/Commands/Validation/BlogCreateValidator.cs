@@ -4,7 +4,7 @@ namespace Sample.Core.Commands.Validation
     using DDDLite.Commands.Validation;
     using DDDLite.Repository;
 
-    using Domain;
+    using Entity;
 
     public class BlogCreateValidator : Validator<CreateCommand<Blog>>
     {

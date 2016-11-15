@@ -7,7 +7,7 @@ namespace Sample.WebApi.Controllers
     using DDDLite.WebApi;
     using DDDLite.Messaging;
 
-    using Core.Domain;
+    using Core.Entity;
     using Core.Querying;
     using Core.DTO;
 

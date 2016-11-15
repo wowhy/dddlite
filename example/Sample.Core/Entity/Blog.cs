@@ -1,9 +1,9 @@
-namespace Sample.Core.Domain
+namespace Sample.Core.Entity
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
-    using DDDLite.Domain;
+    using DDDLite;
 
     public class Blog : AggregateRoot
     {
