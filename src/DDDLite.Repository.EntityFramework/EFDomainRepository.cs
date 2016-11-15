@@ -76,6 +76,8 @@ namespace DDDLite.Repository.EntityFramework
                     this.Update(entity);
                 }
             }
+
+            this.dbContext.SaveChanges();
         }
 
         public override bool Exist(Specification<TAggregateRoot> specification)

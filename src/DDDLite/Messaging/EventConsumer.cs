@@ -12,15 +12,12 @@ namespace DDDLite.Messaging
 
         public IMessageSubscriber Subscriber { get; protected set; }
 
-        public IServiceProvider ServiceProvider { get; protected set; }
+        private readonly Dictionary<Type, Func<IEventHandler>> handlerCreators;
 
-        private readonly Dictionary<Type, Func<IServiceProvider, IEventHandler>> handlerCreators;
-
-        public EventConsumer(IMessageSubscriber subscriber, IServiceProvider serviceProvider, IEnumerable<KeyValuePair<Type, Func<IServiceProvider, IEventHandler>>> handlerCreators)
+        public EventConsumer(IMessageSubscriber subscriber, IEnumerable<KeyValuePair<Type, Func<IEventHandler>>> handlerCreators)
         {
             this.Subscriber = subscriber;
-            this.ServiceProvider = serviceProvider;
-            this.handlerCreators = new Dictionary<Type, Func<IServiceProvider, IEventHandler>>();
+            this.handlerCreators = new Dictionary<Type, Func<IEventHandler>>();
 
             if (handlerCreators != null)
             {
@@ -36,7 +33,7 @@ namespace DDDLite.Messaging
                 if (this.handlerCreators.ContainsKey(messageType))
                 {
                     var creator = this.handlerCreators[messageType];
-                    var handler = creator(this.ServiceProvider);
+                    var handler = creator();
                     if (handler != null)
                     {
                         var method = handler.GetType().GetTypeInfo().GetMethod("Handle", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);

@@ -7,6 +7,7 @@
     using Microsoft.Extensions.DependencyInjection;
 
     using Commands;
+    using Messaging;
 
     public class Register
     {
@@ -25,13 +26,7 @@
             Console.WriteLine("Register CommandHandlers");
             foreach (var type in commandHandlerTypes)
             {
-                Console.WriteLine("type: " + type.FullName);
-                var typeInfo = type.GetTypeInfo();
-                var interfaceTypes = typeInfo.GetInterfaces().Where(k => k.IsConstructedGenericType && k.GetGenericTypeDefinition() == typeof(ICommandHandler<>));
-                foreach (var interfaceType in interfaceTypes)
-                {
-                    this.services.AddScoped(interfaceType, type);
-                }
+                this.services.AddScoped(type);
             }
             Console.WriteLine();
         }
@@ -61,7 +56,7 @@
 
         public void RegisterAutoMapper(params Assembly[] assemblies)
         {
-            AutoMapper.Mapper.Initialize(cfg => 
+            AutoMapper.Mapper.Initialize(cfg =>
             {
                 cfg.AddProfiles(assemblies);
             });

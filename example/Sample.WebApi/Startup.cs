@@ -22,6 +22,8 @@ namespace Sample.WebApi
     using Core.Entity;
     using Core.Repository;
     using Core.Querying;
+    using DDDLite.Events;
+    using Core.Commands;
 
     public class Startup
     {
@@ -48,16 +50,6 @@ namespace Sample.WebApi
                 }
             );
 
-            // register command sender
-            services.AddSingleton<InProcessCommandBus>();
-            services.AddSingleton<IMessageSubscriber>((provider) => provider.GetService<InProcessCommandBus>());
-            services.AddSingleton<ICommandSender>((provider) => provider.GetService<InProcessCommandBus>());
-            services.AddSingleton<IEventPublisher>((provider) => null);
-            services.AddSingleton<ICommandConsumer>((provider) => new CommandConsumer(provider.GetService<IMessageSubscriber>(), new Dictionary<Type, Func<ICommandHandler>>
-            {
-                { typeof(CreateCommand<Blog>), () => provider.GetService<ICommandHandler<ICreateCommand<Blog>>>() }
-            }));
-
             // register command repository context
             services.AddDbContext<SampleMasterDbContext>(options => options.UseNpgsql(this.Configuration.GetConnectionString("WriteConnection")));
             services.AddScoped<IDomainRepository<Blog>, SampleDomainRepository<Blog>>();
@@ -68,7 +60,23 @@ namespace Sample.WebApi
 
             var assembly = Assembly.Load(new AssemblyName("Sample.Core"));
             var register = new Register(services);
-            
+
+            // register command sender
+            services.AddSingleton<InProcessCommandBus>();
+            services.AddSingleton<ICommandSender>(provider => provider.GetService<InProcessCommandBus>());
+            services.AddSingleton<ICommandConsumer>(provider => new CommandConsumer(provider.GetService<InProcessCommandBus>(), new Dictionary<Type, Func<ICommandHandler>>
+            {
+                { typeof(CreateCommand<Blog>), () => provider.GetService<BlogCommandHandler>() },
+                { typeof(DeleteCommand<Blog>), () => provider.GetService<BlogCommandHandler>() }
+            }));
+
+            // register event publisher
+            services.AddSingleton<InProcessEventBus>();
+            services.AddSingleton<IEventPublisher>(provider => provider.GetService<InProcessEventBus>());
+            services.AddSingleton<IEventConsumer>(provider => new EventConsumer(provider.GetService<InProcessEventBus>(), new Dictionary<Type, Func<IEventHandler>>
+            {
+            }));
+
             register.RegisterCommandHandlers(assembly);
             register.RegisterQueryServices(assembly);
             register.RegisterAutoMapper(assembly);
@@ -84,7 +92,7 @@ namespace Sample.WebApi
 
             service.GetService<SampleMasterDbContext>().Database.EnsureCreated();
             service.GetService<ICommandConsumer>().Subscriber.Subscribe();
-            service.GetService<IBlogQueryService>();
+            service.GetService<IEventConsumer>().Subscriber.Subscribe();
         }
     }
 }

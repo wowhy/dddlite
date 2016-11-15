@@ -37,7 +37,7 @@ namespace DDDLite.Messaging
                     var handler = creator();
                     if (handler != null)
                     {
-                        var method = handler.GetType().GetTypeInfo().GetMethod("Handle", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);
+                        var method = handler.GetType().GetRuntimeMethod("Handle", new Type[] { messageType });
                         if (method != null)
                         {
                             try
@@ -51,13 +51,17 @@ namespace DDDLite.Messaging
                         }
                         else
                         {
-                            throw new CoreException("命令无法找到符合条件的方法！");
+                            throw new CoreException("命令处理程序缺少Handle方法！");
                         }
                     }
                     else
                     {
-                        throw new CoreException("无法找到相关命令！");
+                        throw new CoreException("无法初始化命令处理程序！");
                     }
+                }
+                else
+                {
+                    throw new CoreException("无法找到相关命令处理程序！");
                 }
             };
         }
