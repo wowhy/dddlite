@@ -24,6 +24,7 @@ namespace Sample.WebApi
     using Core.Querying;
     using DDDLite.Events;
     using Core.Commands;
+    using Core.Config;
 
     public class Startup
     {
@@ -59,27 +60,8 @@ namespace Sample.WebApi
             services.AddScoped<IQueryRepository<Blog>, SampleQueryRepository<Blog>>();
 
             var assembly = Assembly.Load(new AssemblyName("Sample.Core"));
-            var register = new Register(services);
-
-            // register command sender
-            services.AddSingleton<InProcessCommandBus>();
-            services.AddSingleton<ICommandSender>(provider => provider.GetService<InProcessCommandBus>());
-            services.AddSingleton<ICommandConsumer>(provider => new CommandConsumer(provider.GetService<InProcessCommandBus>(), new Dictionary<Type, Func<ICommandHandler>>
-            {
-                { typeof(CreateCommand<Blog>), () => provider.GetService<BlogCommandHandler>() },
-                { typeof(DeleteCommand<Blog>), () => provider.GetService<BlogCommandHandler>() }
-            }));
-
-            // register event publisher
-            services.AddSingleton<InProcessEventBus>();
-            services.AddSingleton<IEventPublisher>(provider => provider.GetService<InProcessEventBus>());
-            services.AddSingleton<IEventConsumer>(provider => new EventConsumer(provider.GetService<InProcessEventBus>(), new Dictionary<Type, Func<IEventHandler>>
-            {
-            }));
-
-            register.RegisterCommandHandlers(assembly);
-            register.RegisterQueryServices(assembly);
-            register.RegisterAutoMapper(assembly);
+            var register = new SampleRegister(services);
+            register.Load(assembly);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider service)

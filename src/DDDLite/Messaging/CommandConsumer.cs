@@ -13,18 +13,18 @@ namespace DDDLite.Messaging
 
         public IMessageSubscriber Subscriber { get; private set; }
 
-        private readonly Dictionary<Type, Func<ICommandHandler>> handlerCreators;
+        private readonly IDictionary<Type, Func<ICommandHandler>> handlerCreators;
 
         public CommandConsumer(IMessageSubscriber subscriber, IEnumerable<KeyValuePair<Type, Func<ICommandHandler>>> handlerCreators)
         {
             this.Subscriber = subscriber;
             this.handlerCreators = new Dictionary<Type, Func<ICommandHandler>>();
 
-            if (handlerCreators != null)
+            if (this.handlerCreators != null)
             {
-                foreach (var creator in handlerCreators)
+                foreach (var ctor in handlerCreators)
                 {
-                    this.handlerCreators[creator.Key] = creator.Value;
+                    this.handlerCreators.Add(ctor.Key, ctor.Value);
                 }
             }
 

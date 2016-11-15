@@ -12,18 +12,18 @@ namespace DDDLite.Messaging
 
         public IMessageSubscriber Subscriber { get; protected set; }
 
-        private readonly Dictionary<Type, Func<IEventHandler>> handlerCreators;
+        private readonly IDictionary<Type, Func<IEventHandler>> handlerCreators;
 
         public EventConsumer(IMessageSubscriber subscriber, IEnumerable<KeyValuePair<Type, Func<IEventHandler>>> handlerCreators)
         {
             this.Subscriber = subscriber;
             this.handlerCreators = new Dictionary<Type, Func<IEventHandler>>();
 
-            if (handlerCreators != null)
+            if (this.handlerCreators != null)
             {
-                foreach (var creator in handlerCreators)
+                foreach (var ctor in handlerCreators)
                 {
-                    this.handlerCreators[creator.Key] = creator.Value;
+                    this.handlerCreators.Add(ctor.Key, ctor.Value);
                 }
             }
 

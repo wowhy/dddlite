@@ -1,4 +1,4 @@
-﻿namespace Sample.Core.Mappers
+﻿namespace Sample.Core.Config
 {
     using AutoMapper;
 
