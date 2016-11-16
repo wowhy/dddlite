@@ -5,10 +5,11 @@ namespace Sample.Core.Querying
 
     using Entity;
     using Repository;
+    using DDDLite.Repository.EntityFramework;
 
     public class BlogQueryService : QueryService<Blog>, IBlogQueryService
     {
-        public BlogQueryService(IQueryRepository<Blog> repository) : base(repository)
+        public BlogQueryService(DDDLite.Repository.EntityFramework.IEFQueryRepository<Blog> repository) : base(repository)
         {
         }
     }

@@ -1,13 +1,13 @@
-﻿namespace Sample.Core.Config
+﻿namespace Sample.WebApi.Config
 {
     using System;
     using System.Collections.Generic;
-    using Commands;
     using DDDLite.Commands;
     using DDDLite.Config;
     using DDDLite.Events;
-    using Entity;
     using Microsoft.Extensions.DependencyInjection;
+    using Sample.Core.Commands;
+    using Sample.Core.Entity;
 
     public class SampleRegister : Register
     {

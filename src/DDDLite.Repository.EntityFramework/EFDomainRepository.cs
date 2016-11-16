@@ -11,7 +11,7 @@ namespace DDDLite.Repository.EntityFramework
     using Events;
     using Messaging;
 
-    public class EFDomainRepository<TAggregateRoot> : DomainRepository<TAggregateRoot>
+    public class EFDomainRepository<TAggregateRoot> : DomainRepository<TAggregateRoot>, IEFDomainRepository<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
         private readonly DbContext dbContext;
@@ -25,6 +25,8 @@ namespace DDDLite.Repository.EntityFramework
                 throw new CoreException("context参数不正确");
             }
         }
+
+        public DbContext DbContext => this.dbContext;
 
         public void Create(TAggregateRoot entity)
         {
@@ -48,36 +50,6 @@ namespace DDDLite.Repository.EntityFramework
             property.OriginalValue = entity.RowVersion;
             property.CurrentValue = entity.RowVersion + 1;
             entry.State = EntityState.Deleted;
-        }
-
-        protected override void DoSave(TAggregateRoot entity)
-        {
-            var lastEvent = entity.UncommittedEvents.LastOrDefault();
-            if (lastEvent != null && lastEvent is DeletedEvent<TAggregateRoot>)
-            {
-                this.Delete(entity);
-            }
-            else
-            {
-                if (EntityState.Detached == this.dbContext.Entry(entity).State)
-                {
-                    var saved = this.Exist(Specification<TAggregateRoot>.Eval(k => k.Id == entity.Id));
-                    if (saved)
-                    {
-                        this.Update(entity);
-                    }
-                    else
-                    {
-                        this.Create(entity);
-                    }
-                }
-                else
-                {
-                    this.Update(entity);
-                }
-            }
-
-            this.dbContext.SaveChanges();
         }
 
         public override bool Exist(Specification<TAggregateRoot> specification)
@@ -131,6 +103,36 @@ namespace DDDLite.Repository.EntityFramework
         public override TAggregateRoot GetById(Guid id)
         {
             return this.dbContext.Set<TAggregateRoot>().FirstOrDefault(k => k.Id == id);
+        }
+
+        protected override void DoSave(TAggregateRoot entity)
+        {
+            var lastEvent = entity.UncommittedEvents.LastOrDefault();
+            if (lastEvent != null && lastEvent is DeletedEvent<TAggregateRoot>)
+            {
+                this.Delete(entity);
+            }
+            else
+            {
+                if (EntityState.Detached == this.dbContext.Entry(entity).State)
+                {
+                    var saved = this.Exist(Specification<TAggregateRoot>.Eval(k => k.Id == entity.Id));
+                    if (saved)
+                    {
+                        this.Update(entity);
+                    }
+                    else
+                    {
+                        this.Create(entity);
+                    }
+                }
+                else
+                {
+                    this.Update(entity);
+                }
+            }
+
+            this.dbContext.SaveChanges();
         }
     }
 }

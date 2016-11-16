@@ -4,8 +4,8 @@
 
     using DDDLite.Config;
 
-    using Entity;
-    using DTO;
+    using Sample.Core.Entity;
+    using Sample.Core.DTO;
 
     public class AllMapperHereProfile : Profile
     {

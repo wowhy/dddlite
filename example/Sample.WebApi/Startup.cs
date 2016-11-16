@@ -11,20 +11,14 @@ namespace Sample.WebApi
     using Microsoft.Extensions.Logging;
     using Microsoft.EntityFrameworkCore;
 
-    using AutoMapper;
-
-    using DDDLite.Commands;
     using DDDLite.Messaging;
     using DDDLite.Repository;
     using DDDLite.WebApi;
-    using DDDLite.Config;
 
     using Core.Entity;
     using Core.Repository;
-    using Core.Querying;
-    using DDDLite.Events;
-    using Core.Commands;
-    using Core.Config;
+    using Config;
+    using DDDLite.Repository.EntityFramework;
 
     public class Startup
     {
@@ -53,11 +47,11 @@ namespace Sample.WebApi
 
             // register command repository context
             services.AddDbContext<SampleMasterDbContext>(options => options.UseNpgsql(this.Configuration.GetConnectionString("WriteConnection")));
-            services.AddScoped<IDomainRepository<Blog>, SampleDomainRepository<Blog>>();
+            services.AddScoped<IEFDomainRepository<Blog>, SampleDomainRepository<Blog>>();
 
             // register query repository context
             services.AddDbContext<SampleReadonlyDbContext>(options => options.UseNpgsql(this.Configuration.GetConnectionString("ReadConnection")));
-            services.AddScoped<IQueryRepository<Blog>, SampleQueryRepository<Blog>>();
+            services.AddScoped<DDDLite.Repository.EntityFramework.IEFQueryRepository<Blog>, SampleQueryRepository<Blog>>();
 
             var assembly = Assembly.Load(new AssemblyName("Sample.Core"));
             var register = new SampleRegister(services);
