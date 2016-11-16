@@ -4,6 +4,8 @@ namespace DDDLite.Messaging
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Reflection;
+    using System.Linq;
+
     using Events;
 
     public class EventConsumer : DisposableObject, IEventConsumer
@@ -12,27 +14,31 @@ namespace DDDLite.Messaging
 
         public IMessageSubscriber Subscriber { get; protected set; }
 
-        private readonly IDictionary<Type, Func<IEventHandler>> handlerCreators;
+        private readonly IDictionary<Type, Func<IEventHandler>> eventRoutes;
 
         public EventConsumer(IMessageSubscriber subscriber, IEnumerable<KeyValuePair<Type, Func<IEventHandler>>> handlerCreators)
         {
             this.Subscriber = subscriber;
-            this.handlerCreators = new Dictionary<Type, Func<IEventHandler>>();
-
-            if (this.handlerCreators != null)
+            this.eventRoutes = new Dictionary<Type, Func<IEventHandler>>();
+            foreach (var ctor in handlerCreators)
             {
-                foreach (var ctor in handlerCreators)
+                var typeInfo = ctor.Key.GetTypeInfo();
+                var eventTypes = typeInfo.GetInterfaces()
+                    .Where(k => k.IsConstructedGenericType && k.GetGenericTypeDefinition() == typeof(IEventHandler<>))
+                    .Select(k => k.GenericTypeArguments[0]);
+
+                foreach (var eventType in eventTypes)
                 {
-                    this.handlerCreators.Add(ctor.Key, ctor.Value);
+                    this.eventRoutes.Add(eventType, ctor.Value);
                 }
             }
 
             subscriber.MessageReceived += (sender, e) =>
             {
                 var messageType = e.Message.GetType();
-                if (this.handlerCreators.ContainsKey(messageType))
+                if (this.eventRoutes.ContainsKey(messageType))
                 {
-                    var creator = this.handlerCreators[messageType];
+                    var creator = this.eventRoutes[messageType];
                     var handler = creator();
                     if (handler != null)
                     {

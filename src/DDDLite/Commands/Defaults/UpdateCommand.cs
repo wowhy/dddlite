@@ -1,6 +1,6 @@
 namespace DDDLite.Commands
 {
-    public class UpdateCommand<TAggregateRoot> : DomainCommand<TAggregateRoot>, IUpdateCommand<TAggregateRoot>
+    public class UpdateCommand<TAggregateRoot> : DomainCommand<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
     }

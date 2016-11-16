@@ -10,9 +10,9 @@
     using Validation;
 
     public abstract class AggregateCommandHandler<TAggregateRoot>
-        : ICommandHandler<ICreateCommand<TAggregateRoot>>
-        , ICommandHandler<IUpdateCommand<TAggregateRoot>>
-        , ICommandHandler<IDeleteCommand<TAggregateRoot>>
+        : ICommandHandler<CreateCommand<TAggregateRoot>>
+        , ICommandHandler<UpdateCommand<TAggregateRoot>>
+        , ICommandHandler<DeleteCommand<TAggregateRoot>>
 
         where TAggregateRoot : class, IAggregateRoot, new()
     {
@@ -29,22 +29,22 @@
 
         public IDomainRepository<TAggregateRoot> Repository => this.repository;
 
-        public virtual void Validate(IDeleteCommand<TAggregateRoot> command)
+        public virtual void Validate(DeleteCommand<TAggregateRoot> command)
         {
             this.DoValidate(command);
         }
 
-        public virtual void Validate(IUpdateCommand<TAggregateRoot> command)
+        public virtual void Validate(UpdateCommand<TAggregateRoot> command)
         {
             this.DoValidate(command);
         }
 
-        public virtual void Validate(ICreateCommand<TAggregateRoot> command)
+        public virtual void Validate(CreateCommand<TAggregateRoot> command)
         {
             this.DoValidate(command);
         }
 
-        public virtual void Handle(IDeleteCommand<TAggregateRoot> command)
+        public virtual void Handle(DeleteCommand<TAggregateRoot> command)
         {
             var entity = this.Repository.GetById(command.AggregateRootId);
 
@@ -57,7 +57,7 @@
             this.Repository.Save(entity);
         }
 
-        public virtual void Handle(IUpdateCommand<TAggregateRoot> command)
+        public virtual void Handle(UpdateCommand<TAggregateRoot> command)
         {
             var entity = this.Repository.GetById(command.AggregateRootId);
 
@@ -73,7 +73,7 @@
             this.Repository.Save(entity);
         }
 
-        public virtual void Handle(ICreateCommand<TAggregateRoot> command)
+        public virtual void Handle(CreateCommand<TAggregateRoot> command)
         {
             this.Validate(command);
 

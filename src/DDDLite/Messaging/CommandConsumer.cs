@@ -4,6 +4,7 @@ namespace DDDLite.Messaging
     using System.Collections.Generic;
     using System.Collections.Concurrent;
     using System.Reflection;
+    using System.Linq;
 
     using Commands;
 
@@ -13,27 +14,39 @@ namespace DDDLite.Messaging
 
         public IMessageSubscriber Subscriber { get; private set; }
 
-        private readonly IDictionary<Type, Func<ICommandHandler>> handlerCreators;
+        private readonly IDictionary<Type, Func<ICommandHandler>> commandRoutes;
 
         public CommandConsumer(IMessageSubscriber subscriber, IEnumerable<KeyValuePair<Type, Func<ICommandHandler>>> handlerCreators)
         {
             this.Subscriber = subscriber;
-            this.handlerCreators = new Dictionary<Type, Func<ICommandHandler>>();
+            this.commandRoutes = new Dictionary<Type, Func<ICommandHandler>>();
+            foreach (var ctor in handlerCreators)
+            {
+                var typeInfo = ctor.Key.GetTypeInfo();
+                var commandTypes = typeInfo.GetInterfaces()
+                    .Where(k => k.IsConstructedGenericType && k.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
+                    .Select(k => k.GenericTypeArguments[0]);
 
-            if (this.handlerCreators != null)
+                foreach (var commandType in commandTypes)
+                {
+                    this.commandRoutes.Add(commandType, ctor.Value);
+                }
+            }
+
+            if (this.commandRoutes != null)
             {
                 foreach (var ctor in handlerCreators)
                 {
-                    this.handlerCreators.Add(ctor.Key, ctor.Value);
+                    this.commandRoutes.Add(ctor.Key, ctor.Value);
                 }
             }
 
             subscriber.MessageReceived += (sender, e) =>
             {
                 var messageType = e.Message.GetType();
-                if (this.handlerCreators.ContainsKey(messageType))
+                if (this.commandRoutes.ContainsKey(messageType))
                 {
-                    var creator = this.handlerCreators[messageType];
+                    var creator = this.commandRoutes[messageType];
                     var handler = creator();
                     if (handler != null)
                     {

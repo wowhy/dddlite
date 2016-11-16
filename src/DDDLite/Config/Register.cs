@@ -36,8 +36,8 @@
             }
         }
 
-        protected virtual IDictionary<Type, Func<IServiceProvider, ICommandHandler>> CommandHandlerRoutes => new Dictionary<Type, Func<IServiceProvider, ICommandHandler>>();
-        protected virtual IDictionary<Type, Func<IServiceProvider, IEventHandler>> EventHandlerRoutes => new Dictionary<Type, Func<IServiceProvider, IEventHandler>>();
+        protected virtual IDictionary<Type, Func<IServiceProvider, ICommandHandler>> CommandHandlers => new Dictionary<Type, Func<IServiceProvider, ICommandHandler>>();
+        protected virtual IDictionary<Type, Func<IServiceProvider, IEventHandler>> EventHandlers => new Dictionary<Type, Func<IServiceProvider, IEventHandler>>();
 
         protected virtual void RegisterCommandBus()
         {
@@ -46,7 +46,7 @@
             services.AddSingleton<ICommandSender>(provider => provider.GetService<InProcessCommandBus>());
             services.AddSingleton<ICommandConsumer>(provider =>
             {
-                var ctors = from p in this.CommandHandlerRoutes
+                var ctors = from p in this.CommandHandlers
                             select new KeyValuePair<Type, Func<ICommandHandler>>(p.Key, () => p.Value(provider));
                 return new CommandConsumer(provider.GetService<InProcessCommandBus>(), ctors);
             });
@@ -59,7 +59,7 @@
             services.AddSingleton<IEventPublisher>(provider => provider.GetService<InProcessEventBus>());
             services.AddSingleton<IEventConsumer>(provider =>
             {
-                var ctors = from p in this.EventHandlerRoutes
+                var ctors = from p in this.EventHandlers
                             select new KeyValuePair<Type, Func<IEventHandler>>(p.Key, () => p.Value(provider));
                 return new EventConsumer(provider.GetService<InProcessEventBus>(), ctors);
             });

@@ -15,13 +15,11 @@
         {
         }
 
-        protected override IDictionary<Type, Func<IServiceProvider, ICommandHandler>> CommandHandlerRoutes => new Dictionary<Type, Func<IServiceProvider, ICommandHandler>>()
+        protected override IDictionary<Type, Func<IServiceProvider, ICommandHandler>> CommandHandlers => new Dictionary<Type, Func<IServiceProvider, ICommandHandler>>()
         {
-            { typeof(CreateCommand<Blog>), provider => provider.GetService<BlogCommandHandler>() },
-            { typeof(UpdateCommand<Blog>), provider => provider.GetService<BlogCommandHandler>() },
-            { typeof(DeleteCommand<Blog>), provider => provider.GetService<BlogCommandHandler>() }
+            { typeof(BlogCommandHandler), provider => provider.GetService<BlogCommandHandler>() }
         };
-        protected override IDictionary<Type, Func<IServiceProvider, IEventHandler>> EventHandlerRoutes => new Dictionary<Type, Func<IServiceProvider, IEventHandler>>()
+        protected override IDictionary<Type, Func<IServiceProvider, IEventHandler>> EventHandlers => new Dictionary<Type, Func<IServiceProvider, IEventHandler>>()
         {
         };
     }
