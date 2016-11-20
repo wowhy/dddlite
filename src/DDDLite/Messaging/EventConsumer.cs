@@ -14,32 +14,19 @@ namespace DDDLite.Messaging
 
         public IMessageSubscriber Subscriber { get; protected set; }
 
-        private readonly IDictionary<Type, Func<IEventHandler>> eventRoutes;
+        private readonly IEventHandlerFactory factory;
 
-        public EventConsumer(IMessageSubscriber subscriber, IEnumerable<KeyValuePair<Type, Func<IEventHandler>>> handlerCreators)
+        public EventConsumer(IMessageSubscriber subscriber, IEventHandlerFactory factory)
         {
             this.Subscriber = subscriber;
-            this.eventRoutes = new Dictionary<Type, Func<IEventHandler>>();
-            foreach (var ctor in handlerCreators)
-            {
-                var typeInfo = ctor.Key.GetTypeInfo();
-                var eventTypes = typeInfo.GetInterfaces()
-                    .Where(k => k.IsConstructedGenericType && k.GetGenericTypeDefinition() == typeof(IEventHandler<>))
-                    .Select(k => k.GenericTypeArguments[0]);
+            this.factory = factory;
 
-                foreach (var eventType in eventTypes)
-                {
-                    this.eventRoutes.Add(eventType, ctor.Value);
-                }
-            }
 
             subscriber.MessageReceived += (sender, e) =>
             {
                 var messageType = e.Message.GetType();
-                if (this.eventRoutes.ContainsKey(messageType))
+                foreach (var handler in this.factory.GetEventHandlers(messageType))
                 {
-                    var creator = this.eventRoutes[messageType];
-                    var handler = creator();
                     if (handler != null)
                     {
                         var method = handler.GetType().GetTypeInfo().GetMethod("Handle", BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy);

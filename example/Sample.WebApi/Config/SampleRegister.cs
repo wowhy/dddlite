@@ -14,13 +14,5 @@
         public SampleRegister(IServiceCollection services) : base(services)
         {
         }
-
-        protected override IDictionary<Type, Func<IServiceProvider, ICommandHandler>> CommandHandlers => new Dictionary<Type, Func<IServiceProvider, ICommandHandler>>()
-        {
-            { typeof(BlogCommandHandler), provider => provider.GetService<BlogCommandHandler>() }
-        };
-        protected override IDictionary<Type, Func<IServiceProvider, IEventHandler>> EventHandlers => new Dictionary<Type, Func<IServiceProvider, IEventHandler>>()
-        {
-        };
     }
 }

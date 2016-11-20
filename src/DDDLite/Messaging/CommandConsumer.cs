@@ -2,7 +2,6 @@ namespace DDDLite.Messaging
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Concurrent;
     using System.Reflection;
     using System.Linq;
 
@@ -14,67 +13,39 @@ namespace DDDLite.Messaging
 
         public IMessageSubscriber Subscriber { get; private set; }
 
-        private readonly IDictionary<Type, Func<ICommandHandler>> commandRoutes;
+        private ICommandHandlerFactory factory;
 
-        public CommandConsumer(IMessageSubscriber subscriber, IEnumerable<KeyValuePair<Type, Func<ICommandHandler>>> handlerCreators)
+        public CommandConsumer(IMessageSubscriber subscriber, ICommandHandlerFactory factory)
         {
             this.Subscriber = subscriber;
-            this.commandRoutes = new Dictionary<Type, Func<ICommandHandler>>();
-            foreach (var ctor in handlerCreators)
-            {
-                var typeInfo = ctor.Key.GetTypeInfo();
-                var commandTypes = typeInfo.GetInterfaces()
-                    .Where(k => k.IsConstructedGenericType && k.GetGenericTypeDefinition() == typeof(ICommandHandler<>))
-                    .Select(k => k.GenericTypeArguments[0]);
-
-                foreach (var commandType in commandTypes)
-                {
-                    this.commandRoutes.Add(commandType, ctor.Value);
-                }
-            }
-
-            if (this.commandRoutes != null)
-            {
-                foreach (var ctor in handlerCreators)
-                {
-                    this.commandRoutes.Add(ctor.Key, ctor.Value);
-                }
-            }
+            this.factory = factory;
 
             subscriber.MessageReceived += (sender, e) =>
             {
                 var messageType = e.Message.GetType();
-                if (this.commandRoutes.ContainsKey(messageType))
+                var handler = factory.GetHandler(messageType);
+                if (handler != null)
                 {
-                    var creator = this.commandRoutes[messageType];
-                    var handler = creator();
-                    if (handler != null)
+                    var method = handler.GetType().GetRuntimeMethod("Handle", new Type[] { messageType });
+                    if (method != null)
                     {
-                        var method = handler.GetType().GetRuntimeMethod("Handle", new Type[] { messageType });
-                        if (method != null)
+                        try
                         {
-                            try
-                            {
-                                method.Invoke(handler, new[] { e.Message });
-                            }
-                            catch (Exception ex)
-                            {
-                                throw ex.InnerException;
-                            }
+                            method.Invoke(handler, new[] { e.Message });
                         }
-                        else
+                        catch (Exception ex)
                         {
-                            throw new CoreException("√¸¡Ó¥¶¿Ì≥Ã–Ú»±…ŸHandle∑Ω∑®£°");
+                            throw ex.InnerException;
                         }
                     }
                     else
                     {
-                        throw new CoreException("Œﬁ∑®≥ı ºªØ√¸¡Ó¥¶¿Ì≥Ã–Ú£°");
+                        throw new CoreException("ÂëΩ‰ª§Â§ÑÁêÜÁ®ãÂ∫èÁº∫Â∞ëHandleÊñπÊ≥ïÔºÅ");
                     }
                 }
                 else
                 {
-                    throw new CoreException("Œﬁ∑®’“µΩœ‡πÿ√¸¡Ó¥¶¿Ì≥Ã–Ú£°");
+                    throw new CoreException("Êó†Ê≥ïÂàùÂßãÂåñÂëΩ‰ª§Â§ÑÁêÜÁ®ãÂ∫èÔºÅ");
                 }
             };
         }

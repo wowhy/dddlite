@@ -7,30 +7,14 @@ namespace Sample.WebApi.Controllers
     [Route("api/ping")]
     public class PingController : Controller
     {
-        private readonly IHostingEnvironment env;
-
-        public PingController(IHostingEnvironment env)
+        public PingController()
         {
-            this.env = env;
         }
 
         [HttpGet]
         public string Get()
         {
-            return this.env.EnvironmentName;
-        }
-
-        [HttpPost]
-        public string Post()
-        {
-            return "hello, world!";
-        }
-
-        [HttpGet]
-        [Route("exception")]
-        public void ThrowException()
-        {
-            throw new Exception("测试异常信息！");
+            return "Hello, World!";
         }
     }
 }
