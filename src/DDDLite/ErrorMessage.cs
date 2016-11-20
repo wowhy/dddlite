@@ -7,16 +7,21 @@ namespace DDDLite
         public string Message { get; set; }
 
         public List<string> Details { get; set; }
-        
+
         public ErrorMessage()
         {
         }
 
-        public ErrorMessage(string message, IEnumerable<string> details) 
+        public ErrorMessage(string message)
+        {
+            this.Message = message;
+        }
+
+        public ErrorMessage(string message, IEnumerable<string> details)
         {
             this.Message = message;
             this.Details = new List<string>();
-            if(details != null)
+            if (details != null)
             {
                 this.Details.AddRange(details);
             }

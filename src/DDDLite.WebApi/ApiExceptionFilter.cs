@@ -10,19 +10,9 @@ namespace DDDLite.WebApi
     using Commands.Validation;
 
 
-    public class ApiExceptionFilter : IExceptionFilter, IAsyncExceptionFilter
+    public class ApiExceptionFilter : IExceptionFilter
     {
-        public async void OnException(ExceptionContext context)
-        {
-            await this.DoFilter(context);
-        }
-
-        public Task OnExceptionAsync(ExceptionContext context)
-        {
-            return this.DoFilter(context);
-        }
-
-        private async Task DoFilter(ExceptionContext context)
+        public void OnException(ExceptionContext context)
         {
             var error = context.Exception;
             var response = context.HttpContext.Response;
@@ -32,27 +22,19 @@ namespace DDDLite.WebApi
                 return;
             }
 
-            response.Clear();
-            response.ContentType = "application/json";
-            context.ExceptionHandled = true;
+            // context.ExceptionHandled = true;
 
             if (error is ValidationException)
             {
-                response.StatusCode = 400;
-                await response.WriteAsync(
-                    JsonConvert.SerializeObject(new ErrorMessage(error.Message, ((ValidationException)error).Details)), 
-                    Encoding.UTF8);
+                context.Result = new ErrorMessageResult(400, new ErrorMessage(error.Message, ((ValidationException)error).Details));
+            }
+            else if (error is AuthorizedException)
+            {
+                context.Result = new ErrorMessageResult(((AuthorizedException)error).Status, new ErrorMessage(error.Message));
             }
             else
             {
-                response.StatusCode = 500;
-                await response.WriteAsync(
-                    JsonConvert.SerializeObject(
-                        new ErrorMessage(
-                            error.Message, 
-                            error.InnerException == null ? new string[0] : new string[] { error.InnerException.Message })
-                        ), 
-                    Encoding.UTF8);
+                context.Result = new ErrorMessageResult(500, new ErrorMessage(error.Message, error.InnerException == null ? new string[0] : new string[] { error.InnerException.Message }));
             }
         }
     }

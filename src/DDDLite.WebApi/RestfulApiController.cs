@@ -9,6 +9,7 @@ namespace DDDLite.WebApi
     using Commands;
     using Messaging;
     using Querying;
+    using System.Security.Claims;
 
     public abstract class RestfulApiController<TAggregateRoot, TDTO> : Controller
         where TAggregateRoot : class, IAggregateRoot, new()
@@ -30,13 +31,14 @@ namespace DDDLite.WebApi
         protected IQueryService<TAggregateRoot> QueryService => this.queryService;
 
         [HttpGet]
-        public virtual IActionResult Get()
+        public virtual IActionResult Get([FromHeader(Name = "Query-Model")] string queryModel)
         {
+            // this.HttpContext.Request.Headers["Domain-Model"];
             return this.Ok(this.queryService.Find<TDTO>());
         }
 
         [HttpGet("{id}")]
-        public virtual IActionResult Get(Guid id)
+        public virtual IActionResult Get(Guid id, [FromHeader(Name = "Query-Model")] string queryModel)
         {
             var entity = this.queryService.GetById<TDTO>(id);
             if (entity != null)
@@ -57,7 +59,7 @@ namespace DDDLite.WebApi
             cmd.AggregateRoot = entity;
             cmd.AggregateRootId = entity.Id;
             cmd.RowVersion = 0;
-            // cmd.OperatorId = createdById;
+            cmd.OperatorId = this.User.GetUserId();
 
             this.commandSender.Publish(cmd);
 
@@ -72,7 +74,7 @@ namespace DDDLite.WebApi
             cmd.AggregateRootId = id;
             cmd.AggregateRoot = entity;
             cmd.RowVersion = long.Parse(ifMatch);
-            // cmd.OperatorId = modifiedById;
+            cmd.OperatorId = this.User.GetUserId();
 
             this.commandSender.Publish(cmd);
 
@@ -86,7 +88,7 @@ namespace DDDLite.WebApi
 
             cmd.AggregateRootId = id;
             cmd.RowVersion = long.Parse(ifMatch);
-            // cmd.OperatorId = deletedById;
+            cmd.OperatorId = this.User.GetUserId();
 
             this.commandSender.Publish(cmd);
 
