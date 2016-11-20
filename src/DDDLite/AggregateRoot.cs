@@ -6,7 +6,7 @@ namespace DDDLite
     using System.ComponentModel.DataAnnotations.Schema;
     using Events;
 
-    public abstract class AggregateRoot : Entity, IAggregateRoot
+    public abstract class AggregateRoot : Entity, IAggregateRoot, IConcurrencyVersion
     {        
         private readonly Queue<IDomainEvent> uncommitedEvents = new Queue<IDomainEvent>();
    

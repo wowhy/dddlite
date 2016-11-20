@@ -42,6 +42,7 @@ namespace Sample.WebApi
                 {
                     config.Filters.Add(new ApiExceptionFilter());
                     config.Filters.Add(new ApiCorsFilter());
+                    config.Filters.Add(new ConcurrencyVersionFilter());
                 }
             );
 

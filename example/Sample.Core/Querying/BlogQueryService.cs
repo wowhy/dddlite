@@ -9,7 +9,7 @@ namespace Sample.Core.Querying
 
     public class BlogQueryService : QueryService<Blog>, IBlogQueryService
     {
-        public BlogQueryService(DDDLite.Repository.EntityFramework.IEFQueryRepository<Blog> repository) : base(repository)
+        public BlogQueryService(IEFQueryRepository<Blog> repository) : base(repository)
         {
         }
     }

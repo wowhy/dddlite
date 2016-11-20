@@ -4,11 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using DDDLite;
 
-    public class BlogDTO
+    public class BlogDTO : DTOBase
     {
-        public string Id { get; set; }
-
         public string Title { get; set; }
     }
 }

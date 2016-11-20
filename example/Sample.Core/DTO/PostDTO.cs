@@ -4,8 +4,9 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using DDDLite;
 
-    public class PostDTO
+    public class PostDTO : DTOBase
     {
         public string Title { get; set; }
 
