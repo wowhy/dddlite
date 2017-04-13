@@ -1,7 +1,7 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26114.2
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B71F49E7-3CF2-4FFE-B475-9F3891A4A6F7}"
 EndProject
@@ -9,43 +9,42 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{770407FF-A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0. Solution Items", "0. Solution Items", "{6CEF54B4-AD02-4505-91A4-9DF48BAFE136}"
 	ProjectSection(SolutionItems) = preProject
-		global.json = global.json
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DDDLite", "src\DDDLite\DDDLite.xproj", "{C25950A0-1CBE-4509-B191-5E73E1047ED3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDLite", "src\DDDLite\DDDLite.csproj", "{C25950A0-1CBE-4509-B191-5E73E1047ED3}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TestAsyncActor", "test\TestAsyncActor\TestAsyncActor.xproj", "{7DE97ECE-DEED-4D45-963F-3B4BBD0072B3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestAsyncActor", "test\TestAsyncActor\TestAsyncActor.csproj", "{7DE97ECE-DEED-4D45-963F-3B4BBD0072B3}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TestCommand", "test\TestCommand\TestCommand.xproj", "{B3F36953-7200-4B4B-9C10-8813180BC072}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestCommand", "test\TestCommand\TestCommand.csproj", "{B3F36953-7200-4B4B-9C10-8813180BC072}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DDDLite.Repositories.EF", "src\DDDLite.Repositories.EF\DDDLite.Repositories.EF.xproj", "{9F69AC83-C9E0-4918-8F86-6FE3F157CAEA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDLite.Repositories.EF", "src\DDDLite.Repositories.EF\DDDLite.Repositories.EF.csproj", "{9F69AC83-C9E0-4918-8F86-6FE3F157CAEA}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DDDLite.Querying.EF", "src\DDDLite.Querying.EF\DDDLite.Querying.EF.xproj", "{13A0B4EE-6A0A-4966-B146-43763CD0B5BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDLite.Querying.EF", "src\DDDLite.Querying.EF\DDDLite.Querying.EF.csproj", "{13A0B4EE-6A0A-4966-B146-43763CD0B5BD}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Filter2Exp.Tests", "test\Filter2Exp.Tests\Filter2Exp.Tests.xproj", "{7CF9A7D5-E6AB-4C9E-88BF-5ACFF5BF93AD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Filter2Exp.Tests", "test\Filter2Exp.Tests\Filter2Exp.Tests.csproj", "{7CF9A7D5-E6AB-4C9E-88BF-5ACFF5BF93AD}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DDDLite.WebApi.Mvc", "src\DDDLite.WebApi.Mvc\DDDLite.WebApi.Mvc.xproj", "{5A49E9BA-4065-4082-A524-E97ABA734FF6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDLite.WebApi.Mvc", "src\DDDLite.WebApi.Mvc\DDDLite.WebApi.Mvc.csproj", "{5A49E9BA-4065-4082-A524-E97ABA734FF6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TestWebApi.Nancy", "test\TestWebApi.Nancy\TestWebApi.Nancy.xproj", "{8B7E3FAA-E31B-433D-9C41-C40E323F11A1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWebApi.Nancy", "test\TestWebApi.Nancy\TestWebApi.Nancy.csproj", "{8B7E3FAA-E31B-433D-9C41-C40E323F11A1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "DDDLite.WebApi.Nancy", "src\DDDLite.WebApi.Nancy\DDDLite.WebApi.Nancy.xproj", "{E0393AF5-FBCB-4BAA-8CAE-D4700545D4D1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDLite.WebApi.Nancy", "src\DDDLite.WebApi.Nancy\DDDLite.WebApi.Nancy.csproj", "{E0393AF5-FBCB-4BAA-8CAE-D4700545D4D1}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TestWebApi.Mvc", "test\TestWebApi.Mvc\TestWebApi.Mvc.xproj", "{C11AAC8E-14DD-4434-9ED1-02475E4E8E2D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWebApi.Mvc", "test\TestWebApi.Mvc\TestWebApi.Mvc.csproj", "{C11AAC8E-14DD-4434-9ED1-02475E4E8E2D}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TestWebApi", "test\TestWebApi\TestWebApi.xproj", "{14B352C1-46B2-4999-B441-327BB6C3E792}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWebApi", "test\TestWebApi\TestWebApi.csproj", "{14B352C1-46B2-4999-B441-327BB6C3E792}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{8A878236-7E05-4C8A-845D-ABDC93A2830F}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "TestActorClient", "test\TestActorClient\TestActorClient.xproj", "{6BDE2621-57E2-43CD-A2D9-38A74B2ECFE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestActorClient", "test\TestActorClient\TestActorClient.csproj", "{6BDE2621-57E2-43CD-A2D9-38A74B2ECFE4}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Example.Core", "examples\Example.Core\Example.Core.xproj", "{762EBCEF-7D10-4B8D-A0CE-71C0CC245A69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Core", "examples\Example.Core\Example.Core.csproj", "{762EBCEF-7D10-4B8D-A0CE-71C0CC245A69}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Example.Actors", "examples\Example.Actors\Example.Actors.xproj", "{765F6A61-B2F8-4358-9C5E-DE5543F49BC8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Actors", "examples\Example.Actors\Example.Actors.csproj", "{765F6A61-B2F8-4358-9C5E-DE5543F49BC8}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Example.WebApi", "examples\Example.WebApi\Example.WebApi.xproj", "{59799EC4-602E-4B08-BB7D-C33D79BB6152}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.WebApi", "examples\Example.WebApi\Example.WebApi.csproj", "{59799EC4-602E-4B08-BB7D-C33D79BB6152}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Example.EF", "examples\Example.EF\Example.EF.xproj", "{E7474E7F-41FB-42FC-A5CA-A1F2F9F14863}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.EF", "examples\Example.EF\Example.EF.csproj", "{E7474E7F-41FB-42FC-A5CA-A1F2F9F14863}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

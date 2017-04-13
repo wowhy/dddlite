@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Akka.Actor;
@@ -24,7 +24,7 @@ namespace DDDLite.WebApi.Nancy
             this.commandActor = commandActor;
             this.queryActor = queryActor;
 
-            this.Get("/{id:guid}", this.GetById);
+            this.Get("/{id:guid}", this.GetByIdAsync);
             this.Get("/", args => {
                 Console.WriteLine(Request.Query.page);
                 // Console.WriteLine(Request.Query.filters);
@@ -35,7 +35,7 @@ namespace DDDLite.WebApi.Nancy
         public IActorRef CommandActor => this.commandActor;
         public IActorRef QueryActor => this.queryActor;
 
-        public virtual async Task<PagedResult<TReadModel>> Paged(
+        public virtual async Task<PagedResult<TReadModel>> PagedAsync(
             int page = 1,
             int limit = 10,
             List<Filter> filters = null,
@@ -52,7 +52,7 @@ namespace DDDLite.WebApi.Nancy
             }
         }
 
-        public virtual async Task<object> GetById(dynamic args)
+        public virtual async Task<object> GetByIdAsync(dynamic args)
         {
             var result = await this.QueryActor.Ask<ActorResult<TReadModel>>((Guid)args.Id);
             if (result.Successed)
@@ -70,7 +70,7 @@ namespace DDDLite.WebApi.Nancy
             }
         }
 
-        public async Task Create(JObject body)
+        public async Task CreateAsync(JObject body)
         {
             var data = this.GetPostData(body);
             if (data.Id != default(Guid))
@@ -87,7 +87,7 @@ namespace DDDLite.WebApi.Nancy
             }
         }
 
-        public async Task Update(Guid id, JObject body)
+        public async Task UpdateAsync(Guid id, JObject body)
         {
             var data = this.GetPutData(body);
             var command = this.MakeCommand<UpdateCommand<TAggregateRoot>>(data.Id, data);
@@ -99,7 +99,7 @@ namespace DDDLite.WebApi.Nancy
             }
         }
 
-        public async Task DeleteById(Guid id)
+        public async Task DeleteByIdAsync(Guid id)
         {
             var command = this.MakeCommand<DeleteCommand<TAggregateRoot>>(id, null);
             var result = await this.CommandActor.Ask<ActorResult>(command);
