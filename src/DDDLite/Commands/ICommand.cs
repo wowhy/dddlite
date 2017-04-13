@@ -4,6 +4,8 @@
     
     public interface ICommand : IMessage
     {
-        Guid OperatorId { get; set; }
+        Guid? OperatorId { get; set; }
+
+        string OperatorName { get; set; }
     }
 }

@@ -7,6 +7,8 @@ namespace DDDLite.Commands
         protected Command()
         { }
 
-        public Guid OperatorId { get; set; }
+        public Guid? OperatorId { get; set; }
+
+        public string OperatorName { get; set; }
     }
 }

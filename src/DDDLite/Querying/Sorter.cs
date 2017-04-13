@@ -1,19 +1,21 @@
+using System;
+using System.Globalization;
+
 namespace DDDLite.Querying
 {
-    public sealed class Sorter
+    public class Sorter
     {
-        public string Property { get; set; }
-
-        public SortDirection Direction { get; set; }
-
-        public Sorter() { }
-
-        public Sorter(string property) : this(property, SortDirection.Asc) { }
-
-        public Sorter(string property, SortDirection direction)
+        public Sorter()
         {
-            this.Property = property;
-            this.Direction = direction;
         }
+
+        public Sorter(string prop, SortDirection dir)
+        {
+            this.Property = prop;
+            this.SortOrder = dir;
+        }
+
+        public string Property { get; set; }
+        public SortDirection SortOrder { get; set; }
     }
 }

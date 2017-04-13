@@ -1,0 +1,26 @@
+{
+  "version": "1.0.0-*",
+  "dependencies": {
+    "Akka": {
+      "version": "1.1.3"
+    },
+    "Nancy": "2.0.0-clinteastwood",
+    "Nancy.Hosting.Self": "2.0.0-clinteastwood",
+    "Mono.Posix": "4.0.0",
+    "Newtonsoft.Json": "9.0.2-beta2",
+    "DDDLite": {
+      "target": "project"
+    }
+  },
+  "frameworks": {
+    "net461": {
+      "dependencies": {},
+      "frameworkAssemblies": {
+        "System.ComponentModel.DataAnnotations": {
+          "type": "build",
+          "version": "4.0.0"
+        }
+      }
+    }
+  }
+}

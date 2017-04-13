@@ -1,0 +1,30 @@
+﻿{
+  "version": "1.0.0-*",
+  "dependencies": {
+    "Example.Core": {
+      "target": "project"
+    },
+    "DDDLite": {
+      "target": "project"
+    },
+    "DDDLite.Querying.EF": {
+      "target": "project"
+    },
+    "DDDLite.Repositories.EF": {
+      "target": "project"
+    },
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "Microsoft.EntityFrameworkCore.Relational": "1.1.0",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0"
+  },
+  "frameworks": {
+    "net461": {
+      "frameworkAssemblies": {
+        "System.ComponentModel.DataAnnotations": {
+          "type": "build",
+          "version": "4.0.0"
+        }
+      }
+    }
+  }
+}

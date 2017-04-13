@@ -1,0 +1,29 @@
+{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "debugType": "portable",
+    "emitEntryPoint": true
+  },
+  "dependencies": {
+    "Akka": {
+      "version": "1.1.3"
+    },
+    "Akka.DI.AutoFac": "1.0.8",
+    "Akka.Serialization.Hyperion": "1.1.3.32-beta",
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "DDDLite": {
+      "target": "project"
+    },
+    "DDDLite.Repositories.EF": {
+      "target": "project"
+    },
+    "DDDLite.Querying.EF": {
+      "target": "project"
+    },
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
+    "Microsoft.EntityFrameworkCore.Sqlite": "1.1.0"
+  },
+  "frameworks": {
+    "net461": {}
+  }
+}

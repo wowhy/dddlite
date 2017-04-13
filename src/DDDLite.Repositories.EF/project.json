@@ -1,0 +1,20 @@
+{
+  "version": "1.0.0-*",
+  "dependencies": {
+    "Microsoft.EntityFrameworkCore": "1.1.0",
+    "DDDLite": {
+      "target": "project"
+    }
+  },
+  "frameworks": {
+    "net461": {
+      "dependencies": {},
+      "frameworkAssemblies": {
+        "System.ComponentModel.DataAnnotations": {
+          "type": "build",
+          "version": "4.0.0"
+        }
+      }
+    }
+  }
+}

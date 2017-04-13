@@ -1,13 +1,10 @@
 ﻿namespace DDDLite
 {
     using System;
-    using System.Collections.Generic;
-    using Events;
-
-    public interface IAggregateRoot : IEntity
+    using Commands;
+    
+    public interface IAggregateRoot : IEntity, IConcurrencyVersion
     {
-        long RowVersion { get; set; }
-
         Guid? CreatedById { get; set; }
 
         DateTime CreatedOn { get; set; }
@@ -16,8 +13,6 @@
 
         DateTime? ModifiedOn { get; set; }
 
-        IEnumerable<IDomainEvent> UncommittedEvents { get; }
-
-        void RaiseEvent<TEvent>(TEvent e) where TEvent : class, IDomainEvent;
+        void HandleCommand(ICommand command);
     }
 }

@@ -7,3 +7,4 @@ packages/
 *.xproj.user
 project.lock.json
 npm-debug.log
+.DS_Store

@@ -69,7 +69,7 @@ namespace DDDLite
         /// with the GUID ordering on Microsoft SQL Server.
         /// </para>
         /// </remarks>
-        public static Guid Create(SequentialGuidType guidType)
+        public static Guid Create(SequentialGuidType guidType = SequentialGuidType.SequentialAsString)
         {
             // We start with 16 bytes of cryptographically strong random data.
             byte[] randomBytes = new byte[10];

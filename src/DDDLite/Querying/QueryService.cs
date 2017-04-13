@@ -1,68 +1,37 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using DDDLite.Specifications;
+using System.Linq;
+
 namespace DDDLite.Querying
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using Repository;
-
-    public abstract class QueryService<TAggregateRoot> : IQueryService<TAggregateRoot>
-        where TAggregateRoot : class, IAggregateRoot
+    public abstract class QueryService<TReadModel> : IQueryService<TReadModel>
+        where TReadModel : class, new()
     {
-        public static readonly ICollection<Sorter> EmptySorters = new List<Sorter>();
-        public static readonly ICollection<Filter> EmptyFilters = new List<Filter>();
-
-        private readonly IQueryRepository<TAggregateRoot> repository;
-
-        protected QueryService(IQueryRepository<TAggregateRoot> repository)
+        public QueryService()
         {
-            this.repository = repository;
         }
 
-        public IQueryRepository<TAggregateRoot> Repository => this.repository;
-
-        public virtual TDTO GetById<TDTO>(Guid id) where TDTO : class, new()
+        public virtual Task<int> CountAsync()
         {
-            return this.Repository.GetById<TDTO>(id);
+            return this.CountAsync(Specification<TReadModel>.Any());
         }
 
-        public virtual IQueryable<TDTO> Find<TDTO>() where TDTO : class, new()
+        public abstract Task<int> CountAsync(Specification<TReadModel> specification);
+
+        public abstract Task<TReadModel> GetByIdAsync(Guid key, string[] eagerLoadings);
+
+        public virtual IQueryable<TReadModel> Query(string[] eagerLoadings = null)
         {
-            return this.Find<TDTO>(EmptyFilters, EmptySorters);
+            return this.Query(Specification<TReadModel>.Any(), SortSpecification<TReadModel>.None, eagerLoadings);
         }
 
-        public virtual IQueryable<TDTO> Find<TDTO>(ICollection<Sorter> sorters) where TDTO : class, new()
+        public virtual IQueryable<TReadModel> Query(Specification<TReadModel> specification, string[] eagerLoadings = null)
         {
-            return this.Find<TDTO>(EmptyFilters, sorters);
+            return this.Query(specification, SortSpecification<TReadModel>.None, eagerLoadings);
         }
 
-        public virtual IQueryable<TDTO> Find<TDTO>(ICollection<Filter> filters) where TDTO : class, new()
-        {
-            return this.Find<TDTO>(filters, EmptySorters);
-        }
-
-        public virtual IQueryable<TDTO> Find<TDTO>(ICollection<Filter> filters, ICollection<Sorter> sorters) where TDTO : class, new()
-        {
-            return this.Repository.Find<TDTO>(filters.ToSpecification<TAggregateRoot>(), sorters.ToSpecification<TAggregateRoot>());
-        }
-
-        public PagedResult<TDTO> Page<TDTO>(int page, int limit) where TDTO : class, new()
-        {
-            return this.Page<TDTO>(page, limit, EmptyFilters, EmptySorters);
-        }
-
-        public PagedResult<TDTO> Page<TDTO>(int page, int limit, ICollection<Filter> filters) where TDTO : class, new()
-        {
-            return this.Page<TDTO>(page, limit, filters, EmptySorters);
-        }
-
-        public virtual PagedResult<TDTO> Page<TDTO>(int page, int limit, ICollection<Sorter> sorters) where TDTO : class, new()
-        {
-            return this.Page<TDTO>(page, limit, EmptyFilters, sorters);
-        }
-
-        public PagedResult<TDTO> Page<TDTO>(int page, int limit, ICollection<Filter> filters, ICollection<Sorter> sorters) where TDTO : class, new()
-        {
-            return this.Repository.Find<TDTO>(filters.ToSpecification<TAggregateRoot>(), sorters.ToSpecification<TAggregateRoot>()).AsPagedResult(page, limit);
-        }
+        public abstract IQueryable<TReadModel> Query(Specification<TReadModel> specification, SortSpecification<TReadModel> sortSpecification, string[] eagerLoadings = null);
     }
 }

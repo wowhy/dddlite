@@ -14,13 +14,5 @@ namespace DDDLite
         {
             this.Id = SequentialGuid.Create(SequentialGuidType.SequentialAsString);
         }
-
-        public static TEntity Create<TEntity>()
-            where TEntity : Entity, new()
-        {
-            var entity = new TEntity();
-            entity.NewIdentity();
-            return entity;
-        }
     }
 }
