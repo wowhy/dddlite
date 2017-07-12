@@ -32,7 +32,7 @@
                 return false;
             }
 
-            var context = new ValidationContext(@this, null, null);
+            var context = new System.ComponentModel.DataAnnotations.ValidationContext(@this, null, null);
             return Validator.TryValidateObject(@this, context, validationErrors, true);
         }
 
