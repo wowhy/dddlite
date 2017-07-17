@@ -1,4 +1,4 @@
-﻿namespace DDDLite
+﻿namespace DDDLite.Exception
 {
     using System;
 

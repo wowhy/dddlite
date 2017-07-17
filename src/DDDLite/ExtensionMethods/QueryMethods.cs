@@ -1,4 +1,4 @@
-﻿namespace DDDLite
+﻿namespace DDDLite.ExtensionMethods
 {
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -8,7 +8,7 @@
     using AutoMapper.QueryableExtensions;
     using DDDLite.Querying;
 
-    public static class ExtensionMethods
+    public static class QueryMethods
     {
         public static IQueryable<T> Page<T>(this IQueryable<T> @this, int page = 1, int limit = 10)
         {

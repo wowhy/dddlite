@@ -1,5 +1,6 @@
 namespace DDDLite.Specifications
 {
+    using DDDLite.Domain;
     using System;
     using System.Linq.Expressions;
 

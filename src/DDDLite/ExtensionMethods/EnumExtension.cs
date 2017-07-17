@@ -1,5 +1,6 @@
-namespace DDDLite.Utils
+namespace DDDLite.ExtensionMethods
 {
+    using DDDLite.Utils;
     using System;
     using System.Collections.Generic;
     using System.Threading;

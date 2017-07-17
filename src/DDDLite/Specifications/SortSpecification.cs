@@ -1,5 +1,6 @@
-﻿namespace DDDLite.Querying
+﻿namespace DDDLite.Specifications
 {
+    using DDDLite.Querying;
     using System;
     using System.Collections;
     using System.Collections.Generic;

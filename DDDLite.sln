@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26621.2
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0AEDD291-6577-4543-B65B-52B3D198E81B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{0AEDD291-6577-4543-B65B-52B3D198E81B}"
 	ProjectSection(SolutionItems) = preProject
 		nuget.config = nuget.config
 	EndProjectSection
@@ -16,11 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{2B28413F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDLite", "src\DDDLite\DDDLite.csproj", "{FFB98E5F-E713-43D9-BC36-5F98096296DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDLite.Querying.EF", "src\DDDLite.Querying.EF\DDDLite.Querying.EF.csproj", "{95128A5C-1A23-4FFB-ADB8-0AE3101F573D}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDLite.Repositories.EF", "src\DDDLite.Repositories.EF\DDDLite.Repositories.EF.csproj", "{970E70DC-0180-4359-A3FC-E3F324FF9FA0}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDLite.WebApi", "DDDLite.WebApi\DDDLite.WebApi.csproj", "{A47F3719-4322-4BDE-A74B-EB39358779DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDLite.WebApi", "DDDLite.WebApi\DDDLite.WebApi.csproj", "{A47F3719-4322-4BDE-A74B-EB39358779DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,14 +28,6 @@ Global
 		{FFB98E5F-E713-43D9-BC36-5F98096296DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFB98E5F-E713-43D9-BC36-5F98096296DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFB98E5F-E713-43D9-BC36-5F98096296DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{95128A5C-1A23-4FFB-ADB8-0AE3101F573D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95128A5C-1A23-4FFB-ADB8-0AE3101F573D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95128A5C-1A23-4FFB-ADB8-0AE3101F573D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95128A5C-1A23-4FFB-ADB8-0AE3101F573D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{970E70DC-0180-4359-A3FC-E3F324FF9FA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{970E70DC-0180-4359-A3FC-E3F324FF9FA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{970E70DC-0180-4359-A3FC-E3F324FF9FA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{970E70DC-0180-4359-A3FC-E3F324FF9FA0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A47F3719-4322-4BDE-A74B-EB39358779DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A47F3719-4322-4BDE-A74B-EB39358779DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A47F3719-4322-4BDE-A74B-EB39358779DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -50,8 +38,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FFB98E5F-E713-43D9-BC36-5F98096296DC} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
-		{95128A5C-1A23-4FFB-ADB8-0AE3101F573D} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
-		{970E70DC-0180-4359-A3FC-E3F324FF9FA0} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
 		{A47F3719-4322-4BDE-A74B-EB39358779DB} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

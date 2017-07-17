@@ -1,4 +1,4 @@
-namespace DDDLite.Querying
+namespace DDDLite.ExtensionMethods
 {
     using System;
     using System.Collections.Generic;
@@ -8,19 +8,10 @@ namespace DDDLite.Querying
     using System.Linq.Expressions;
     using System.ComponentModel;
     using System.Reflection;
+    using DDDLite.Querying;
 
-    public static class ExtensionMethods
+    public static class SpecificationExtension
     {
-        public static Specification<T> ToSpecification<T>(this ICollection<Filter> filters)
-        {
-            if (filters == null || filters.Count == 0)
-            {
-                return Specification<T>.Any();
-            }
-
-            return new ExpressionSpecification<T>(ToExpression<T>(filters));
-        }
-
         public static SortSpecification<T> ToSpecification<T>(this ICollection<Sorter> sorters)
         {
             if (sorters == null || sorters.Count == 0)
@@ -35,6 +26,18 @@ namespace DDDLite.Querying
             }
 
             return spec;
+        }
+
+        /*
+         * 
+        public static Specification<T> ToSpecification<T>(this ICollection<Filter> filters)
+        {
+            if (filters == null || filters.Count == 0)
+            {
+                return Specification<T>.Any();
+            }
+
+            return new ExpressionSpecification<T>(ToExpression<T>(filters));
         }
 
         public static Expression<Func<T, bool>> ToExpression<T>(this ICollection<Filter> filters)
@@ -161,5 +164,7 @@ namespace DDDLite.Querying
             return Expression.Lambda<Func<T, bool>>(exprBody, p);
         }
         #endregion
+
+        */
     }
 }

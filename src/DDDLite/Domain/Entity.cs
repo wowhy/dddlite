@@ -1,4 +1,4 @@
-namespace DDDLite
+namespace DDDLite.Domain
 {
     using System;
     using System.ComponentModel.DataAnnotations;
@@ -12,7 +12,7 @@ namespace DDDLite
 
         public void NewIdentity()
         {
-            this.Id = SequentialGuid.Create(SequentialGuidType.SequentialAsString);
+            this.Id = SequentialGuid.Create();
         }
     }
 }
