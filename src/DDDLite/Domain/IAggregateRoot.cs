@@ -2,7 +2,7 @@
 {
     using System;
     
-    public interface IAggregateRoot : IEntity, IConcurrencyToken
+    public interface IAggregateRoot : IEntity, IConcurrencyToken, ITrackable
     {
     }
 }

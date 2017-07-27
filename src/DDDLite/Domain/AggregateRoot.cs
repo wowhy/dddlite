@@ -8,5 +8,10 @@ namespace DDDLite.Domain
     {
         [ConcurrencyCheck]
         public long RowVersion { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+        public Guid? CreatedById { get; set; }
+        public DateTime LastUpdatedAt { get; set; }
+        public Guid? LastUpdatedById { get; set; }
     }
 }
