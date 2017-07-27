@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26621.2
+VisualStudioVersion = 15.0.26724.1
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{0AEDD291-6577-4543-B65B-52B3D198E81B}"
 	ProjectSection(SolutionItems) = preProject
@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{2B28413F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDLite", "src\DDDLite\DDDLite.csproj", "{FFB98E5F-E713-43D9-BC36-5F98096296DC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DDDLite.WebApi", "DDDLite.WebApi\DDDLite.WebApi.csproj", "{A47F3719-4322-4BDE-A74B-EB39358779DB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,17 +26,12 @@ Global
 		{FFB98E5F-E713-43D9-BC36-5F98096296DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFB98E5F-E713-43D9-BC36-5F98096296DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFB98E5F-E713-43D9-BC36-5F98096296DC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A47F3719-4322-4BDE-A74B-EB39358779DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A47F3719-4322-4BDE-A74B-EB39358779DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A47F3719-4322-4BDE-A74B-EB39358779DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A47F3719-4322-4BDE-A74B-EB39358779DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{FFB98E5F-E713-43D9-BC36-5F98096296DC} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
-		{A47F3719-4322-4BDE-A74B-EB39358779DB} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FFDA0DB-E9AA-46B2-A1F1-F88A37989C61}
