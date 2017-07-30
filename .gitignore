@@ -8,3 +8,5 @@ packages/
 project.lock.json
 npm-debug.log
 .DS_Store
+*.DS_Store
+*.userprefs
