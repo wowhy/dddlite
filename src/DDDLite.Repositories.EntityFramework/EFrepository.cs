@@ -8,7 +8,7 @@
     using DDDLite.Specifications;
     using Microsoft.EntityFrameworkCore;
 
-    public class EFRepository<TAggregateRoot> : Repository<TAggregateRoot>, IEFRepository<Repository>
+    public class EFRepository<TAggregateRoot> : Repository<TAggregateRoot>, IEFRepository<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
         private readonly DbContext context;
