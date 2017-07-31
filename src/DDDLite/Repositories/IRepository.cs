@@ -18,6 +18,8 @@
 
         Task DeleteAsync(TAggregateRoot entity);
 
+        bool Exists(Specification<TAggregateRoot> filter);
+
         IQueryable<TAggregateRoot> Search();
 
         IQueryable<TAggregateRoot> Search(

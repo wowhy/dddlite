@@ -8,19 +8,7 @@
 
     public static class DbContextExtensions
     {
-        public static Task<int> SaveChangesWithLogicalDeleteAsync(this DbContext context)
-        {
-            OnBeforeSaving(context);
-            return context.SaveChangesAsync();
-        }
-
-        public static EntityTypeBuilder<TEntity> HasQueryFilterLogicalDelete<TEntity>(EntityTypeBuilder<TEntity> entityBuilder)
-            where TEntity : class, ILogicalDelete
-        {
-            return entityBuilder.HasQueryFilter(k => k.Deleted == false);
-        }
-
-        private static void OnBeforeSaving(DbContext context)
+        public static void EnsureLogicalDeleteChanging(this DbContext context)
         {
             foreach (var entry in context.ChangeTracker.Entries())
             {
@@ -38,6 +26,29 @@
                     }
                 }
             }
+        }
+
+        public static void EnsureTrackableChanging(this DbContext context)
+        {
+            foreach (var entry in context.ChangeTracker.Entries())
+            {
+                if (entry.Entity is ITrackable)
+                {
+                    switch (entry.State)
+                    {
+                        case EntityState.Modified:
+                            entry.CurrentValues[nameof(ITrackable.CreatedAt)] = entry.OriginalValues[nameof(ITrackable.CreatedAt)];
+                            entry.CurrentValues[nameof(ITrackable.CreatedById)] = entry.OriginalValues[nameof(ITrackable.CreatedById)];
+                            break;
+                    }
+                }
+            }
+        }
+
+        public static EntityTypeBuilder<TEntity> HasQueryFilterLogicalDelete<TEntity>(EntityTypeBuilder<TEntity> entityBuilder)
+            where TEntity : class, ILogicalDelete
+        {
+            return entityBuilder.HasQueryFilter(k => k.Deleted == false);
         }
     }
 }

@@ -53,5 +53,10 @@
 		}
 
         public abstract IQueryable<TAggregateRoot> Search(Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter);
+
+        public virtual bool Exists(Specification<TAggregateRoot> filter)
+        {
+            return this.Search(filter).Any();
+        }
     }
 }

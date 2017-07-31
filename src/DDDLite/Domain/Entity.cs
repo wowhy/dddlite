@@ -10,7 +10,7 @@ namespace DDDLite.Domain
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
-        public void NewIdentity()
+        public virtual void NewIdentity()
         {
             this.Id = SequentialGuid.Create();
         }
