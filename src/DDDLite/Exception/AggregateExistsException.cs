@@ -4,9 +4,9 @@
     using System.Collections.Generic;
     using System.Text;
 
-    public class AggregateNotFoundException : CoreException
+    public class AggregateExistsException : CoreException
     {
-        public AggregateNotFoundException(Guid id)
+        public AggregateExistsException(Guid id)
         {
             this.Id = id;
         }

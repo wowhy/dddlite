@@ -30,8 +30,8 @@
 
         IQueryable<TAggregateRoot> Search(SortSpecification<TAggregateRoot> sorter);
 
-        PagedResult<TAggregateRoot> PagedSearch(int page, int limit, Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter);
+        PagedResult<TAggregateRoot> PagedSearch(int top, int skip, Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter);
 
-        PagedResult<TAggregateRoot> PagedSearch(int page, int limit, SortSpecification<TAggregateRoot> sorter);
+        PagedResult<TAggregateRoot> PagedSearch(int top, int skip, SortSpecification<TAggregateRoot> sorter);
     }
 }

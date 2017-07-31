@@ -1,5 +1,6 @@
 ﻿namespace DDDLite.Specifications
 {
+    using DDDLite.Domain;
     using DDDLite.Querying;
     using System;
     using System.Collections;
@@ -34,6 +35,12 @@
         private readonly Dictionary<string, SortDirection> sortSpecifications = new Dictionary<string, SortDirection>();
 
         public static readonly SortSpecification<T> None = new SortSpecification<T>();
+
+        public static readonly SortSpecification<T> SortById = new SortSpecification<T>(nameof(IAggregateRoot.Id));
+
+        public static readonly SortSpecification<T> SortByCreatedAtAsc = new SortSpecification<T>(nameof(IAggregateRoot.CreatedAt));
+
+        public static readonly SortSpecification<T> SortByCreatedAtDesc = new SortSpecification<T>(nameof(IAggregateRoot.CreatedAt), SortDirection.Desc);
 
         public SortSpecification()
         {

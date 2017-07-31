@@ -34,12 +34,12 @@
             return this.Search(Specification<TAggregateRoot>.Any(), sorter);
         }
 
-        public virtual PagedResult<TAggregateRoot> PagedSearch(int page, int limit, SortSpecification<TAggregateRoot> sorter)
+        public virtual PagedResult<TAggregateRoot> PagedSearch(int top, int skip, SortSpecification<TAggregateRoot> sorter)
         {
-            return this.PagedSearch(page, limit, Specification<TAggregateRoot>.Any(), sorter);
+            return this.PagedSearch(top, skip, Specification<TAggregateRoot>.Any(), sorter);
         }
 
-		public virtual PagedResult<TAggregateRoot> PagedSearch(int page, int limit, Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter)
+		public virtual PagedResult<TAggregateRoot> PagedSearch(int top, int skip, Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter)
 		{
             if (sorter == null)
             {
@@ -48,7 +48,7 @@
 
 			var query = this.Search(filter, sorter);
 			var count = query.Count();
-			var data = query.Skip((page - 1) * limit).Take(limit).ToList();
+			var data = query.Skip(skip).Take(top).ToList();
 			return new PagedResult<TAggregateRoot>(count, data);
 		}
 

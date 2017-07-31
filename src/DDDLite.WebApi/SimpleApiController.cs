@@ -1,13 +1,21 @@
 namespace DDDLite.WebApi
 {
-    using System;
+    using System;    
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Security.Claims;
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.JsonPatch;
+    using Microsoft.Extensions.Primitives;
 
     using DDDLite.Domain;
+    using DDDLite.Exception;
     using DDDLite.Repositories;
     using DDDLite.Specifications;
-    using System.Security.Claims;
+    using DDDLite.WebApi.Internal;   
+
+    using  @N = DDDLite.WebApi.Internal.ApiContactNames;    
 
     [Route("api/[controller]")]
     public class SimpleApiController<TAggregateRoot> : Controller
@@ -24,20 +32,47 @@ namespace DDDLite.WebApi
 
         [HttpGet]
         public virtual IActionResult Get(
-            [FromQuery] int page = 1,
-            [FromQuery] int limit = 10,
-            [FromQuery] string query = "",
-            [FromQuery] string sort = "")
+            [FromQuery(Name = @N.TOP)] int? top,
+            [FromQuery(Name = @N.SKIP)] int skip = 0,
+            [FromQuery(Name = @N.COUNT)] bool count = false,
+            [FromQuery(Name = @N.FILTER)] string filter = "",
+            [FromQuery(Name = @N.ORDERBY)] string sorter = "")
         {
-            var result = Repository.PagedSearch(page, limit, Specification<TAggregateRoot>.Any(), SortSpecification<TAggregateRoot>.None);
-            return Ok(result);
+            var _filter = Specification<TAggregateRoot>.Any();
+            var _sorter = SortSpecification<TAggregateRoot>.SortByCreatedAtDesc;
+
+            var query = Repository.Search(_filter, _sorter);
+            var counter = query;
+
+            if (top != null)
+            {
+                query = query.Skip(skip).Take(top.Value);
+            }
+
+            if (count) 
+            {
+                return Ok(new 
+                {
+                    value = query.ToList(),
+                    count = counter.Count()
+                });
+            } else 
+            {
+                return Ok(new 
+                {
+                    value = query.ToList()
+                });
+            }
         }
 
         [HttpGet("{id}")]
         public virtual async Task<IActionResult> Get(Guid id)
         {
             var aggregateRoot = await Repository.GetByIdAsync(id);
-            return Ok(aggregateRoot);
+            return Ok(new 
+            {
+                value = aggregateRoot
+            });
         }
 
         [HttpGet("{id}")]
@@ -50,41 +85,70 @@ namespace DDDLite.WebApi
 
             if (Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id == aggregateRoot.Id)))
             {
-                throw new ArgumentException(nameof(aggregateRoot.Id));
+                throw new AggregateExistsException(aggregateRoot.Id);
             }
 
             aggregateRoot.CreatedAt = DateTime.Now;
             aggregateRoot.CreatedById = GetCurrentUserId();
+            aggregateRoot.LastUpdatedAt = aggregateRoot.CreatedAt;
+            aggregateRoot.LastUpdatedById = aggregateRoot.LastUpdatedById;
 
             await Repository.AddAsync(aggregateRoot);
+
             return Created(Url.Action("Get", new { id = aggregateRoot.Id }), aggregateRoot.Id);
         }
 
         [HttpPut("{id}")]
-        public virtual async Task<IActionResult> Put(Guid id, [FromBody] TAggregateRoot aggregateRoot)
+        public virtual async Task<IActionResult> Put(Guid id, [FromHeader(Name = @N.ROWVERSION)] long concurrencyToken, [FromBody] TAggregateRoot aggregateRoot)
         {
+            if (Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id == id)))
+            {
+                throw new AggregateNotFoundException(id);
+            }
+
             aggregateRoot.Id = id;
             aggregateRoot.LastUpdatedAt = DateTime.Now;
             aggregateRoot.LastUpdatedById = this.GetCurrentUserId();
+            aggregateRoot.RowVersion = concurrencyToken;
 
             await Repository.UpdateAsync(aggregateRoot);
+
             return NoContent();
         }
 
         [HttpPatch("{id}")]
-        public virtual Task<IActionResult> Patch(Guid id)
-        {
-            return null;
-        }
-
-        [HttpDelete("{id}")]
-        public virtual async Task<IActionResult> Delete(Guid id)
+        public virtual async Task<IActionResult> Patch(Guid id, [FromHeader(Name = @N.ROWVERSION)] long concurrencyToken, [FromBody] JsonPatchDocument<TAggregateRoot> patch)
         {
             var aggregateRoot = await Repository.GetByIdAsync(id);
             if (aggregateRoot == null)
             {
-                throw new ArgumentException(nameof(id));
+                throw new AggregateNotFoundException(id);
             }
+
+            patch.ApplyTo(aggregateRoot);
+            
+            aggregateRoot.Id = id;
+            aggregateRoot.LastUpdatedAt = DateTime.Now;
+            aggregateRoot.LastUpdatedById = this.GetCurrentUserId();
+            aggregateRoot.RowVersion = concurrencyToken;
+
+            await Repository.UpdateAsync(aggregateRoot);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public virtual async Task<IActionResult> Delete(Guid id, [FromHeader(Name = @N.ROWVERSION)] long concurrencyToken)
+        {
+            var aggregateRoot = await Repository.GetByIdAsync(id);
+            if (aggregateRoot == null)
+            {
+                throw new AggregateNotFoundException(id);
+            }
+
+            aggregateRoot.LastUpdatedAt = DateTime.Now;
+            aggregateRoot.LastUpdatedById = this.GetCurrentUserId();
+            aggregateRoot.RowVersion = concurrencyToken;
 
             await Repository.DeleteAsync(aggregateRoot);
 
