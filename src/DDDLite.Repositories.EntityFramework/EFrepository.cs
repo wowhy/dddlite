@@ -28,13 +28,13 @@
         public override async Task AddAsync(TAggregateRoot entity)
         {
             Context.Set<TAggregateRoot>().Add(entity);
-            await Context.SaveChangesAsync();
+            await Context.SaveChangesWithLogicalDeleteAsync();
         }
 
         public override async Task DeleteAsync(TAggregateRoot entity)
         {
             Context.Remove(entity);
-            await Context.SaveChangesAsync();
+            await Context.SaveChangesWithLogicalDeleteAsync();
         }
 
         public override Task<TAggregateRoot> GetByIdAsync(Guid id)
@@ -45,7 +45,7 @@
         public override async Task UpdateAsync(TAggregateRoot entity)
         {
             Context.Update(entity);
-            await Context.SaveChangesAsync();
+            await Context.SaveChangesWithLogicalDeleteAsync();
         }
 
         public override IQueryable<TAggregateRoot> Search(Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter)

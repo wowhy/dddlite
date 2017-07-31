@@ -18,6 +18,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDLite", "src\DDDLite\DDDL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDLite.Repositories.EntityFramework", "src\DDDLite.Repositories.EntityFramework\DDDLite.Repositories.EntityFramework.csproj", "{5D252416-112E-4C94-97DE-2F0D94E6D59C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDLite.WebApi", "src\DDDLite.WebApi\DDDLite.WebApi.csproj", "{AE8353D5-05C1-425E-AA82-443FFA7B9228}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{5D252416-112E-4C94-97DE-2F0D94E6D59C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D252416-112E-4C94-97DE-2F0D94E6D59C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D252416-112E-4C94-97DE-2F0D94E6D59C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE8353D5-05C1-425E-AA82-443FFA7B9228}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE8353D5-05C1-425E-AA82-443FFA7B9228}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE8353D5-05C1-425E-AA82-443FFA7B9228}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE8353D5-05C1-425E-AA82-443FFA7B9228}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -39,6 +45,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{FFB98E5F-E713-43D9-BC36-5F98096296DC} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
 		{5D252416-112E-4C94-97DE-2F0D94E6D59C} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
+		{AE8353D5-05C1-425E-AA82-443FFA7B9228} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FFDA0DB-E9AA-46B2-A1F1-F88A37989C61}
