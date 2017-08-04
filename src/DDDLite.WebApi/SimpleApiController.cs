@@ -38,8 +38,8 @@ namespace DDDLite.WebApi
             [FromQuery(Name = @N.FILTER)] string filter = "",
             [FromQuery(Name = @N.ORDERBY)] string sorter = "")
         {
-            var _filter = Specification<TAggregateRoot>.Any();
-            var _sorter = SortSpecification<TAggregateRoot>.SortByCreatedAtDesc;
+            var _filter = new FilterParser<TAggregateRoot>().Parse(filter);
+            var _sorter = new SorterParser<TAggregateRoot>().Parse(sorter);
 
             var query = Repository.Search(_filter, _sorter);
             var counter = query;
@@ -53,14 +53,14 @@ namespace DDDLite.WebApi
             {
                 return Ok(new 
                 {
-                    value = query.ToList(),
+                    data = query.ToList(),
                     count = counter.Count()
                 });
             } else 
             {
                 return Ok(new 
                 {
-                    value = query.ToList()
+                    data = query.ToList()
                 });
             }
         }
