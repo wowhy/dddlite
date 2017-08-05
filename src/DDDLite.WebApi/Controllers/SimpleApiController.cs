@@ -1,4 +1,4 @@
-namespace DDDLite.WebApi
+namespace DDDLite.WebApi.Controllers
 {
     using System;    
     using System.Collections.Generic;
@@ -15,7 +15,7 @@ namespace DDDLite.WebApi
     using DDDLite.Specifications;
     using DDDLite.WebApi.Internal;   
 
-    using  @N = DDDLite.WebApi.Internal.ApiContactNames;    
+    using  @N = DDDLite.WebApi.Internal.ApiParams;    
 
     [Route("api/[controller]")]
     public class SimpleApiController<TAggregateRoot> : Controller
@@ -53,14 +53,14 @@ namespace DDDLite.WebApi
             {
                 return Ok(new 
                 {
-                    data = query.ToList(),
+                    value = query.ToList(),
                     count = counter.Count()
                 });
             } else 
             {
                 return Ok(new 
                 {
-                    data = query.ToList()
+                    value = query.ToList()
                 });
             }
         }

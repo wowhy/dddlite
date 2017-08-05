@@ -1,6 +1,6 @@
 namespace DDDLite.WebApi.Internal
 {
-    public static class ApiContactNames
+    public static class ApiParams
     {
         public const string TOP = "$top";
         public const string SKIP = "$skip";
