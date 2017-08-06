@@ -15,7 +15,8 @@ namespace DDDLite.WebApi.Controllers
     using DDDLite.Specifications;
     using DDDLite.WebApi.Internal;   
 
-    using  @N = DDDLite.WebApi.Internal.ApiParams;    
+    using  @N = DDDLite.WebApi.Internal.ApiParams;
+    using DDDLite.WebApi.Internal.Query;
 
     [Route("api/[controller]")]
     public class SimpleApiController<TAggregateRoot> : Controller
@@ -31,48 +32,21 @@ namespace DDDLite.WebApi.Controllers
         }
 
         [HttpGet]
-        public virtual IActionResult Get(
-            [FromQuery(Name = @N.TOP)] int? top,
-            [FromQuery(Name = @N.SKIP)] int skip = 0,
-            [FromQuery(Name = @N.COUNT)] bool count = false,
-            [FromQuery(Name = @N.FILTER)] string filter = "",
-            [FromQuery(Name = @N.ORDERBY)] string sorter = "")
+        public virtual IActionResult Get()
         {
-            var _filter = new FilterParser<TAggregateRoot>().Parse(filter);
-            var _sorter = new SorterParser<TAggregateRoot>().Parse(sorter);
+            var context = new RepositoryQueryContext<TAggregateRoot>(Repository, HttpContext);
+            var values = context.GetValues();
 
-            var query = Repository.Search(_filter, _sorter);
-            var counter = query;
-
-            if (top != null)
-            {
-                query = query.Skip(skip).Take(top.Value);
-            }
-
-            if (count) 
-            {
-                return Ok(new 
-                {
-                    value = query.ToList(),
-                    count = counter.Count()
-                });
-            } else 
-            {
-                return Ok(new 
-                {
-                    value = query.ToList()
-                });
-            }
+            return Ok(values);
         }
 
         [HttpGet("{id}")]
         public virtual async Task<IActionResult> Get(Guid id)
         {
-            var aggregateRoot = await Repository.GetByIdAsync(id);
-            return Ok(new 
-            {
-                value = aggregateRoot
-            });
+            var context = new RepositoryQueryContext<TAggregateRoot>(Repository, HttpContext);
+            var value = await context.GetValueAsync(id);
+
+            return Ok(value);
         }
 
         [HttpGet("{id}")]
