@@ -1,4 +1,4 @@
-namespace DDDLite.WebApi
+namespace DDDLite.WebApi.Internal.Parser
 {
     using DDDLite.Querying;
     using DDDLite.Specifications;
