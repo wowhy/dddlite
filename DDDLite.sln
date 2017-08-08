@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26724.1
@@ -20,10 +20,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDLite.Repositories.Entity
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DDDLite.WebApi", "src\DDDLite.WebApi\DDDLite.WebApi.csproj", "{AE8353D5-05C1-425E-AA82-443FFA7B9228}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FilterParser", "tests\FilterParser\FilterParser.csproj", "{E695D098-A472-4C8E-B8BF-863825232114}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{FFB98E5F-E713-43D9-BC36-5F98096296DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -38,6 +44,18 @@ Global
 		{AE8353D5-05C1-425E-AA82-443FFA7B9228}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AE8353D5-05C1-425E-AA82-443FFA7B9228}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AE8353D5-05C1-425E-AA82-443FFA7B9228}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E695D098-A472-4C8E-B8BF-863825232114}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E695D098-A472-4C8E-B8BF-863825232114}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E695D098-A472-4C8E-B8BF-863825232114}.Debug|x64.ActiveCfg = Debug|x64
+		{E695D098-A472-4C8E-B8BF-863825232114}.Debug|x64.Build.0 = Debug|x64
+		{E695D098-A472-4C8E-B8BF-863825232114}.Debug|x86.ActiveCfg = Debug|x86
+		{E695D098-A472-4C8E-B8BF-863825232114}.Debug|x86.Build.0 = Debug|x86
+		{E695D098-A472-4C8E-B8BF-863825232114}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E695D098-A472-4C8E-B8BF-863825232114}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E695D098-A472-4C8E-B8BF-863825232114}.Release|x64.ActiveCfg = Release|x64
+		{E695D098-A472-4C8E-B8BF-863825232114}.Release|x64.Build.0 = Release|x64
+		{E695D098-A472-4C8E-B8BF-863825232114}.Release|x86.ActiveCfg = Release|x86
+		{E695D098-A472-4C8E-B8BF-863825232114}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +64,7 @@ Global
 		{FFB98E5F-E713-43D9-BC36-5F98096296DC} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
 		{5D252416-112E-4C94-97DE-2F0D94E6D59C} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
 		{AE8353D5-05C1-425E-AA82-443FFA7B9228} = {5E763FB3-114D-4882-B4C2-EBDF5CF4AF59}
+		{E695D098-A472-4C8E-B8BF-863825232114} = {2B28413F-6EB9-43C7-B867-55D7897F083A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FFDA0DB-E9AA-46B2-A1F1-F88A37989C61}
