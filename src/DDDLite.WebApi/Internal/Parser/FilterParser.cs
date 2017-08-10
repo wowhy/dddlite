@@ -21,7 +21,7 @@ namespace DDDLite.WebApi.Internal.Parser
                 var filterSpecification = Specification<TAggregateRoot>.Eval(lambda as Expression<Func<TAggregateRoot, bool>>);
                 return filterSpecification;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw new FilterParseException();
             }
