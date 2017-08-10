@@ -5,6 +5,7 @@ namespace DDDLite.WebApi.Internal.Query
 
     using DDDLite.Domain;
     using DDDLite.Specifications;
+    using DDDLite.WebApi.Exception;
     using DDDLite.WebApi.Models;
     using DDDLite.WebApi.Internal.Parser;
 
@@ -99,7 +100,7 @@ namespace DDDLite.WebApi.Internal.Query
                 }
                 else
                 {
-                    throw new ArgumentException(key);
+                    throw new BadArgumentException(key);
                 }
             }
 
