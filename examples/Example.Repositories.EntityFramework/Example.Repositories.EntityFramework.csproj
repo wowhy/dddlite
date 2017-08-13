@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DDDLite\DDDLite.csproj" />
+    <ProjectReference Include="..\..\src\DDDLite.Repositories.EntityFramework\DDDLite.Repositories.EntityFramework.csproj" />
+    <ProjectReference Include="..\Example.Core\Example.Core.csproj" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0-preview2-final" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>

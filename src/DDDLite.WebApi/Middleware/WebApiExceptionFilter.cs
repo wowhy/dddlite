@@ -2,6 +2,7 @@ namespace DDDLite.WebApi.Middleware
 {
     using System;
     using DDDLite.WebApi.Exception;
+    using DDDLite.WebApi.Models;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Filters;
     using Microsoft.Extensions.Logging;
@@ -22,7 +23,7 @@ namespace DDDLite.WebApi.Middleware
             var exception = WebApiExceptionFactory.GetException(context.Exception);
 
             context.ExceptionHandled = true;
-            context.Result = new ObjectResult(exception.GetError())
+            context.Result = new ObjectResult(new ResponseError(exception.GetError()))
             {
                 StatusCode = exception.GetStatusCode()
             };
