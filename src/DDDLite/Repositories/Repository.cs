@@ -17,42 +17,42 @@
         public abstract Task AddAsync(TAggregateRoot entity);
         public abstract Task UpdateAsync(TAggregateRoot entity);
         public abstract Task DeleteAsync(TAggregateRoot entity);
-        public abstract Task<TAggregateRoot> GetByIdAsync(Guid id);
+        public abstract Task<TAggregateRoot> GetByIdAsync(Guid id, params string[] includes);
 
-        public virtual IQueryable<TAggregateRoot> Search()
+        public virtual IQueryable<TAggregateRoot> Search(params string[] includes)
         {
-            return this.Search(Specification<TAggregateRoot>.Any(), SortSpecification<TAggregateRoot>.None);
+            return this.Search(Specification<TAggregateRoot>.Any(), SortSpecification<TAggregateRoot>.None, includes);
         }
 
-        public virtual IQueryable<TAggregateRoot> Search(Specification<TAggregateRoot> filter)
+        public virtual IQueryable<TAggregateRoot> Search(Specification<TAggregateRoot> filter, params string[] includes)
         {
-            return this.Search(filter, SortSpecification<TAggregateRoot>.None);
+            return this.Search(filter, SortSpecification<TAggregateRoot>.None, includes);
         }
 
-        public virtual IQueryable<TAggregateRoot> Search(SortSpecification<TAggregateRoot> sorter)
+        public virtual IQueryable<TAggregateRoot> Search(SortSpecification<TAggregateRoot> sorter, params string[] includes)
         {
-            return this.Search(Specification<TAggregateRoot>.Any(), sorter);
+            return this.Search(Specification<TAggregateRoot>.Any(), sorter, includes);
         }
 
-        public virtual PagedResult<TAggregateRoot> PagedSearch(int top, int skip, SortSpecification<TAggregateRoot> sorter)
+        public virtual PagedResult<TAggregateRoot> PagedSearch(int top, int skip, SortSpecification<TAggregateRoot> sorter, params string[] includes)
         {
-            return this.PagedSearch(top, skip, Specification<TAggregateRoot>.Any(), sorter);
+            return this.PagedSearch(top, skip, Specification<TAggregateRoot>.Any(), sorter, includes);
         }
 
-		public virtual PagedResult<TAggregateRoot> PagedSearch(int top, int skip, Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter)
+		public virtual PagedResult<TAggregateRoot> PagedSearch(int top, int skip, Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter, params string[] includes)
 		{
             if (sorter == null)
             {
                 throw new ArgumentNullException(nameof(sorter));
             }
 
-			var query = this.Search(filter, sorter);
+			var query = this.Search(filter, sorter, includes);
 			var count = query.Count();
 			var data = query.Skip(skip).Take(top).ToList();
 			return new PagedResult<TAggregateRoot>(count, data);
 		}
 
-        public abstract IQueryable<TAggregateRoot> Search(Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter);
+        public abstract IQueryable<TAggregateRoot> Search(Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter, params string[] includes);
 
         public virtual bool Exists(Specification<TAggregateRoot> filter)
         {

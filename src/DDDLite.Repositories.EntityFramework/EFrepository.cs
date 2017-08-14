@@ -39,8 +39,19 @@
             await Context.SaveChangesAsync();
         }
 
-        public override Task<TAggregateRoot> GetByIdAsync(Guid id)
+        public override Task<TAggregateRoot> GetByIdAsync(Guid id, params string[] includes)
         {
+            if (includes != null)
+            {
+                var query = Context.Set<TAggregateRoot>().AsQueryable();
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+
+                return query.Where(k => k.Id == id).FirstOrDefaultAsync();
+            }
+
             return Context.Set<TAggregateRoot>().FindAsync(id);
         }
 
@@ -51,7 +62,7 @@
             await Context.SaveChangesAsync();
         }
 
-        public override IQueryable<TAggregateRoot> Search(Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter)
+        public override IQueryable<TAggregateRoot> Search(Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter, params string[] includes)
         {
             if (filter == null)
             {
@@ -64,6 +75,14 @@
             }
 
             var query = Context.Set<TAggregateRoot>().Where(filter);
+            if (includes != null)
+            {
+                foreach (var include in includes)
+                {
+                    query = query.Include(include);
+                }
+            }
+
             if (sorter.Count > 0)
             {
                 var sorts = sorter.Specifications.ToList();

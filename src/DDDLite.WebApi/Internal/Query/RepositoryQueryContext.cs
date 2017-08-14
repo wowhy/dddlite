@@ -25,7 +25,7 @@ namespace DDDLite.WebApi.Internal.Query
 
         public async override Task<ResponseValue<TAggregateRoot>> GetValueAsync(Guid id)
         {
-            var aggregateRoot = await repository.GetByIdAsync(id);
+            var aggregateRoot = await repository.GetByIdAsync(id, Includes);
             if (aggregateRoot == null)
             {
                 throw new AggregateNotFoundException(id);
@@ -42,7 +42,7 @@ namespace DDDLite.WebApi.Internal.Query
         public override ResponseValues<TAggregateRoot> GetValues()
         {
             var response = new ResponseValues<TAggregateRoot>();
-            var query = repository.Search(Filter, Sorter);
+            var query = repository.Search(Filter, Sorter, Includes);
 
             if (HasCount)
             {

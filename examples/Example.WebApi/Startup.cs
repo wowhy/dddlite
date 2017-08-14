@@ -43,10 +43,25 @@
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ExampleDbContext dbContext)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            if (env.IsDevelopment())
+            {
+                loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+                loggerFactory.AddDebug();
+            }
+
             app.UseWebApi();
-            dbContext.Database.EnsureCreated();
+            InitializeDatabase(app);
+        }
+
+        private void InitializeDatabase(IApplicationBuilder app)
+        {
+            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ExampleDbContext>();
+                context.Database.EnsureCreated();
+            }
         }
     }
 }

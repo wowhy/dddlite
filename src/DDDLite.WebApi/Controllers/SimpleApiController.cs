@@ -49,7 +49,7 @@ namespace DDDLite.WebApi.Controllers
             return Ok(value);
         }
 
-        [HttpGet("{id}")]
+        [HttpPost("{id}")]
         public virtual async Task<IActionResult> Post([FromBody] TAggregateRoot aggregateRoot)
         {
             if (aggregateRoot.Id == Guid.Empty)
