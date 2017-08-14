@@ -7,6 +7,8 @@ namespace DDDLite.WebApi.Internal.Query
     using DDDLite.Domain;
     using DDDLite.Exception;
     using DDDLite.Repositories;
+    using DDDLite.WebApi.Config;
+    using DDDLite.WebApi.Exception;
     using DDDLite.WebApi.Models;
 
     using Microsoft.AspNetCore.Http;
@@ -47,25 +49,32 @@ namespace DDDLite.WebApi.Internal.Query
                 response.Count = query.Count();
             }
 
-            if (ClientDrivenPaging) 
+            if (ClientDrivenPaging)
             {
                 if (Skip != null)
                 {
                     query = query.Skip(Skip.Value);
                 }
-                if (Top != null) 
+                if (Top != null)
                 {
+                    if (Top > ApiConfig.Default.MaxQueryCount)
+                    {
+                        throw new BadArgumentException(ApiParams.TOP);
+                    }
+
                     query = query.Take(Top.Value);
                 }
 
                 response.Value = query.ToList();
-            } else if (ServerDrivenPaging) 
+            }
+            else if (ServerDrivenPaging)
             {
                 // Not Supported
                 throw new NotSupportedException();
-            } else 
+            }
+            else
             {
-                response.Value = query.ToList();
+                response.Value = query.Take(ApiConfig.Default.MaxQueryCount).ToList();
             }
 
             return response;

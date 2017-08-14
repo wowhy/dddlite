@@ -11,6 +11,7 @@ namespace DDDLite.WebApi.Internal.Query
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Primitives;
+    using DDDLite.WebApi.Config;
 
     public abstract class BaseQueryContext<TAggregateRoot> : IQueryContext<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
@@ -31,12 +32,19 @@ namespace DDDLite.WebApi.Internal.Query
         public HttpContext HttpContext { get; protected set; }
 
         public bool HasCount { get; protected set; }
+        
         public bool ClientDrivenPaging { get; protected set; }
+
         public bool ServerDrivenPaging { get; protected set; }
+
         public string[] Includes { get; protected set; }
+
         public SortSpecification<TAggregateRoot> Sorter { get; protected set; }
+
         public Specification<TAggregateRoot> Filter { get; protected set; }
+
         public int? Top { get; protected set; }
+
         public int? Skip { get; protected set; }
 
         public abstract Task<ResponseValue<TAggregateRoot>> GetValueAsync(Guid id);
@@ -82,7 +90,7 @@ namespace DDDLite.WebApi.Internal.Query
                 this.ClientDrivenPaging = true;
                 if (Top == null)
                 {
-                    Top = 10;
+                    Top = ApiConfig.Default.DefaultPageSize;
                 }
             }
         }
