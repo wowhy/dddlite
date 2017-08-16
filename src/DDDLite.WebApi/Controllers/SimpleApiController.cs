@@ -1,6 +1,6 @@
 namespace DDDLite.WebApi.Controllers
 {
-    using System;    
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Security.Claims;
@@ -13,10 +13,11 @@ namespace DDDLite.WebApi.Controllers
     using DDDLite.Exception;
     using DDDLite.Repositories;
     using DDDLite.Specifications;
-    using DDDLite.WebApi.Internal;   
+    using DDDLite.WebApi.Internal;
 
-    using  @N = DDDLite.WebApi.Internal.ApiParams;
+    using @N = DDDLite.WebApi.Internal.ApiParams;
     using DDDLite.WebApi.Internal.Query;
+    using DDDLite.WebApi.Exception;
 
     [Route("api/[controller]")]
     public class SimpleApiController<TAggregateRoot> : Controller
@@ -73,17 +74,22 @@ namespace DDDLite.WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public virtual async Task<IActionResult> Put(Guid id, [FromHeader(Name = @N.ROWVERSION)] long concurrencyToken, [FromBody] TAggregateRoot aggregateRoot)
+        public virtual async Task<IActionResult> Put(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] TAggregateRoot aggregateRoot)
         {
             if (Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id == id)))
             {
                 throw new AggregateNotFoundException(id);
             }
 
+            if (concurrencyToken == null)
+            {
+                throw new BadArgumentException(@N.ROWVERSION);
+            }
+
             aggregateRoot.Id = id;
             aggregateRoot.LastUpdatedAt = DateTime.Now;
             aggregateRoot.LastUpdatedById = this.GetCurrentUserId();
-            aggregateRoot.RowVersion = concurrencyToken;
+            aggregateRoot.RowVersion = long.Parse(concurrencyToken);
 
             await Repository.UpdateAsync(aggregateRoot);
 
@@ -91,7 +97,7 @@ namespace DDDLite.WebApi.Controllers
         }
 
         [HttpPatch("{id}")]
-        public virtual async Task<IActionResult> Patch(Guid id, [FromHeader(Name = @N.ROWVERSION)] long concurrencyToken, [FromBody] JsonPatchDocument<TAggregateRoot> patch)
+        public virtual async Task<IActionResult> Patch(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] JsonPatchDocument<TAggregateRoot> patch)
         {
             var aggregateRoot = await Repository.GetByIdAsync(id);
             if (aggregateRoot == null)
@@ -99,12 +105,17 @@ namespace DDDLite.WebApi.Controllers
                 throw new AggregateNotFoundException(id);
             }
 
+            if (concurrencyToken == null)
+            {
+                throw new BadArgumentException(@N.ROWVERSION);
+            }
+
             patch.ApplyTo(aggregateRoot);
-            
+
             aggregateRoot.Id = id;
             aggregateRoot.LastUpdatedAt = DateTime.Now;
             aggregateRoot.LastUpdatedById = this.GetCurrentUserId();
-            aggregateRoot.RowVersion = concurrencyToken;
+            aggregateRoot.RowVersion = long.Parse(concurrencyToken);
 
             await Repository.UpdateAsync(aggregateRoot);
 
@@ -112,7 +123,7 @@ namespace DDDLite.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public virtual async Task<IActionResult> Delete(Guid id, [FromHeader(Name = @N.ROWVERSION)] long concurrencyToken)
+        public virtual async Task<IActionResult> Delete(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken)
         {
             var aggregateRoot = await Repository.GetByIdAsync(id);
             if (aggregateRoot == null)
@@ -120,9 +131,14 @@ namespace DDDLite.WebApi.Controllers
                 throw new AggregateNotFoundException(id);
             }
 
+            if (concurrencyToken == null)
+            {
+                throw new BadArgumentException(@N.ROWVERSION);
+            }
+
             aggregateRoot.LastUpdatedAt = DateTime.Now;
             aggregateRoot.LastUpdatedById = this.GetCurrentUserId();
-            aggregateRoot.RowVersion = concurrencyToken;
+            aggregateRoot.RowVersion = long.Parse(concurrencyToken);
 
             await Repository.DeleteAsync(aggregateRoot);
 

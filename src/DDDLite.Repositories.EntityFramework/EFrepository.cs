@@ -36,6 +36,8 @@
         {
             Context.Remove(entity);
             Context.EnsureLogicalDeleteChanging();
+            Context.EnsureConcurrencyCheck();
+            Context.EnsureTrackableChanging();
             await Context.SaveChangesAsync();
         }
 
@@ -59,6 +61,7 @@
         {
             Context.Update(entity);
             Context.EnsureTrackableChanging();
+            Context.EnsureConcurrencyCheck();
             await Context.SaveChangesAsync();
         }
 

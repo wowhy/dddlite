@@ -3,6 +3,7 @@ namespace Example.Repositories.EntityFramework
     using Microsoft.EntityFrameworkCore;
 
     using Example.Core.Domain;
+    using Example.Repositories.EntityFramework.Configurations;
 
     public class ExampleDbContext : DbContext
     {
@@ -14,13 +15,12 @@ namespace Example.Repositories.EntityFramework
 
         public DbSet<OrderLine> OrderLines { get; set; }
 
+        public DbSet<Product> Products { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Order>()
-                .HasMany(k => k.OrderLines)
-                .WithOne()
-                .HasForeignKey(k => k.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.ApplyConfiguration(new ProductConfiguration());
+            modelBuilder.ApplyConfiguration(new OrderConfiguration());
         }
     }
 }

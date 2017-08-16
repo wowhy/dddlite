@@ -10,5 +10,7 @@ namespace DDDLite.WebApi.Exception
         {
             this.argument = argument;
         }
+
+        public string Argument => this.argument;
     }
 }

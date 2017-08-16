@@ -15,9 +15,7 @@ namespace Example.Core.Domain
 
         public string Mobile { get; set; }
 
-        public string Address { get; set; }
-
-        public DateTime OrderTime { get; set; }
+        public OrderDetail Detail { get; set; }
 
         public decimal TotalPrice { get; set; }
 

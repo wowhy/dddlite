@@ -10,6 +10,9 @@ namespace DDDLite.WebApi.Models
         public string Message { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string Target { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public ErrorData InnerError { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]

@@ -45,7 +45,27 @@
             }
         }
 
-        public static EntityTypeBuilder<TEntity> HasQueryFilterLogicalDelete<TEntity>(EntityTypeBuilder<TEntity> entityBuilder)
+        public static void EnsureConcurrencyCheck(this DbContext context)
+        {
+            foreach (var entry in context.ChangeTracker.Entries())
+            {
+                if (entry.Entity is IConcurrencyToken)
+                {
+                    switch (entry.State)
+                    {
+                        case EntityState.Deleted:
+                            entry.OriginalValues[nameof(IConcurrencyToken.RowVersion)] = entry.CurrentValues[nameof(IConcurrencyToken.RowVersion)];
+                            break;
+                        case EntityState.Modified:
+                            entry.OriginalValues[nameof(IConcurrencyToken.RowVersion)] = entry.CurrentValues[nameof(IConcurrencyToken.RowVersion)];
+                            entry.CurrentValues[nameof(IConcurrencyToken.RowVersion)] = (long)entry.CurrentValues[nameof(IConcurrencyToken.RowVersion)] + 1;
+                            break;
+                    }
+                }
+            }
+        }
+
+        public static EntityTypeBuilder<TEntity> HasQueryFilterLogicalDelete<TEntity>(this EntityTypeBuilder<TEntity> entityBuilder)
             where TEntity : class, ILogicalDelete
         {
             return entityBuilder.HasQueryFilter(k => k.Deleted == false);

@@ -4,7 +4,7 @@ namespace DDDLite.WebApi.Internal.Parser
     using DDDLite.Specifications;
 
     public class SorterParser<TAggregateRoot>
-        where TAggregateRoot: class
+        where TAggregateRoot : class
     {
         public SorterParser()
         {
@@ -17,16 +17,18 @@ namespace DDDLite.WebApi.Internal.Parser
             {
                 sorter = sorter.Trim();
                 var sorts = sorter.Split(',');
-                foreach(var sort in sorts)
+                foreach (var sort in sorts)
                 {
                     var tokens = sort.Trim().Split(' ');
-                    if (tokens.Length == 1) 
+                    if (tokens.Length == 1)
                     {
                         sortSpecification.Add(tokens[0].Trim(), SortDirection.Asc);
-                    } else if (tokens.Length == 2) 
+                    }
+                    else if (tokens.Length == 2)
                     {
                         sortSpecification.Add(tokens[0].Trim(), ParseDirection(tokens[1]));
-                    } else 
+                    }
+                    else
                     {
                         throw new Exception.SorterParseException();
                     }
@@ -38,16 +40,23 @@ namespace DDDLite.WebApi.Internal.Parser
 
         private static SortDirection ParseDirection(string token)
         {
-            switch(token?.Trim())
+            if (token == null)
+            {
+                throw new Exception.SorterParseException();
+            }
+
+            switch (token.Trim().ToLower())
             {
                 case "d":
+                case "desc":
                     return SortDirection.Desc;
 
                 case "a":
+                case "asc":
                     return SortDirection.Asc;
+                default:
+                    throw new Exception.SorterParseException();
             }
-
-            throw new Exception.SorterParseException();
         }
     }
 }

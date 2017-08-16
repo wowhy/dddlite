@@ -12,6 +12,11 @@ namespace DDDLite.WebApi.Exception
             if (ex is CoreException)
             {
                 statusCode = 400;
+
+                if (ex is AggregateNotFoundException)
+                {
+                    statusCode = 404;
+                }
             }
 
             return new WebApiException(statusCode, ex);

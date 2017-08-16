@@ -16,7 +16,5 @@ namespace Example.Core.Domain
         public decimal UnitPrice { get; set; }
 
         public decimal TotalPrice { get; set; }
-
-        public Order Order { get; set; }
     }
 }
