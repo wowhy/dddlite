@@ -19,9 +19,10 @@ namespace DDDLite.WebApi.Controllers
     using DDDLite.WebApi.Internal.Query;
     using DDDLite.WebApi.Exception;
 
-    [Route("api/[controller]")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class SimpleApiController<TAggregateRoot> : Controller
-        where TAggregateRoot : class, IAggregateRoot
+            where TAggregateRoot : class, IAggregateRoot
     {
         private readonly IRepository<TAggregateRoot> repository;
 

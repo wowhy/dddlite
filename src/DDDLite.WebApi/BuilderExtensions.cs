@@ -23,6 +23,10 @@ namespace DDDLite.WebApi
             {
                 opt.Filters.Add(typeof(WebApiExceptionFilter));
             });
+            services.AddApiVersioning(opt => 
+            {
+                opt.ReportApiVersions = true;
+            });
         }
 
         public static void UseWebApi(this IApplicationBuilder app)
