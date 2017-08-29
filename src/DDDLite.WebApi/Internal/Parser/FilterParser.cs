@@ -182,7 +182,7 @@ namespace DDDLite.WebApi.Internal.Parser
                         switch (tokenType)
                         {
                             case TokenType.Identifier:
-                                bodyExpr = Expression.PropertyOrField(param, tokenText);
+                                bodyExpr = GetProperty(tokenText);
                                 break;
 
                             case TokenType.True:
@@ -217,25 +217,15 @@ namespace DDDLite.WebApi.Internal.Parser
                 Next();
                 var right = Atom();
 
-                // 修正类型
+                // 修正类型                
                 if (left is MemberExpression && right is ConstantExpression)
                 {
-                    var constExpr = right as ConstantExpression;
-                    if (constExpr.Value?.GetType() == typeof(decimal))
-                    {
-                        var targetType = (left as MemberExpression).Type;
-                        right = Expression.Constant(Convert.ChangeType(constExpr.Value, targetType));
-                    }
+                    FixedExpressionType((MemberExpression)left, ref right);
                 }
 
                 if (right is MemberExpression && left is ConstantExpression)
                 {
-                    var constExpr = left as ConstantExpression;
-                    if (constExpr.Value?.GetType() == typeof(decimal))
-                    {
-                        var targetType = (right as MemberExpression).Type;
-                        left = Expression.Constant(Convert.ChangeType(constExpr.Value, targetType));
-                    }
+                    FixedExpressionType((MemberExpression)right, ref left);
                 }
 
                 Next();
@@ -246,7 +236,7 @@ namespace DDDLite.WebApi.Internal.Parser
             {
                 if (tokenType == TokenType.Identifier)
                 {
-                    return Expression.PropertyOrField(param, tokenText);
+                    return GetProperty(tokenText);
                 }
                 else if (tokenType == TokenType.Null)
                 {
@@ -347,8 +337,16 @@ namespace DDDLite.WebApi.Internal.Parser
 
                     case char c when (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'):
                         var originIndex = index;
-                        while (index < rawExpr.Length && !char.IsWhiteSpace(rawExpr[index]))
-                            index++;
+                        while (index < rawExpr.Length)
+                        {
+                            var p = rawExpr[index];
+                            if (char.IsLetterOrDigit(p)
+                                || p == '_'
+                                || p == '.')
+                                index++;
+                            else
+                                break;
+                        }
 
                         tokenText = rawExpr.Substring(originIndex, index - originIndex);
 
@@ -466,6 +464,59 @@ namespace DDDLite.WebApi.Internal.Parser
 
                 tokenType = TokenType.String;
                 tokenText = rawExpr.Substring(originIndex, index - originIndex);
+            }
+
+            private Expression GetProperty(string name)
+            {
+                var split = name.Split('.');
+                var prop = Expression.PropertyOrField(param, split[0]);
+
+                for (var i = 1; i < split.Length; i++)
+                {
+                    prop = Expression.PropertyOrField(prop, split[i]);
+                }
+
+                return prop;
+            }
+
+            private void FixedExpressionType(MemberExpression memberExpr, ref Expression toFixed)
+            {
+                var constExpr = toFixed as ConstantExpression;
+                var targetType = memberExpr.Type;
+                var innerType = Nullable.GetUnderlyingType(targetType);
+                if (innerType != null)
+                {
+                    targetType = innerType;
+                }
+
+                if (constExpr.Value?.GetType() != targetType)
+                {
+                    var val = default(object);
+                    if (targetType == typeof(Guid))
+                    {
+                        val = Guid.Parse((string)constExpr.Value);
+                    }
+                    else if (targetType == typeof(DateTime))
+                    {
+                        val = DateTime.Parse(constExpr.Value.ToString());
+                    }
+                    else if (targetType.IsEnum)
+                    {
+                        if (constExpr.Value is decimal)
+                        {
+                            val = Enum.ToObject(targetType, Convert.ToInt32(constExpr.Value));
+                        } else if (constExpr.Value is string)
+                        {
+                            val = Enum.Parse(targetType, (string)constExpr.Value);
+                        }
+                    }
+                    else
+                    {
+                        val = Convert.ChangeType(constExpr.Value, targetType);
+                    }
+
+                    toFixed = Expression.Constant(val);
+                }
             }
         }
         #endregion
