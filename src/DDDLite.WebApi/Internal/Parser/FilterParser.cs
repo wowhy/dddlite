@@ -12,18 +12,20 @@ namespace DDDLite.WebApi.Internal.Parser
         where TAggregateRoot : class
     {
         internal static readonly Type type = typeof(TAggregateRoot);
-        internal static readonly Dictionary<string, PropertyInfo> props = type.GetProperties().ToDictionary(k => k.Name.ToLower());
+        internal static readonly ParameterExpression param = Expression.Parameter(type, "k");
 
-        public FilterParser()
+        private readonly string filter;
+
+        public FilterParser(string filter)
         {
+            this.filter = filter;
         }
 
-        public Specification<TAggregateRoot> Parse(string filter)
+        public Specification<TAggregateRoot> Parse()
         {
             try
             {
-                var param = Expression.Parameter(type, "k");
-                var parser = new ExpressionParser(filter, param);
+                var parser = new ExpressionParser(filter);
                 var expr = parser.Parse();
 
                 return Specification<TAggregateRoot>.Eval(Expression.Lambda<Func<TAggregateRoot, bool>>(expr, param));
@@ -68,16 +70,14 @@ namespace DDDLite.WebApi.Internal.Parser
         internal class ExpressionParser
         {
             private readonly string rawExpr;
-            private readonly Expression param;
 
             private int index = 0;
             private TokenType tokenType;
             private string tokenText;
 
-            public ExpressionParser(string expr, Expression param)
+            public ExpressionParser(string expr)
             {
                 this.rawExpr = expr.Trim();
-                this.param = param;
             }
 
             /*
@@ -505,7 +505,8 @@ namespace DDDLite.WebApi.Internal.Parser
                         if (constExpr.Value is decimal)
                         {
                             val = Enum.ToObject(targetType, Convert.ToInt32(constExpr.Value));
-                        } else if (constExpr.Value is string)
+                        }
+                        else if (constExpr.Value is string)
                         {
                             val = Enum.Parse(targetType, (string)constExpr.Value);
                         }

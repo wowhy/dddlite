@@ -79,7 +79,7 @@ namespace DDDLite.WebApi.Internal.Query
 
             if (TryGetParam<string>(ApiParams.FILTER, out string filter))
             {
-                Filter = new FilterParser<TAggregateRoot>().Parse(filter);
+                Filter = new FilterParser<TAggregateRoot>(filter).Parse();
             }
 
             if (Top != null)

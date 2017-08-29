@@ -48,6 +48,8 @@ namespace DDDLite.WebApi.Controllers
             var context = new RepositoryQueryContext<TAggregateRoot>(Repository, HttpContext);
             var value = await context.GetValueAsync(id);
 
+            this.Response.Headers.Add("ETag", new StringValues(value.Value.RowVersion.ToString()));
+
             return Ok(value);
         }
 
