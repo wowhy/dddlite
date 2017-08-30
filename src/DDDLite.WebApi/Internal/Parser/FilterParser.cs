@@ -13,6 +13,7 @@ namespace DDDLite.WebApi.Internal.Parser
     {
         internal static readonly Type type = typeof(TAggregateRoot);
         internal static readonly ParameterExpression param = Expression.Parameter(type, "k");
+        internal static readonly MethodInfo containsMethod = typeof(string).GetMethod("Contains");
 
         private readonly string filter;
 
@@ -262,9 +263,9 @@ namespace DDDLite.WebApi.Internal.Parser
                 throw new FilterParseException(index);
             }
 
-            private Func<Expression, Expression, BinaryExpression> Operator()
+            private Func<Expression, Expression, Expression> Operator()
             {
-                var func = default(Func<Expression, Expression, BinaryExpression>);
+                var func = default(Func<Expression, Expression, Expression>);
                 switch (tokenType)
                 {
                     case TokenType.EQ:
@@ -291,10 +292,12 @@ namespace DDDLite.WebApi.Internal.Parser
                         func = Expression.LessThanOrEqual;
                         break;
 
-                    // TODO: 实现CONTAINS
-                    // case TokenType.CONTAINS:
-                    //     // func = Expression.;
-                    //     break;
+                    case TokenType.CONTAINS:
+                        func = new Func<Expression, Expression, Expression>((left, right) =>
+                        {
+                            return Expression.Call(left, containsMethod, right);
+                        });
+                        break;
 
                     default:
                         throw new FilterParseException(index);
