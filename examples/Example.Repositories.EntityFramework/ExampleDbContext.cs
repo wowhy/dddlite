@@ -2,10 +2,12 @@ namespace Example.Repositories.EntityFramework
 {
     using Microsoft.EntityFrameworkCore;
 
+    using DDDLite.Repositories.EntityFramework;
+
     using Example.Core.Domain;
     using Example.Repositories.EntityFramework.Configurations;
 
-    public class ExampleDbContext : DbContext
+    public class ExampleDbContext : UnitOfWorkContext
     {
         public ExampleDbContext(DbContextOptions options) : base(options)
         {

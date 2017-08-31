@@ -1,7 +1,10 @@
 namespace DDDLite.WebApi
 {
+    using DDDLite.WebApi.Internal;
     using DDDLite.WebApi.Middleware;
+    using DDDLite.WebApi.Provider;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Localization;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -27,6 +30,8 @@ namespace DDDLite.WebApi
             {
                 opt.ReportApiVersions = true;
             });
+            services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
         }
 
         public static void UseWebApi(this IApplicationBuilder app)

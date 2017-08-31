@@ -10,9 +10,12 @@
     public abstract class Repository<TAggregateRoot> : IRepository<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
-        protected Repository()
+        protected Repository(IUnitOfWork unitOfWork)
         {
+            UnitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
+
+        public IUnitOfWork UnitOfWork { get; protected set; }
 
         public abstract Task AddAsync(TAggregateRoot entity);
         public abstract Task UpdateAsync(TAggregateRoot entity);

@@ -10,6 +10,8 @@
     public interface IRepository<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
+        IUnitOfWork UnitOfWork { get; }
+
         Task<TAggregateRoot> GetByIdAsync(Guid id, params string[] includes);
 
         Task AddAsync(TAggregateRoot entity);

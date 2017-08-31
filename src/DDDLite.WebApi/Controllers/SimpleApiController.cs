@@ -7,17 +7,20 @@ namespace DDDLite.WebApi.Controllers
     using System.Threading.Tasks;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.JsonPatch;
+    using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Primitives;
+    using Microsoft.Extensions.PlatformAbstractions;
 
     using DDDLite.Domain;
     using DDDLite.Exception;
     using DDDLite.Repositories;
     using DDDLite.Specifications;
     using DDDLite.WebApi.Internal;
-
-    using @N = DDDLite.WebApi.Internal.ApiParams;
     using DDDLite.WebApi.Internal.Query;
     using DDDLite.WebApi.Exception;
+    using DDDLite.WebApi.Provider;
+
+    using @N = DDDLite.WebApi.Internal.ApiParams;
 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -31,6 +34,7 @@ namespace DDDLite.WebApi.Controllers
         public SimpleApiController(IRepository<TAggregateRoot> repository)
         {
             this.repository = repository;
+
         }
 
         [HttpGet]
@@ -72,6 +76,7 @@ namespace DDDLite.WebApi.Controllers
             aggregateRoot.LastUpdatedById = aggregateRoot.LastUpdatedById;
 
             await Repository.AddAsync(aggregateRoot);
+            await Repository.UnitOfWork.CommitAsync();
 
             return Created(Url.Action("Get", new { id = aggregateRoot.Id }), aggregateRoot.Id);
         }
@@ -95,6 +100,7 @@ namespace DDDLite.WebApi.Controllers
             aggregateRoot.RowVersion = long.Parse(concurrencyToken);
 
             await Repository.UpdateAsync(aggregateRoot);
+            await Repository.UnitOfWork.CommitAsync();
 
             return NoContent();
         }
@@ -121,6 +127,7 @@ namespace DDDLite.WebApi.Controllers
             aggregateRoot.RowVersion = long.Parse(concurrencyToken);
 
             await Repository.UpdateAsync(aggregateRoot);
+            await Repository.UnitOfWork.CommitAsync();
 
             return NoContent();
         }
@@ -144,19 +151,15 @@ namespace DDDLite.WebApi.Controllers
             aggregateRoot.RowVersion = long.Parse(concurrencyToken);
 
             await Repository.DeleteAsync(aggregateRoot);
+            await Repository.UnitOfWork.CommitAsync();
 
             return NoContent();
         }
 
         protected virtual Guid? GetCurrentUserId()
         {
-            if (this.User.Identity.IsAuthenticated)
-            {
-                var claim = this.User.FindFirst(k => k.Type == ClaimTypes.NameIdentifier);
-                return Guid.Parse(claim.Value);
-            }
-
-            return null;
+            var provider = HttpContext.RequestServices.GetService<ICurrentUserProvider>();
+            return provider.GetCurrentUserId();
         }
     }
 }

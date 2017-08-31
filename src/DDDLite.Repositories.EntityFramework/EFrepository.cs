@@ -13,32 +13,28 @@
     {
         private readonly DbContext context;
 
-        public EFRepository(DbContext context)
+        public EFRepository(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
-
-            this.context = context;
+            context = unitOfWork as DbContext ?? throw new ArgumentNullException(nameof(context));
         }
 
         public DbContext Context => this.context;
 
         public override async Task AddAsync(TAggregateRoot entity)
         {
-            Context.Set<TAggregateRoot>().Add(entity);
-            Context.EnsureLogicalDeleteChanging();
-            await Context.SaveChangesAsync();
+            await Context.Set<TAggregateRoot>().AddAsync(entity);
         }
 
-        public override async Task DeleteAsync(TAggregateRoot entity)
+        public override Task UpdateAsync(TAggregateRoot entity)
+        {
+            Context.Update(entity);
+            return Task.CompletedTask;
+        }
+
+        public override Task DeleteAsync(TAggregateRoot entity)
         {
             Context.Remove(entity);
-            Context.EnsureLogicalDeleteChanging();
-            Context.EnsureConcurrencyCheck();
-            Context.EnsureTrackableChanging();
-            await Context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
         public override Task<TAggregateRoot> GetByIdAsync(Guid id, params string[] includes)
@@ -55,14 +51,6 @@
             }
 
             return Context.Set<TAggregateRoot>().FindAsync(id);
-        }
-
-        public override async Task UpdateAsync(TAggregateRoot entity)
-        {
-            Context.Update(entity);
-            Context.EnsureTrackableChanging();
-            Context.EnsureConcurrencyCheck();
-            await Context.SaveChangesAsync();
         }
 
         public override IQueryable<TAggregateRoot> Search(Specification<TAggregateRoot> filter, SortSpecification<TAggregateRoot> sorter, params string[] includes)

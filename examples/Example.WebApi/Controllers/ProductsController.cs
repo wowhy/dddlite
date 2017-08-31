@@ -1,5 +1,7 @@
 namespace Example.WebApi.Controllers
 {
+    using System;
+
     using DDDLite.Repositories;
     using DDDLite.WebApi.Controllers;
 
