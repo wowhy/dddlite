@@ -61,7 +61,7 @@
             using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<ExampleDbContext>();
-                context.Database.EnsureCreated();
+                context.Database.Migrate();
             }
         }
     }
