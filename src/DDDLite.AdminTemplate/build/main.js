@@ -65,7 +65,7 @@ module.exports =
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -89,7 +89,10 @@ module.exports = {
   ** Customize the progress-bar color
   */
   loading: { color: '#3B8070' },
-  plugins: ['~plugins/iview']
+  plugins: ['~plugins/iview', '~plugins/cookie'],
+  build: {
+    vendor: ['axios', 'iview', 'cookie', 'js-cookie']
+  }
 };
 
 /***/ },
@@ -102,18 +105,36 @@ module.exports = require("koa");
 /* 2 */
 /***/ function(module, exports) {
 
-module.exports = require("nuxt");
+module.exports = require("koa-bodyparser");
 
 /***/ },
 /* 3 */
+/***/ function(module, exports) {
+
+module.exports = require("koa-session");
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+module.exports = require("nuxt");
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_koa___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_koa__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_nuxt__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_nuxt__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_nuxt___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_nuxt__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_koa_session__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_koa_session___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_koa_session__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_koa_bodyparser__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_koa_bodyparser___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_koa_bodyparser__);
+
+
 
 
 
@@ -136,6 +157,12 @@ if (config.dev) {
     process.exit(1);
   });
 }
+
+app.use(__WEBPACK_IMPORTED_MODULE_3_koa_bodyparser___default()());
+app.use(__WEBPACK_IMPORTED_MODULE_2_koa_session___default()({
+  maxAge: 2 * 60 * 60 * 1000,
+  signed: false
+}, app));
 
 app.use(function (ctx) {
   ctx.status = 200; // koa defaults to 404 when it sees that status is unset

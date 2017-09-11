@@ -21,5 +21,11 @@ module.exports = {
   ** Customize the progress-bar color
   */
   loading: { color: '#3B8070' },
-  plugins: ['~plugins/iview']
+  plugins: [
+    '~plugins/iview',
+    '~plugins/cookie'
+  ],
+  build: {
+    vendor: ['axios', 'iview', 'cookie', 'js-cookie']
+  }
 }

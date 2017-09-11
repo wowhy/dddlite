@@ -8,7 +8,7 @@
       {{ error.message }}
     </h2>
     <nuxt-link class="button" to="/" v-if="error.statusCode === 404">
-      主页
+      首 页
     </nuxt-link>
   </section>
 </template>

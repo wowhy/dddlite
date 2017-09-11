@@ -1,5 +1,7 @@
 import Koa from 'koa'
 import { Nuxt, Builder } from 'nuxt'
+import session from 'koa-session'
+import bodyParser from 'koa-bodyparser'
 
 const app = new Koa()
 const host = process.env.HOST || '127.0.0.1'
@@ -20,6 +22,12 @@ if (config.dev) {
     process.exit(1)
   })
 }
+
+app.use(bodyParser())
+app.use(session({
+  maxAge: 2 * 60 * 60 * 1000,
+  signed: false
+}, app))
 
 app.use(ctx => {
   ctx.status = 200 // koa defaults to 404 when it sees that status is unset

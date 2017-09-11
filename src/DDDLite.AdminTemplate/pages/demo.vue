@@ -1,13 +1,12 @@
 <template>
   <div>
-    Dashboard
+    Demo Page
   </div>
 </template>
+
 <script>
 export default {
   layout: 'admin'
 }
 </script>
 
-<style lang="less" scoped>
-</style>
