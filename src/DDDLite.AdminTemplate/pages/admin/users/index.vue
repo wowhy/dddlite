@@ -1,12 +1,16 @@
 <template>
   <div>
-    Demo Page
+    Users
   </div>
 </template>
 
 <script>
 export default {
-  layout: 'admin'
+  head() {
+    return {
+      title: '用户管理'
+    }
+  }
 }
 </script>
 

@@ -4,9 +4,7 @@
   </div>
 </template>
 <script>
-export default {
-  layout: 'admin'
-}
+export default {}
 </script>
 
 <style lang="less" scoped>

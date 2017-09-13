@@ -2,8 +2,14 @@ import authService from '../services/auth'
 
 export const state = () => ({
   authUser: null,
-  menus: []
+  menus: [],
+  showMenu: true
 })
+
+export const getters = {
+  menus: state => state.menus,
+  showMenu: state => state.showMenu
+}
 
 export const mutations = {
   SET_USER(state, user) {
@@ -12,15 +18,14 @@ export const mutations = {
 
   SET_MENUS(state, menus) {
       state.menus = menus
+  },
+
+  SET_SHOWMENU(state, showMenu) {
+    state.showMenu = showMenu
   }
 }
 
 export const actions = {
-  nuxtServerInit({ commit }, { req }) {
-    if (req.session && req.session.authUser) {
-      commit('SET_USER', req.session.authUser)
-    }
-  },
   async login({ commit }, { username, password }) {
     try {
       const data = await authService.login({ username, password })
@@ -38,5 +43,9 @@ export const actions = {
   async logout({ commit }) {
     await authService.logout()
     commit('SET_USER', null)
+  },
+
+  toggleMenu({ commit, getters }) {
+    commit('SET_SHOWMENU', !getters.showMenu)
   }
 }
