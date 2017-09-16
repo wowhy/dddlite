@@ -26,9 +26,10 @@
           </Button>
         </div>
         <div class="layout-header-menus">
+          <span>欢迎, {{user.fullname}}!</span>
           <a href="#">帮助中心</a> |
           <a href="#">安全中心</a> |
-          <a href="#">退出</a>
+          <a style="color:#ed3f14;" href="#">退出</a>
         </div>
       </div>
       <div class="layout-breadcrumb">
@@ -93,7 +94,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('admin', ['menus', 'showMenu']),
+    ...mapGetters('admin', ['menus', 'showMenu', 'user']),
     iconSize() {
       return this.showMenu ? 14 : 24
     }
@@ -198,7 +199,7 @@ export default {
 
   .layout-header {
     height: 45px;
-    background: #464c5b;
+    background: #495060;
     padding: 10px 0;
     overflow: hidden;
     display: flex;
@@ -210,8 +211,12 @@ export default {
       text-align: right;
     }
 
-    .layout-header-menus a {
+    .layout-header-menus {
       color: #9ba7b5;
+      a,
+      span {
+        margin-left: 5px;
+      }
     }
 
     .layout-header-toggle i {
@@ -222,10 +227,10 @@ export default {
 
 .layout-hide-menu {
   .layout-menu-left {
-    width: 60px;
+    width: 65px;
   }
   .layout-main {
-    width: calc(100% -60px);
+    width: calc(100% -65px);
   }
   .layout-text,
   .ivu-menu-item-group-title {

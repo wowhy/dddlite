@@ -15,7 +15,14 @@ export default {
 
   login({ username, password }) {
     return new Promise((resolve) => {
-      resolve({})
+      resolve({
+        token: '',
+        user: {
+          id: '',
+          username: username,
+          fullname: '管理员'
+        }
+      })
     })
   },
 

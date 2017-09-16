@@ -1,5 +1,5 @@
 export default function ({ store, error }) {
-  if (!store.state.authUser) {
+  if (!store.getters.admin.user) {
     error({
       message: '',
       statusCode: 401

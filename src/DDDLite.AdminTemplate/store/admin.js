@@ -1,19 +1,20 @@
 import authService from '../services/auth'
 
 export const state = () => ({
-  authUser: null,
+  user: null,
   menus: [],
   showMenu: true
 })
 
 export const getters = {
   menus: state => state.menus,
-  showMenu: state => state.showMenu
+  showMenu: state => state.showMenu,
+  user: state => state.user
 }
 
 export const mutations = {
   SET_USER(state, user) {
-    state.authUser = user
+    state.user = user
   },
 
   SET_MENUS(state, menus) {
