@@ -27,8 +27,8 @@
         </div>
         <div class="layout-header-menus">
           <span>欢迎, {{user.fullname}}!</span>
-          <a href="#">帮助中心</a> |
           <a href="#">安全中心</a> |
+          <a href="#">帮助中心</a> |
           <a style="color:#ed3f14;" href="#">退出</a>
         </div>
       </div>
@@ -122,7 +122,6 @@ export default {
         this.$nextTick(() => {
           this.currentMenu = find.menu
           this.currentGroup = find.parent
-          this.$refs.mainMenu.updateActiveName()
         })
       }
     },
