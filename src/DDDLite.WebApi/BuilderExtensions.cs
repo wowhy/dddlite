@@ -12,9 +12,9 @@ namespace DDDLite.WebApi
     {
         public static void AddWebApi(this IServiceCollection services)
         {
-            services.AddCors(opt => 
+            services.AddCors(opt =>
             {
-                opt.AddPolicy("default", policy => 
+                opt.AddPolicy("default", policy =>
                 {
                     policy.AllowCredentials()
                         .AllowAnyHeader()
@@ -26,12 +26,17 @@ namespace DDDLite.WebApi
             {
                 opt.Filters.Add(typeof(WebApiExceptionFilter));
             });
-            services.AddApiVersioning(opt => 
+            services.AddApiVersioning(opt =>
             {
                 opt.ReportApiVersions = true;
             });
             services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
             services.AddScoped<ICurrentUserProvider, CurrentUserProvider>();
+        }
+
+        public static void AddHttpContextAccessor(this IServiceCollection services)
+        {
+            services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
         }
 
         public static void UseWebApi(this IApplicationBuilder app)
