@@ -7,7 +7,7 @@ namespace Example.Repositories.EntityFramework
     using Example.Core.Domain;
     using Example.Repositories.EntityFramework.Configurations;
 
-    public class ExampleDbContext : UnitOfWorkContext
+    public class ExampleDbContext : UnitOfWorkDbContext
     {
         public ExampleDbContext(DbContextOptions options) : base(options)
         {
