@@ -1,4 +1,4 @@
-﻿namespace Example.WebApi
+﻿namespace Example.IdentityWebApi
 {
     using System;
     using System.Collections.Generic;
@@ -22,7 +22,8 @@
 
     using Example.Core.Domain;
     using Example.Repositories.EntityFramework;
-    using Example.WebApi.Data;
+    using Example.IdentityWebApi.Data;
+    using Example.IdentityWebApi.Configuration;
 
     public class Startup
     {
@@ -44,15 +45,22 @@
         {
             services.AddWebApi();
 
-            services.AddDbContext<ExampleDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("Default"), b => b.MigrationsAssembly("Example.WebApi")));
-            services.AddDbContext<ExampleIdentityDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("Default"), b => b.MigrationsAssembly("Example.WebApi")));
+            services.AddDbContext<ExampleDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("Default")));
+            services.AddDbContext<ExampleIdentityDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("Default")));
 
             services.AddScoped<IRepository<Order>, EFRepositoryBase<Order>>();
             services.AddScoped<IRepository<Product>, EFRepositoryBase<Product>>();
-
+        
             services.AddIdentity<ApplicationUser, ApplicationRole>()
-                .AddDefaultTokenProviders()
-                .AddEntityFrameworkStores<ExampleIdentityDbContext>();
+                .AddEntityFrameworkStores<ExampleIdentityDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddIdentityServer()
+                .AddInMemoryClients(Clients.Get())
+                .AddInMemoryIdentityResources(Resources.GetIdentityResources())
+                .AddInMemoryApiResources(Resources.GetApiResources())
+                .AddDeveloperSigningCredential()
+                .AddAspNetIdentity<ApplicationUser>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,18 +72,9 @@
                 loggerFactory.AddDebug();
             }
 
+            app.UseAuthentication();
+            app.UseIdentityServer();
             app.UseWebApi();
-
-            InitializeDatabase(app);
-        }
-
-        private void InitializeDatabase(IApplicationBuilder app)
-        {
-            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
-            {
-                scope.ServiceProvider.GetRequiredService<ExampleDbContext>().Database.Migrate();
-                scope.ServiceProvider.GetRequiredService<ExampleIdentityDbContext>().Database.Migrate();
-            }
         }
     }
 }

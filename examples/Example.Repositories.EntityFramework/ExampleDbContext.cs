@@ -9,7 +9,7 @@ namespace Example.Repositories.EntityFramework
 
     public class ExampleDbContext : UnitOfWorkDbContext
     {
-        public ExampleDbContext(DbContextOptions options) : base(options)
+        public ExampleDbContext(DbContextOptions<ExampleDbContext> options) : base(options)
         {
         }
 
