@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Example.IdentityWebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class ValuesController : Controller
     {
         // GET api/values
