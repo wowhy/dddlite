@@ -50,8 +50,14 @@
 
             services.AddScoped<IRepository<Order>, EFRepositoryBase<Order>>();
             services.AddScoped<IRepository<Product>, EFRepositoryBase<Product>>();
-        
-            services.AddIdentity<ApplicationUser, ApplicationRole>()
+
+            services.AddIdentity<ApplicationUser, ApplicationRole>(opt =>
+                {
+                    opt.Password.RequireNonAlphanumeric = false;
+                    opt.Password.RequireDigit = false;
+                    opt.Password.RequiredLength = 6;
+                    opt.Password.RequireUppercase = false;
+                })
                 .AddEntityFrameworkStores<ExampleIdentityDbContext>()
                 .AddDefaultTokenProviders();
 

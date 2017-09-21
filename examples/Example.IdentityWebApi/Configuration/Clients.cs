@@ -18,7 +18,7 @@ namespace Example.IdentityWebApi.Configuration
                     {
                         new Secret("qwe123m,.".Sha256())
                     },
-                    AllowedGrantTypes = GrantTypes.Implicit,
+                    AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
                     AllowAccessTokensViaBrowser = true
                 }
             };

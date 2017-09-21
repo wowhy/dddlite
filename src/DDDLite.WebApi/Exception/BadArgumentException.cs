@@ -6,7 +6,11 @@ namespace DDDLite.WebApi.Exception
     {
         private readonly string argument;
 
-        public BadArgumentException(string argument)
+        public BadArgumentException(string argument) : this(argument, string.Empty)
+        {
+        }
+
+        public BadArgumentException(string argument, string message) : base(message)
         {
             this.argument = argument;
         }
