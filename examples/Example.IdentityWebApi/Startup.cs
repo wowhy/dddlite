@@ -24,6 +24,8 @@
     using Example.Repositories.EntityFramework;
     using Example.IdentityWebApi.Data;
     using Example.IdentityWebApi.Configuration;
+    using Microsoft.AspNetCore.Authentication.Cookies;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
 
     public class Startup
     {
@@ -51,15 +53,25 @@
             services.AddScoped<IRepository<Order>, EFRepositoryBase<Order>>();
             services.AddScoped<IRepository<Product>, EFRepositoryBase<Product>>();
 
+
             services.AddIdentity<ApplicationUser, ApplicationRole>(opt =>
+                    {
+                        opt.Password.RequireNonAlphanumeric = false;
+                        opt.Password.RequireDigit = false;
+                        opt.Password.RequiredLength = 6;
+                        opt.Password.RequireUppercase = false;
+                    })
+                    .AddEntityFrameworkStores<ExampleIdentityDbContext>()
+                    .AddIdentityServer()
+                    .AddDefaultTokenProviders();
+
+            services.AddAuthentication(opt =>
                 {
-                    opt.Password.RequireNonAlphanumeric = false;
-                    opt.Password.RequireDigit = false;
-                    opt.Password.RequiredLength = 6;
-                    opt.Password.RequireUppercase = false;
+                    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
-                .AddEntityFrameworkStores<ExampleIdentityDbContext>()
-                .AddDefaultTokenProviders();
+                .AddJwtBearer();
 
             services.AddIdentityServer()
                 .AddInMemoryClients(Clients.Get())
@@ -78,8 +90,8 @@
                 loggerFactory.AddDebug();
             }
 
-            app.UseAuthentication();
             app.UseIdentityServer();
+            app.UseAuthentication();
             app.UseWebApi();
         }
     }
