@@ -1,4 +1,4 @@
-﻿namespace Example.IdentityWebApi
+namespace Example.IdentityWebApi
 {
     using System;
     using System.Collections.Generic;
@@ -26,6 +26,7 @@
     using Example.IdentityWebApi.Configuration;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using IdentityServer4.AccessTokenValidation;
 
     public class Startup
     {
@@ -53,25 +54,22 @@
             services.AddScoped<IRepository<Order>, EFRepositoryBase<Order>>();
             services.AddScoped<IRepository<Product>, EFRepositoryBase<Product>>();
 
-
-            services.AddIdentity<ApplicationUser, ApplicationRole>(opt =>
-                    {
-                        opt.Password.RequireNonAlphanumeric = false;
-                        opt.Password.RequireDigit = false;
-                        opt.Password.RequiredLength = 6;
-                        opt.Password.RequireUppercase = false;
-                    })
-                    .AddEntityFrameworkStores<ExampleIdentityDbContext>()
-                    .AddIdentityServer()
-                    .AddDefaultTokenProviders();
-
-            services.AddAuthentication(opt =>
-                {
-                    opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer();
+            var builder = services.AddIdentityCore<ApplicationUser>(opt =>
+                                    {
+                                        opt.Password.RequireDigit = true;
+                                        opt.Password.RequiredLength = 8;
+                                        opt.Password.RequireNonAlphanumeric = false;
+                                        opt.Password.RequireUppercase = true;
+                                        opt.Password.RequireLowercase = true;
+                                    });
+            builder = new IdentityBuilder(builder.UserType, typeof(ApplicationRole), builder.Services);
+            builder
+                .AddEntityFrameworkStores<ExampleIdentityDbContext>()
+                .AddIdentityServer()
+                .AddDefaultTokenProviders()
+                .AddRoleValidator<RoleValidator<ApplicationRole>>()
+                .AddRoleManager<RoleManager<ApplicationRole>>()
+                .AddSignInManager<SignInManager<ApplicationUser>>();
 
             services.AddIdentityServer()
                 .AddInMemoryClients(Clients.Get())
@@ -79,6 +77,14 @@
                 .AddInMemoryApiResources(Resources.GetApiResources())
                 .AddDeveloperSigningCredential()
                 .AddAspNetIdentity<ApplicationUser>();
+
+            services.AddAuthentication(IdentityServerAuthenticationDefaults.JwtAuthenticationScheme)
+                .AddIdentityServerAuthentication(opt =>
+                {
+                    opt.ApiName = "api";
+                    opt.Authority = "http://localhost:5000";
+                    opt.RequireHttpsMetadata = false;
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

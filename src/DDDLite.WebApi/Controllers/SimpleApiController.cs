@@ -24,6 +24,7 @@ namespace DDDLite.WebApi.Controllers
 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
+    // [Route("api/[controller]")]
     public class SimpleApiController<TAggregateRoot> : Controller
             where TAggregateRoot : class, IAggregateRoot
     {
@@ -57,7 +58,8 @@ namespace DDDLite.WebApi.Controllers
             return Ok(value);
         }
 
-        [HttpPost("{id}")]
+        [HttpPost]
+        [Produces("application/json")]
         public virtual async Task<IActionResult> Post([FromBody] TAggregateRoot aggregateRoot)
         {
             if (aggregateRoot.Id == Guid.Empty)
@@ -84,7 +86,7 @@ namespace DDDLite.WebApi.Controllers
         [HttpPut("{id}")]
         public virtual async Task<IActionResult> Put(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] TAggregateRoot aggregateRoot)
         {
-            if (Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id == id)))
+            if (!Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id == id)))
             {
                 throw new AggregateNotFoundException(id);
             }

@@ -16,10 +16,16 @@ namespace Example.IdentityWebApi.Configuration
                     ClientId = "client",
                     ClientSecrets =
                     {
-                        new Secret("qwe123m,.".Sha256())
+                        new Secret("qwe123,./".Sha256())
                     },
+                    AllowRememberConsent = true,
                     AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
-                    AllowAccessTokensViaBrowser = true
+                    AllowAccessTokensViaBrowser = true,
+                    AllowOfflineAccess = true,
+                    AllowedScopes = 
+                    {
+                        "api"
+                    }
                 }
             };
         }

@@ -4,20 +4,27 @@ namespace DDDLite.WebApi.Internal
     using System.Security.Claims;
     using DDDLite.WebApi.Provider;
     using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.Extensions.Options;
 
     internal class CurrentUserProvider : ICurrentUserProvider
     {
         private IHttpContextAccessor accessor;
-        public CurrentUserProvider(IHttpContextAccessor httpContextAccessor)
+        private IOptions<IdentityOptions> optionsAccessor;
+
+        public CurrentUserProvider(IHttpContextAccessor httpContextAccessor, IOptions<IdentityOptions> optionsAccessor)
         {
             this.accessor = httpContextAccessor;
+            this.optionsAccessor = optionsAccessor;
         }
 
         public Guid? GetCurrentUserId()
         {
-            if (accessor.HttpContext.User.Identity.IsAuthenticated)
+            var context = accessor.HttpContext;
+            if (context.User.Identity.IsAuthenticated)
             {
-                var claim = accessor.HttpContext.User.FindFirst(k => k.Type == ClaimTypes.NameIdentifier);
+                var type = optionsAccessor.Value.ClaimsIdentity.UserIdClaimType;
+                var claim = context.User.FindFirst(k => k.Type == type);
                 return Guid.Parse(claim.Value);
             }
 
