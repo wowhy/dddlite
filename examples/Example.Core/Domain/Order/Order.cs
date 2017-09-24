@@ -11,6 +11,11 @@ namespace Example.Core.Domain
 
     public class Order : AggregateRoot
     {
+        public Order() 
+        {
+            this.Detail = new OrderDetail();
+        }
+
         public string Contact { get; set; }
 
         public string Mobile { get; set; }
