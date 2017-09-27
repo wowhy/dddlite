@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Example.WebApi.Migrations
+namespace Example.IdentityWebApi.Migrations
 {
     public partial class init : Migration
     {

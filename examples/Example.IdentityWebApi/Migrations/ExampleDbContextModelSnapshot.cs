@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.Internal;
 using System;
 
-namespace Example.WebApi.Migrations
+namespace Example.IdentityWebApi.Migrations
 {
     [DbContext(typeof(ExampleDbContext))]
     partial class ExampleDbContextModelSnapshot : ModelSnapshot
@@ -19,7 +19,7 @@ namespace Example.WebApi.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.0.0-preview2-25794");
+                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452");
 
             modelBuilder.Entity("Example.Core.Domain.Order", b =>
                 {
@@ -98,50 +98,51 @@ namespace Example.WebApi.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Example.Core.Domain.OrderDetail", b =>
+            modelBuilder.Entity("Example.Core.Domain.Order", b =>
                 {
-                    b.Property<Guid?>("OrderId");
+                    b.OwnsOne("Example.Core.Domain.OrderDetail", "Detail", b1 =>
+                        {
+                            b1.Property<Guid>("OrderId");
 
-                    b.HasKey("OrderId");
+                            b1.ToTable("Orders");
 
-                    b.ToTable("Orders");
-                });
+                            b1.HasOne("Example.Core.Domain.Order")
+                                .WithOne("Detail")
+                                .HasForeignKey("Example.Core.Domain.OrderDetail", "OrderId")
+                                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity("Example.Core.Domain.ProductDetail", b =>
-                {
-                    b.Property<Guid?>("ProductId");
+                            b1.OwnsOne("Example.Core.Domain.StreetAddress", "BillingAddress", b2 =>
+                                {
+                                    b2.Property<Guid>("OrderDetailOrderId");
 
-                    b.Property<string>("Memo");
+                                    b2.Property<string>("City");
 
-                    b.HasKey("ProductId");
+                                    b2.Property<string>("Street");
 
-                    b.ToTable("Products");
-                });
+                                    b2.ToTable("Orders");
 
-            modelBuilder.Entity("Example.Core.Domain.StreetAddress", b =>
-                {
-                    b.Property<Guid?>("OrderDetailOrderId");
+                                    b2.HasOne("Example.Core.Domain.OrderDetail")
+                                        .WithOne("BillingAddress")
+                                        .HasForeignKey("Example.Core.Domain.StreetAddress", "OrderDetailOrderId")
+                                        .OnDelete(DeleteBehavior.Cascade);
+                                });
 
-                    b.Property<string>("City");
+                            b1.OwnsOne("Example.Core.Domain.StreetAddress", "ShippingAddress", b2 =>
+                                {
+                                    b2.Property<Guid>("OrderDetailOrderId");
 
-                    b.Property<string>("Street");
+                                    b2.Property<string>("City");
 
-                    b.HasKey("OrderDetailOrderId");
+                                    b2.Property<string>("Street");
 
-                    b.ToTable("Orders");
-                });
+                                    b2.ToTable("Orders");
 
-            modelBuilder.Entity("Example.Core.Domain.StreetAddress", b =>
-                {
-                    b.Property<Guid?>("OrderDetailOrderId");
-
-                    b.Property<string>("City");
-
-                    b.Property<string>("Street");
-
-                    b.HasKey("OrderDetailOrderId");
-
-                    b.ToTable("Orders");
+                                    b2.HasOne("Example.Core.Domain.OrderDetail")
+                                        .WithOne("ShippingAddress")
+                                        .HasForeignKey("Example.Core.Domain.StreetAddress", "OrderDetailOrderId")
+                                        .OnDelete(DeleteBehavior.Cascade);
+                                });
+                        });
                 });
 
             modelBuilder.Entity("Example.Core.Domain.OrderLine", b =>
@@ -152,36 +153,21 @@ namespace Example.WebApi.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Example.Core.Domain.OrderDetail", b =>
+            modelBuilder.Entity("Example.Core.Domain.Product", b =>
                 {
-                    b.HasOne("Example.Core.Domain.Order")
-                        .WithOne("Detail")
-                        .HasForeignKey("Example.Core.Domain.OrderDetail", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                    b.OwnsOne("Example.Core.Domain.ProductDetail", "Detail", b1 =>
+                        {
+                            b1.Property<Guid>("ProductId");
 
-            modelBuilder.Entity("Example.Core.Domain.ProductDetail", b =>
-                {
-                    b.HasOne("Example.Core.Domain.Product")
-                        .WithOne("Detail")
-                        .HasForeignKey("Example.Core.Domain.ProductDetail", "ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                            b1.Property<string>("Memo");
 
-            modelBuilder.Entity("Example.Core.Domain.StreetAddress", b =>
-                {
-                    b.HasOne("Example.Core.Domain.OrderDetail")
-                        .WithOne("BillingAddress")
-                        .HasForeignKey("Example.Core.Domain.StreetAddress", "OrderDetailOrderId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
+                            b1.ToTable("Products");
 
-            modelBuilder.Entity("Example.Core.Domain.StreetAddress", b =>
-                {
-                    b.HasOne("Example.Core.Domain.OrderDetail")
-                        .WithOne("ShippingAddress")
-                        .HasForeignKey("Example.Core.Domain.StreetAddress", "OrderDetailOrderId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                            b1.HasOne("Example.Core.Domain.Product")
+                                .WithOne("Detail")
+                                .HasForeignKey("Example.Core.Domain.ProductDetail", "ProductId")
+                                .OnDelete(DeleteBehavior.Cascade);
+                        });
                 });
 #pragma warning restore 612, 618
         }

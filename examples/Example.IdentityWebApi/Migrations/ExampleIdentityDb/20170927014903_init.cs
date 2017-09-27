@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using System;
 using System.Collections.Generic;
 
-namespace Example.WebApi.Migrations.ExampleIdentityDb
+namespace Example.IdentityWebApi.Migrations.ExampleIdentityDb
 {
     public partial class init : Migration
     {

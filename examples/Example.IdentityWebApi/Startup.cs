@@ -48,7 +48,7 @@ namespace Example.IdentityWebApi
         {
             services.AddWebApi();
 
-            services.AddDbContext<ExampleDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("Default")));
+            services.AddDbContext<ExampleDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("Default"), b => b.MigrationsAssembly("Example.IdentityWebApi")));
             services.AddDbContext<ExampleIdentityDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("Default")));
 
             services.AddScoped<IRepository<Order>, EFRepositoryBase<Order>>();
@@ -99,6 +99,21 @@ namespace Example.IdentityWebApi
             app.UseIdentityServer();
             app.UseAuthentication();
             app.UseWebApi();
+            app.InitializeDatabase();
+        }
+    }
+
+    public static class StartupExtensions 
+    {
+        public static IApplicationBuilder InitializeDatabase(this IApplicationBuilder app)
+        {
+            using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<ExampleDbContext>().Database.Migrate();
+                scope.ServiceProvider.GetRequiredService<ExampleIdentityDbContext>().Database.Migrate();
+            }
+
+            return app;
         }
     }
 }
