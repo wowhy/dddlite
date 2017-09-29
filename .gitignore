@@ -10,3 +10,5 @@ npm-debug.log
 .DS_Store
 *.DS_Store
 *.userprefs
+package-lock.json
+src/DDDLite.AdminTemplate/package-lock.json
