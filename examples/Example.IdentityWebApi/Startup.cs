@@ -46,10 +46,13 @@ namespace Example.IdentityWebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var migrationsAssembly = typeof(Startup).Assembly.GetName().Name;
+            var connectionString = Configuration.GetConnectionString("Default");
+
             services.AddWebApi();
 
-            services.AddDbContext<ExampleDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("Default"), b => b.MigrationsAssembly("Example.IdentityWebApi")));
-            services.AddDbContext<ExampleIdentityDbContext>(opt => opt.UseNpgsql(Configuration.GetConnectionString("Default")));
+            services.AddDbContext<ExampleDbContext>(opt => opt.UseNpgsql(connectionString, b => b.MigrationsAssembly(migrationsAssembly)));
+            services.AddDbContext<ExampleIdentityDbContext>(opt => opt.UseNpgsql(connectionString));
 
             services.AddScoped<IRepository<Order>, EFRepositoryBase<Order>>();
             services.AddScoped<IRepository<Product>, EFRepositoryBase<Product>>();
@@ -77,7 +80,7 @@ namespace Example.IdentityWebApi
                 .AddInMemoryApiResources(Resources.GetApiResources())
                 .AddDeveloperSigningCredential()
                 .AddAspNetIdentity<ApplicationUser>();
-
+            
             services.AddAuthentication(IdentityServerAuthenticationDefaults.JwtAuthenticationScheme)
                 .AddIdentityServerAuthentication(opt =>
                 {
@@ -103,7 +106,7 @@ namespace Example.IdentityWebApi
         }
     }
 
-    public static class StartupExtensions 
+    public static class StartupExtensions
     {
         public static IApplicationBuilder InitializeDatabase(this IApplicationBuilder app)
         {
