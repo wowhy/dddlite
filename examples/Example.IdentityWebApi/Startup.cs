@@ -23,10 +23,10 @@ namespace Example.IdentityWebApi
     using Example.Core.Domain;
     using Example.Repositories.EntityFramework;
     using Example.IdentityWebApi.Data;
-    using Example.IdentityWebApi.Configuration;
     using Microsoft.AspNetCore.Authentication.Cookies;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
-    using IdentityServer4.AccessTokenValidation;
+    using AspNet.Security.OAuth.Validation;
+    using AspNet.Security.OpenIdConnect.Primitives;
 
     public class Startup
     {
@@ -52,42 +52,48 @@ namespace Example.IdentityWebApi
             services.AddWebApi();
 
             services.AddDbContext<ExampleDbContext>(opt => opt.UseNpgsql(connectionString, b => b.MigrationsAssembly(migrationsAssembly)));
-            services.AddDbContext<ExampleIdentityDbContext>(opt => opt.UseNpgsql(connectionString));
+            services.AddDbContext<ExampleIdentityDbContext>(opt =>
+            {
+                opt.UseNpgsql(connectionString);
+                opt.UseOpenIddict();
+            });
 
             services.AddScoped<IRepository<Order>, EFRepositoryBase<Order>>();
             services.AddScoped<IRepository<Product>, EFRepositoryBase<Product>>();
 
             var builder = services.AddIdentityCore<ApplicationUser>(opt =>
                                     {
-                                        opt.Password.RequireDigit = true;
-                                        opt.Password.RequiredLength = 8;
+                                        opt.Password.RequireDigit = false;
+                                        opt.Password.RequiredLength = 6;
                                         opt.Password.RequireNonAlphanumeric = false;
-                                        opt.Password.RequireUppercase = true;
-                                        opt.Password.RequireLowercase = true;
+                                        opt.Password.RequireUppercase = false;
+                                        opt.Password.RequireLowercase = false;
+
+                                        opt.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
+                                        opt.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
+                                        opt.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
                                     });
             builder = new IdentityBuilder(builder.UserType, typeof(ApplicationRole), builder.Services);
             builder
                 .AddEntityFrameworkStores<ExampleIdentityDbContext>()
-                .AddIdentityServer()
                 .AddDefaultTokenProviders()
                 .AddRoleValidator<RoleValidator<ApplicationRole>>()
                 .AddRoleManager<RoleManager<ApplicationRole>>()
                 .AddSignInManager<SignInManager<ApplicationUser>>();
 
-            services.AddIdentityServer()
-                .AddInMemoryClients(Clients.Get())
-                .AddInMemoryIdentityResources(Resources.GetIdentityResources())
-                .AddInMemoryApiResources(Resources.GetApiResources())
-                .AddDeveloperSigningCredential()
-                .AddAspNetIdentity<ApplicationUser>();
-            
-            services.AddAuthentication(IdentityServerAuthenticationDefaults.JwtAuthenticationScheme)
-                .AddIdentityServerAuthentication(opt =>
-                {
-                    opt.ApiName = "api";
-                    opt.Authority = "http://localhost:5000";
-                    opt.RequireHttpsMetadata = false;
-                });
+            services.AddOpenIddict(opt =>
+            {
+                opt.AddEntityFrameworkCoreStores<ExampleIdentityDbContext>();
+                opt.AddMvcBinders();
+                opt.EnableAuthorizationEndpoint("/connect/authorize");
+                opt.EnableTokenEndpoint("/connect/token");
+                opt.AllowPasswordFlow();
+                opt.AllowRefreshTokenFlow();
+                opt.DisableHttpsRequirement();
+            });
+
+            services.AddAuthentication(OAuthValidationDefaults.AuthenticationScheme)
+                .AddOAuthValidation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,7 +105,6 @@ namespace Example.IdentityWebApi
                 loggerFactory.AddDebug();
             }
 
-            app.UseIdentityServer();
             app.UseAuthentication();
             app.UseWebApi();
             app.InitializeDatabase();
