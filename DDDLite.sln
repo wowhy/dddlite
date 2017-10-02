@@ -30,8 +30,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.Repositories.Entity
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.WebApi", "examples\Example.WebApi\Example.WebApi.csproj", "{BF4981FE-6781-47BF-AC94-213515BFA3B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.IdentityWebApi", "examples\Example.IdentityWebApi\Example.IdentityWebApi.csproj", "{2E7E4A85-64EF-4467-AEE5-55362158A522}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example.IdentityServer", "examples\Example.IdentityServer\Example.IdentityServer.csproj", "{91F07F69-B43E-465F-97B7-ECE8EF00CDD4}"
 EndProject
 Global

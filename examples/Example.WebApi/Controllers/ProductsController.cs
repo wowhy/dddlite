@@ -1,4 +1,4 @@
-namespace Example.IdentityWebApi.Controllers
+namespace Example.WebApi.Controllers
 {
     using System;
     using DDDLite.Repositories;

@@ -1,4 +1,4 @@
-namespace Example.IdentityWebApi.Data
+namespace Example.IdentityServer.Data
 {
     using DDDLite.WebApi.Data;
 
@@ -12,7 +12,7 @@ namespace Example.IdentityWebApi.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.HasDefaultSchema("identity");
+            // builder.HasDefaultSchema("identity");
             base.OnModelCreating(builder);
         }
     }
