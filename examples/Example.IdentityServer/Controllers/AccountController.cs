@@ -21,7 +21,7 @@ namespace Example.IdentityServer.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("~/connect/register")]
+        [Route("/connect/register")]
         public async Task<IActionResult> Register([FromBody]RegisterModel model)
         {
             if (!ModelState.IsValid)

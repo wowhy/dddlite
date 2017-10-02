@@ -44,8 +44,8 @@
                 .AddOAuthIntrospection(options =>
                 {
                     options.Authority = new Uri("http://localhost:5000/");
-                    options.Audiences.Add("webapi");
-                    options.ClientId = "webapi";
+                    options.Audiences.Add("resource_server");
+                    options.ClientId = "resource_server";
                     options.ClientSecret = "qwe123,./";
                     options.RequireHttpsMetadata = false;
                 });

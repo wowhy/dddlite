@@ -1,25 +1,26 @@
 namespace Example.IdentityServer
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
-    using Example.IdentityServer.Data;
+
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
     using Microsoft.EntityFrameworkCore;
-    using DDDLite.WebApi.Data;
-    using Microsoft.AspNetCore.Identity;
+
+    using AspNet.Security.OAuth.Introspection;
     using AspNet.Security.OpenIdConnect.Primitives;
-    using Microsoft.AspNetCore.Mvc;
     using OpenIddict.Core;
     using OpenIddict.Models;
-    using System.Threading;
-    using AspNet.Security.OAuth.Validation;
+
+    using DDDLite.WebApi;
+    using DDDLite.WebApi.Data;
+
+    using Example.IdentityServer.Data;
 
     public class Startup
     {
@@ -45,43 +46,24 @@ namespace Example.IdentityServer
                 options.UseOpenIddict();
             });
 
-            var builder = services.AddIdentityCore<ApplicationUser>(opt =>
-                                    {
-                                        opt.Password.RequireDigit = false;
-                                        opt.Password.RequiredLength = 6;
-                                        opt.Password.RequireNonAlphanumeric = false;
-                                        opt.Password.RequireUppercase = false;
-                                        opt.Password.RequireLowercase = false;
+            services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireLowercase = false;
 
-                                        opt.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
-                                        opt.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
-                                        opt.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
-                                    });
-            builder = new IdentityBuilder(builder.UserType, typeof(ApplicationRole), builder.Services);
-            builder
+                    options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
+                    options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
+                    options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
+                })
                 .AddEntityFrameworkStores<ExampleIdentityDbContext>()
-                .AddDefaultTokenProviders()
-                .AddRoleValidator<RoleValidator<ApplicationRole>>()
-                .AddRoleManager<RoleManager<ApplicationRole>>()
-                .AddSignInManager<SignInManager<ApplicationUser>>();
-
-            // services.AddIdentity<ApplicationUser, ApplicationRole>(options => 
-            //     {
-            //         options.Password.RequireDigit = false;
-            //         options.Password.RequiredLength = 6;
-            //         options.Password.RequireNonAlphanumeric = false;
-            //         options.Password.RequireUppercase = false;
-            //         options.Password.RequireLowercase = false;
-
-            //         options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
-            //         options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
-            //         options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
-            //     })
-            //     .AddEntityFrameworkStores<ExampleIdentityDbContext>();
+                .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
                     .AddCors()
-                    .AddMvc();
+                    .AddWebApi();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,7 +76,7 @@ namespace Example.IdentityServer
             }
 
             app.UseAuthentication()
-               .UseMvc();
+               .UseWebApi();
 
             await app.InitializeDatabase();
         }
@@ -125,11 +107,11 @@ namespace Example.IdentityServer
                     await manager.CreateAsync(application, cancellationToken);
                 }
 
-                if (await manager.FindByClientIdAsync("webapi", cancellationToken) == null)
+                if (await manager.FindByClientIdAsync("resource_server", cancellationToken) == null)
                 {
                     var application = new OpenIddictApplication
                     {
-                        ClientId = "webapi"
+                        ClientId = "resource_server"
                     };
 
                     await manager.CreateAsync(application, "qwe123,./", cancellationToken);
@@ -146,8 +128,15 @@ namespace Example.IdentityServer
                 options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
             });
 
-            services.AddAuthentication(OAuthValidationDefaults.AuthenticationScheme)
-                    .AddOAuthValidation();
+            services.AddAuthentication()
+                    .AddOAuthIntrospection(options =>
+                    {
+                        options.Authority = new Uri("http://localhost:5000/");
+                        options.Audiences.Add("resource_server");
+                        options.ClientId = "resource_server";
+                        options.ClientSecret = "qwe123,./";
+                        options.RequireHttpsMetadata = false;
+                    });
 
             services.AddOpenIddict(options =>
             {
@@ -160,22 +149,12 @@ namespace Example.IdentityServer
                        .EnableIntrospectionEndpoint("/connect/introspect")
                        .EnableUserinfoEndpoint("/api/v1/userinfo");
 
-                options.AllowImplicitFlow()
-                       .AllowPasswordFlow()
+                options.AllowPasswordFlow()
                        .AllowRefreshTokenFlow();
 
                 options.DisableHttpsRequirement();
 
                 options.AddDevelopmentSigningCertificate();
-
-                options.UseJsonWebTokens();
-            });
-
-            services.AddApiVersioning(options =>
-            {
-                options.ReportApiVersions = true;
-                options.AssumeDefaultVersionWhenUnspecified = true;
-                options.DefaultApiVersion = new ApiVersion(1, 0);
             });
 
             return services;

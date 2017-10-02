@@ -38,7 +38,7 @@ namespace Example.IdentityWebApi.Controllers
         // Note: to support non-interactive flows like password,
         // you must provide your own token endpoint action:
 
-        [HttpPost("~/connect/token"), Produces("application/json")]
+        [HttpPost("/connect/token"), Produces("application/json")]
         public async Task<IActionResult> Exchange(OpenIdConnectRequest request)
         {
             Debug.Assert(request.IsTokenRequest(),

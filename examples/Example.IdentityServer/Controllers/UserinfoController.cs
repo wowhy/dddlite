@@ -11,7 +11,7 @@ namespace Example.IdentityServer.Controllers
     using OpenIddict.Core;
 
     [ApiVersion("1.0")]
-    [Route("api/v1/userinfo")]
+    [Route("api/v{version:apiVersion}/userinfo")]
     public class UserinfoController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
