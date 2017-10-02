@@ -4,6 +4,7 @@ namespace Example.IdentityServer.Controllers
     using AspNet.Security.OAuth.Validation;
     using AspNet.Security.OpenIdConnect.Primitives;
     using DDDLite.WebApi.Data;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace Example.IdentityServer.Controllers
 
         //
         // GET: /api/userinfo
-        [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet, Produces("application/json")]
         public async Task<IActionResult> Userinfo()
         {

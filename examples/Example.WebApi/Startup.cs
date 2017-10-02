@@ -22,7 +22,10 @@
 
     using Example.Core.Domain;
     using Example.Repositories.EntityFramework;
-    using AspNet.Security.OAuth.Introspection;
+    using System.IdentityModel.Tokens.Jwt;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.IdentityModel.Tokens;
+    using AspNet.Security.OpenIdConnect.Primitives;
 
     public class Startup
     {
@@ -39,16 +42,8 @@
             var migrationsAssembly = typeof(Startup).Assembly.GetName().Name;
             var connectionString = Configuration.GetConnectionString("Default");
 
-            services.AddWebApi();
-            services.AddAuthentication(OAuthIntrospectionDefaults.AuthenticationScheme)
-                .AddOAuthIntrospection(options =>
-                {
-                    options.Authority = new Uri("http://localhost:5000/");
-                    options.Audiences.Add("resource_server");
-                    options.ClientId = "resource_server";
-                    options.ClientSecret = "qwe123,./";
-                    options.RequireHttpsMetadata = false;
-                });
+            services.AddWebApi()
+                    .AddJWTAuthentication();
 
             services.AddDbContext<ExampleDbContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly(migrationsAssembly)));
 
@@ -81,6 +76,30 @@
             }
 
             return app;
+        }
+
+        public static IServiceCollection AddJWTAuthentication(this IServiceCollection services) 
+        {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+            
+            services.AddAuthentication(options =>
+                    {
+                        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    })
+                    .AddJwtBearer(options =>
+                    {
+                        options.Authority = "http://localhost:5000/";
+                        options.Audience = "resource_server";
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            NameClaimType = OpenIdConnectConstants.Claims.Subject,
+                            RoleClaimType = OpenIdConnectConstants.Claims.Role
+                        };
+                    });
+
+            return services;
         }
     }
 }

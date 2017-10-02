@@ -21,6 +21,9 @@ namespace Example.IdentityServer
     using DDDLite.WebApi.Data;
 
     using Example.IdentityServer.Data;
+    using System.IdentityModel.Tokens.Jwt;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.IdentityModel.Tokens;
 
     public class Startup
     {
@@ -53,15 +56,12 @@ namespace Example.IdentityServer
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                     options.Password.RequireLowercase = false;
-
-                    options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
-                    options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
-                    options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
                 })
                 .AddEntityFrameworkStores<ExampleIdentityDbContext>()
                 .AddDefaultTokenProviders();
 
             services.AddIdentityServer()
+                    .AddJWTAuthentication()
                     .AddCors()
                     .AddWebApi();
         }
@@ -128,16 +128,6 @@ namespace Example.IdentityServer
                 options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
             });
 
-            services.AddAuthentication()
-                    .AddOAuthIntrospection(options =>
-                    {
-                        options.Authority = new Uri("http://localhost:5000/");
-                        options.Audiences.Add("resource_server");
-                        options.ClientId = "resource_server";
-                        options.ClientSecret = "qwe123,./";
-                        options.RequireHttpsMetadata = false;
-                    });
-
             services.AddOpenIddict(options =>
             {
                 options.AddEntityFrameworkCoreStores<ExampleIdentityDbContext>()
@@ -145,17 +135,42 @@ namespace Example.IdentityServer
 
                 options.EnableAuthorizationEndpoint("/connect/authorize")
                        .EnableTokenEndpoint("/connect/token")
-                       .EnableLogoutEndpoint("/connect/logout")
                        .EnableIntrospectionEndpoint("/connect/introspect")
                        .EnableUserinfoEndpoint("/api/v1/userinfo");
 
-                options.AllowPasswordFlow()
+                options.AllowImplicitFlow()
                        .AllowRefreshTokenFlow();
 
                 options.DisableHttpsRequirement();
 
                 options.AddDevelopmentSigningCertificate();
+
+                options.UseJsonWebTokens();
             });
+
+            return services;
+        }
+
+        public static IServiceCollection AddJWTAuthentication(this IServiceCollection services) 
+        {
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+            
+            services.AddAuthentication(options =>
+                    {
+                        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    })
+                    .AddJwtBearer(options =>
+                    {
+                        options.Authority = "http://localhost:5000/";
+                        options.Audience = "resource_server";
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            NameClaimType = OpenIdConnectConstants.Claims.Subject,
+                            RoleClaimType = OpenIdConnectConstants.Claims.Role
+                        };
+                    });
 
             return services;
         }
