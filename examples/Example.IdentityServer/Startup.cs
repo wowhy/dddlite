@@ -94,19 +94,6 @@ namespace Example.IdentityServer
                 var manager = scope.ServiceProvider.GetRequiredService<OpenIddictApplicationManager<OpenIddictApplication>>();
                 var cancellationToken = default(CancellationToken);
 
-                if (await manager.FindByClientIdAsync("webapp", cancellationToken) == null)
-                {
-                    var application = new OpenIddictApplication
-                    {
-                        ClientId = "webapp",
-                        DisplayName = "WebApp",
-                        LogoutRedirectUri = "http://localhost:9000/logout",
-                        RedirectUri = "http://localhost:9000/login"
-                    };
-
-                    await manager.CreateAsync(application, cancellationToken);
-                }
-
                 if (await manager.FindByClientIdAsync("resource_server", cancellationToken) == null)
                 {
                     var application = new OpenIddictApplication
@@ -133,12 +120,11 @@ namespace Example.IdentityServer
                 options.AddEntityFrameworkCoreStores<ExampleIdentityDbContext>()
                        .AddMvcBinders();
 
-                options.EnableAuthorizationEndpoint("/connect/authorize")
-                       .EnableTokenEndpoint("/connect/token")
+                options.EnableTokenEndpoint("/connect/token")
                        .EnableIntrospectionEndpoint("/connect/introspect")
                        .EnableUserinfoEndpoint("/api/v1/userinfo");
 
-                options.AllowImplicitFlow()
+                options.AllowPasswordFlow()
                        .AllowRefreshTokenFlow();
 
                 options.DisableHttpsRequirement();

@@ -2,6 +2,7 @@ namespace Example.IdentityServer.Controllers
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using AspNet.Security.OAuth.Validation;
     using DDDLite.WebApi.Data;
     using DDDLite.WebApi.Exception;
     using Example.IdentityServer.Models;
@@ -9,7 +10,9 @@ namespace Example.IdentityServer.Controllers
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
 
-    [Authorize]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/account")]
+    [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -21,7 +24,7 @@ namespace Example.IdentityServer.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        [Route("/connect/register")]
+        [Route("register")]
         public async Task<IActionResult> Register([FromBody]RegisterModel model)
         {
             if (!ModelState.IsValid)

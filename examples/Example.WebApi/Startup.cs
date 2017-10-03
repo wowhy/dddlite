@@ -26,6 +26,7 @@
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.IdentityModel.Tokens;
     using AspNet.Security.OpenIdConnect.Primitives;
+    using AspNet.Security.OAuth.Validation;
 
     public class Startup
     {
@@ -85,7 +86,7 @@
             
             services.AddAuthentication(options =>
                     {
-                        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                        options.DefaultScheme = OAuthValidationDefaults.AuthenticationScheme;
                     })
                     .AddJwtBearer(options =>
                     {

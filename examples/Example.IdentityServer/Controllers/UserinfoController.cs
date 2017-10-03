@@ -4,6 +4,7 @@ namespace Example.IdentityServer.Controllers
     using AspNet.Security.OAuth.Validation;
     using AspNet.Security.OpenIdConnect.Primitives;
     using DDDLite.WebApi.Data;
+    using DDDLite.WebApi.Models;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -13,6 +14,7 @@ namespace Example.IdentityServer.Controllers
 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/userinfo")]
+    [Authorize(AuthenticationSchemes = OAuthValidationDefaults.AuthenticationScheme)]
     public class UserinfoController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -24,7 +26,6 @@ namespace Example.IdentityServer.Controllers
 
         //
         // GET: /api/userinfo
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet, Produces("application/json")]
         public async Task<IActionResult> Userinfo()
         {
@@ -63,7 +64,7 @@ namespace Example.IdentityServer.Controllers
             // Note: the complete list of standard claims supported by the OpenID Connect specification
             // can be found here: http://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
 
-            return Json(claims);
+            return Json(new ResponseValue<JObject>(claims));
         }
     }
 }
