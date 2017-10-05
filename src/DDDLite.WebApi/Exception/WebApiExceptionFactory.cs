@@ -48,6 +48,16 @@ namespace DDDLite.WebApi.Exception
                 return (ex as BadArgumentException).Argument;
             }
 
+            if (ex is AggregateExistsException) 
+            {
+                return (ex as AggregateExistsException).Id.ToString();
+            }
+
+            if (ex is AggregateNotFoundException) 
+            {
+                return (ex as AggregateNotFoundException).Id.ToString();
+            }
+
             return null;
         }
     }

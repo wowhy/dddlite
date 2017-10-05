@@ -2,6 +2,7 @@ namespace DDDLite.Repositories.EntityFramework
 {
     using System.Threading;
     using System.Threading.Tasks;
+    using DDDLite.Exception;
     using DDDLite.Repositories;
 
     using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,13 @@ namespace DDDLite.Repositories.EntityFramework
 
         public async Task CommitAsync(CancellationToken cancellationToken)
         {
-            await this.SaveChangesAsync();
+            try {
+                await this.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException ex)
+            {
+                throw new ConcurrencyException(ex);
+            }
         }
     }
 }
