@@ -4,6 +4,11 @@ namespace Example.Core.Domain
     using DDDLite.Domain;
     public class Product : AggregateRoot, ILogicalDelete
     {
+        public Product() 
+        {
+            this.Detail = new ProductDetail();
+        }
+
         public string Code { get; set; }
 
         public string Name { get; set; }

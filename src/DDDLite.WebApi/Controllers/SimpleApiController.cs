@@ -5,8 +5,10 @@ namespace DDDLite.WebApi.Controllers
     using System.Linq;
     using System.Security.Claims;
     using System.Threading.Tasks;
+
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.JsonPatch;
+    using Microsoft.AspNetCore.Authorization;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Primitives;
     using Microsoft.Extensions.PlatformAbstractions;
@@ -24,7 +26,7 @@ namespace DDDLite.WebApi.Controllers
 
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    // [Route("api/[controller]")]
+    [Authorize]
     public class SimpleApiController<TAggregateRoot> : Controller
             where TAggregateRoot : class, IAggregateRoot
     {

@@ -38,8 +38,9 @@
                     switch (entry.State)
                     {
                         case EntityState.Modified:
-                            entry.CurrentValues[nameof(ITrackable.CreatedAt)] = entry.OriginalValues[nameof(ITrackable.CreatedAt)];
-                            entry.CurrentValues[nameof(ITrackable.CreatedById)] = entry.OriginalValues[nameof(ITrackable.CreatedById)];
+                            var originValues = entry.GetDatabaseValues();
+                            entry.CurrentValues[nameof(ITrackable.CreatedAt)] = originValues.GetValue<DateTime?>(nameof(ITrackable.CreatedAt));
+                            entry.CurrentValues[nameof(ITrackable.CreatedById)] = originValues.GetValue<Guid?>(nameof(ITrackable.CreatedById));
                             break;
                     }
                 }
