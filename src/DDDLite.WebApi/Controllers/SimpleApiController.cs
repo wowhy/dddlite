@@ -21,6 +21,7 @@ namespace DDDLite.WebApi.Controllers
     using DDDLite.WebApi.Internal.Query;
     using DDDLite.WebApi.Exception;
     using DDDLite.WebApi.Provider;
+    using DDDLite.WebApi.Models;
 
     using @N = DDDLite.WebApi.Internal.ApiParams;
 
@@ -79,13 +80,13 @@ namespace DDDLite.WebApi.Controllers
             aggregateRoot.LastUpdatedAt = aggregateRoot.CreatedAt;
             aggregateRoot.LastUpdatedById = aggregateRoot.LastUpdatedById;
 
-            await Repository.AddAsync(aggregateRoot);
-            await Repository.UnitOfWork.CommitAsync();
+            await AddAsync(aggregateRoot);
 
-            return Created(Url.Action("Get", new { id = aggregateRoot.Id }), aggregateRoot.Id);
+            return Created(Url.Action("Get", new { id = aggregateRoot.Id }), new ResponseValue<Guid>(aggregateRoot.Id));
         }
 
         [HttpPut("{id}")]
+        [Produces("application/json")]
         public virtual async Task<IActionResult> Put(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] TAggregateRoot aggregateRoot)
         {
             if (!Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id == id)))
@@ -100,16 +101,16 @@ namespace DDDLite.WebApi.Controllers
 
             aggregateRoot.Id = id;
             aggregateRoot.LastUpdatedAt = DateTime.Now;
-            aggregateRoot.LastUpdatedById = this.GetCurrentUserId();
+            aggregateRoot.LastUpdatedById = GetCurrentUserId();
             aggregateRoot.RowVersion = long.Parse(concurrencyToken);
 
-            await Repository.UpdateAsync(aggregateRoot);
-            await Repository.UnitOfWork.CommitAsync();
+            await UpdateAsync(aggregateRoot);
 
             return NoContent();
         }
 
         [HttpPatch("{id}")]
+        [Produces("application/json")]
         public virtual async Task<IActionResult> Patch(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] JsonPatchDocument<TAggregateRoot> patch)
         {
             var aggregateRoot = await Repository.GetByIdAsync(id);
@@ -127,11 +128,10 @@ namespace DDDLite.WebApi.Controllers
 
             aggregateRoot.Id = id;
             aggregateRoot.LastUpdatedAt = DateTime.Now;
-            aggregateRoot.LastUpdatedById = this.GetCurrentUserId();
+            aggregateRoot.LastUpdatedById = GetCurrentUserId();
             aggregateRoot.RowVersion = long.Parse(concurrencyToken);
 
-            await Repository.UpdateAsync(aggregateRoot);
-            await Repository.UnitOfWork.CommitAsync();
+            await UpdateAsync(aggregateRoot);
 
             return NoContent();
         }
@@ -151,11 +151,10 @@ namespace DDDLite.WebApi.Controllers
             }
 
             aggregateRoot.LastUpdatedAt = DateTime.Now;
-            aggregateRoot.LastUpdatedById = this.GetCurrentUserId();
+            aggregateRoot.LastUpdatedById = GetCurrentUserId();
             aggregateRoot.RowVersion = long.Parse(concurrencyToken);
 
-            await Repository.DeleteAsync(aggregateRoot);
-            await Repository.UnitOfWork.CommitAsync();
+            await DeleteAsync(aggregateRoot);
 
             return NoContent();
         }
@@ -164,6 +163,24 @@ namespace DDDLite.WebApi.Controllers
         {
             var provider = HttpContext.RequestServices.GetService<ICurrentUserProvider>();
             return provider.GetCurrentUserId();
+        }
+
+        protected virtual async Task AddAsync(TAggregateRoot aggregateRoot) 
+        {
+            await Repository.AddAsync(aggregateRoot);
+            await Repository.UnitOfWork.CommitAsync();
+        }
+
+        protected virtual async Task UpdateAsync(TAggregateRoot aggregateRoot) 
+        {
+            await Repository.UpdateAsync(aggregateRoot);
+            await Repository.UnitOfWork.CommitAsync();
+        }
+
+        protected virtual async Task DeleteAsync(TAggregateRoot aggregateRoot) 
+        {
+            await Repository.DeleteAsync(aggregateRoot);
+            await Repository.UnitOfWork.CommitAsync();
         }
     }
 }

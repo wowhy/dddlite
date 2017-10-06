@@ -1,10 +1,10 @@
 namespace DDDLite.Domain
 {
-    public static class EntityExtension
+  public static class EntityExtension
+  {
+    public static void NewIdentity(this IEntity entity)
     {
-        public static void NewIdentity(this IEntity entity)
-        {
-            entity.Id = SequentialGuid.Create();
-        }
+      entity.Id = SequentialGuid.Create();
     }
+  }
 }

@@ -1,7 +1,7 @@
 ﻿namespace DDDLite.Domain
 {
-    public interface IConcurrencyToken
-    {
-        long RowVersion { get; set; }
-    }
+  public interface IConcurrencyToken
+  {
+    long RowVersion { get; set; }
+  }
 }

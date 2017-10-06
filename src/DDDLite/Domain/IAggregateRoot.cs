@@ -1,8 +1,8 @@
 ﻿namespace DDDLite.Domain
 {
-    using System;
-    
-    public interface IAggregateRoot : IEntity, IConcurrencyToken, ITrackable
-    {
-    }
+  using System;
+
+  public interface IAggregateRoot : IEntity, IConcurrencyToken, ITrackable
+  {
+  }
 }
