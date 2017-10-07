@@ -13,7 +13,7 @@ namespace DDDLite.WebApi.Internal.Query
     using Microsoft.Extensions.Primitives;
     using DDDLite.WebApi.Config;
 
-    public abstract class BaseQueryContext<TAggregateRoot> : IQueryContext<TAggregateRoot>
+    internal abstract class BaseQueryContext<TAggregateRoot> : IQueryContext<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
         private static readonly Specification<TAggregateRoot> DefaultFilter = Specification<TAggregateRoot>.Any();

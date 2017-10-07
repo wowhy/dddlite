@@ -72,7 +72,7 @@ namespace DDDLite.WebApi.Controllers
 
             if (Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id == aggregateRoot.Id)))
             {
-                throw new AggregateExistsException(aggregateRoot.Id);
+                throw new AggregateRootExistsException(aggregateRoot.Id);
             }
 
             aggregateRoot.CreatedAt = DateTime.Now;
@@ -91,7 +91,7 @@ namespace DDDLite.WebApi.Controllers
         {
             if (!Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id == id)))
             {
-                throw new AggregateNotFoundException(id);
+                throw new AggregateRootNotFoundException(id);
             }
 
             if (concurrencyToken == null)
@@ -116,7 +116,7 @@ namespace DDDLite.WebApi.Controllers
             var aggregateRoot = await Repository.GetByIdAsync(id);
             if (aggregateRoot == null)
             {
-                throw new AggregateNotFoundException(id);
+                throw new AggregateRootNotFoundException(id);
             }
 
             if (concurrencyToken == null)
@@ -142,7 +142,7 @@ namespace DDDLite.WebApi.Controllers
             var aggregateRoot = await Repository.GetByIdAsync(id);
             if (aggregateRoot == null)
             {
-                throw new AggregateNotFoundException(id);
+                throw new AggregateRootNotFoundException(id);
             }
 
             if (concurrencyToken == null)

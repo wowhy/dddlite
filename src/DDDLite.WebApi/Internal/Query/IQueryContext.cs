@@ -7,7 +7,7 @@ namespace DDDLite.WebApi.Internal.Query
     using DDDLite.Specifications;
     using DDDLite.WebApi.Models;
 
-    public interface IQueryContext<TAggregateRoot>
+    internal interface IQueryContext<TAggregateRoot>
         where TAggregateRoot : class, IAggregateRoot
     {
         bool HasCount { get; }

@@ -28,7 +28,7 @@ namespace DDDLite.WebApi.Exception
         {
             if (ex is CoreException)
             {
-                if (ex is AggregateNotFoundException)
+                if (ex is AggregateRootNotFoundException)
                 {
                     return 404;
                 }
@@ -48,14 +48,9 @@ namespace DDDLite.WebApi.Exception
                 return (ex as BadArgumentException).Argument;
             }
 
-            if (ex is AggregateExistsException) 
+            if (ex is AggregateRootException) 
             {
-                return (ex as AggregateExistsException).Id.ToString();
-            }
-
-            if (ex is AggregateNotFoundException) 
-            {
-                return (ex as AggregateNotFoundException).Id.ToString();
+                return (ex as AggregateRootException).Id.ToString();
             }
 
             return null;

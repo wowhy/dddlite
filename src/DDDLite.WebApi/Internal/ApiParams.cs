@@ -1,6 +1,6 @@
 namespace DDDLite.WebApi.Internal
 {
-    public static class ApiParams
+    internal static class ApiParams
     {
         public const string TOP = "$top";
 
