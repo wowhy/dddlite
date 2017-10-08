@@ -51,9 +51,8 @@ function init(resolve, reject) {
   Vue.$http = $http
 
   $http.interceptors.request.use((request) => {
-    if (request.data && request.data.headers && request.data.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
-      request.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-      request.data = qs.stringify(request.data.data)
+    if (request.data && request.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
+      request.data = qs.stringify(request.data)
     }
     return request
   }, (error) => Promise.reject(error))

@@ -8,21 +8,20 @@ export function ajaxGet(url, params, config = {}) {
 }
 
 export function ajaxPost(url, data, config = {}) {
-  return Vue.$http.post(url, {
-    ...config,
-    data
+  return Vue.$http.post(url, data, {
+    ...config
   })
 }
 
 export function ajaxPut(url, data, config = {}) {
-  return Vue.$http.put(url, {
-    ...config,
-    data
+  return Vue.$http.put(url, data, {
+    ...config
   })
 }
 
-export function ajaxDelete(url, config = {}) {
+export function ajaxDelete(url, params, config = {}) {
   return Vue.$http.delete(url, {
-    ...config
+    ...config,
+    params
   })
 }
