@@ -45,7 +45,7 @@ module.exports = {
     // Also see /build/script.dev.js and search for "proxy api requests"
     // https://github.com/chimurai/http-proxy-middleware
     proxyTable: {
-      '/connect/token': {
+      '/api/v1/connect/token': {
         target: 'http://localhost:5000'
       },
       '/api/v1/userinfo': {

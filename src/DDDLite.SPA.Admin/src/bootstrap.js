@@ -57,9 +57,7 @@ function init(resolve, reject) {
     return request
   }, (error) => Promise.reject(error))
 
-  $http.interceptors.response.use((res) => {
-    return res
-  }, ({ response }) => {
+  $http.interceptors.response.use((res) => res.data, ({ response }) => {
     let data = response.data
     if (typeof response.data !== 'object') {
       data = {
@@ -86,11 +84,14 @@ function init(resolve, reject) {
 
   // init router
   const authService = require('./services/auth').default
-  router.beforeEach((to, from, next) => {
+  router.beforeEach(async(to, from, next) => {
     if (to.matched.some(k => k.meta.authorize)) {
-      if (!authService.isAuthed()) {
-        next('/login')
-        return
+      try {
+        if (!await authService.sync()) {
+          return next('/login')
+        }
+      } catch (ex) {
+        return next(false)
       }
     }
 

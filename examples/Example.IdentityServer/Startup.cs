@@ -120,8 +120,8 @@ namespace Example.IdentityServer
                 options.AddEntityFrameworkCoreStores<ExampleIdentityDbContext>()
                        .AddMvcBinders();
 
-                options.EnableTokenEndpoint("/connect/token")
-                       .EnableIntrospectionEndpoint("/connect/introspect")
+                options.EnableTokenEndpoint("/api/v1/connect/token")
+                       .EnableIntrospectionEndpoint("/api/v1/connect/introspect")
                        .EnableUserinfoEndpoint("/api/v1/userinfo");
 
                 options.AllowPasswordFlow()

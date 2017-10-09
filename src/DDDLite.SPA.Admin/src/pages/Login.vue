@@ -18,7 +18,9 @@ export default {
   },
   methods: {
     login() {
-      return authService.login(this.username, this.password)
+      authService.login(this.username, this.password).then(() => {
+        this.$router.push('/')
+      })
     }
   }
 }
