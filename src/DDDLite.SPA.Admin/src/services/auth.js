@@ -1,87 +1,122 @@
-import { ajaxPost } from './ajax'
-import jwtDecode from 'jwt-decode'
+import { ajaxGet, ajaxPost } from './ajax'
+import Vue from 'vue'
 
-let authed = false
-let session = {
+const defaultSession = {
   expriesIn: 3480,
   loginAt: 0,
+  tokenType: '',
   accessToken: '',
   refreshToken: '',
-  profile: null
+  user: null
 }
 
-export default {
+class AuthService {
+  constructor() {
+    this.authed = false
+    this.session = {
+      ...defaultSession
+    }
+  }
+
   sync() {
     return new Promise((resolve, reject) => {
-      syncSession()
+      this.syncSession()
 
-      if (authed) {
-        let now = Date.now()
-        if (now > session.loginAt + session.expiresIn * 1000) {
-          authed = false
-          clearSession()
+      if (this.authed) {
+        if (this.isExpired()) {
+          this.clearSession()
         }
       }
 
-      resolve(authed)
+      resolve(this.authed)
     })
-  },
+  }
 
   login(username, password) {
     return ajaxPost('/api/v1/connect/token', {
       grant_type: 'password',
       username,
       password,
-      scope: 'offline_access name email roles'
+      scope: 'offline_access phone email roles'
     }, {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     }).then((data) => {
-      authed = true
+      this.authed = true
 
-      session.loginAt = Date.now()
-      session.expiresIn = data.expires_in - 120
-      session.accessToken = data.access_token
-      session.refreshToken = data.refresh_token
-      session.profile = jwtDecode(data.access_token)
+      this.session.loginAt = Date.now()
+      this.session.expiresIn = data.expires_in - 120
+      this.session.tokenType = data.token_type
+      this.session.accessToken = data.access_token
+      this.session.refreshToken = data.refresh_token
 
-      saveSession()
+      Vue.$http.defaults.headers.common['Authorization'] = `${this.session.tokenType} ${this.session.accessToken}`
+
+      return this.refreshUserInfo()
     })
-  },
+  }
 
-  logout() {},
+  logout() {
+    this.authed = false
+    this.clearSession()
+  }
 
   isAuthed() {
-    return authed
+    return this.authed
   }
-}
 
-function syncSession() {
-  try {
-    if (authed) return false
+  getUserInfo() {
+    return this.session.user
+  }
 
-    let value = localStorage.getItem('user_session')
-    if (!value) return false
+  refreshUserInfo() {
+    return ajaxGet('/api/v1/userinfo').then(data => {
+      this.session.user = data.value
+      this.saveSession()
+      return this.session.user
+    })
+  }
 
-    session = JSON.parse(value)
-
-    if (Date.now() > session.loginAt + session.expiresIn * 1000) {
-      authed = false
-    } else {
-      authed = true
+  isExpired() {
+    let now = Date.now()
+    if (now > this.session.loginAt + this.session.expiresIn * 1000) {
+      return true
     }
 
-    return true
-  } catch (ex) {
     return false
+  }
+
+  syncSession() {
+    try {
+      if (this.authed) return false
+
+      let value = localStorage.getItem('user_session')
+      if (!value) return false
+
+      this.session = JSON.parse(value)
+
+      if (this.isExpired()) {
+        this.authed = false
+      } else {
+        this.authed = true
+        Vue.$http.defaults.common.headers['Authorization'] = `${this.session.tokenType} ${this.session.accessToken}`
+      }
+
+      return true
+    } catch (ex) {
+      return false
+    }
+  }
+
+  clearSession() {
+    this.session = { ...defaultSession }
+    localStorage.removeItem('user_session')
+  }
+
+  saveSession() {
+    localStorage.setItem('user_session', JSON.stringify(this.session))
   }
 }
 
-function clearSession() {
-  localStorage.removeItem('user_session')
-}
-
-function saveSession() {
-  localStorage.setItem('user_session', JSON.stringify(session))
-}
+export default new AuthService()

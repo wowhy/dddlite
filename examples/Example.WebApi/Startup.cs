@@ -96,7 +96,8 @@
                         options.TokenValidationParameters = new TokenValidationParameters
                         {
                             NameClaimType = OpenIdConnectConstants.Claims.Subject,
-                            RoleClaimType = OpenIdConnectConstants.Claims.Role
+                            RoleClaimType = OpenIdConnectConstants.Claims.Role,
+                            ValidateIssuer = false
                         };
                     });
 

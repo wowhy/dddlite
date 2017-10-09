@@ -1,4 +1,4 @@
-namespace Example.IdentityWebApi.Controllers
+namespace Example.IdentityServer.Controllers
 {
   using System.Collections.Generic;
   using System.Diagnostics;
@@ -120,9 +120,11 @@ namespace Example.IdentityWebApi.Controllers
         {
           OpenIdConnectConstants.Scopes.OpenId,
           OpenIdConnectConstants.Scopes.Email,
+          OpenIdConnectConstants.Scopes.Phone,
+          OpenIdConnectConstants.Scopes.Address,
           OpenIdConnectConstants.Scopes.Profile,
           OpenIdConnectConstants.Scopes.OfflineAccess,
-          OpenIddictConstants.Scopes.Roles
+          OpenIddictConstants.Scopes.Roles,
         }.Intersect(request.GetScopes()));
       }
 
