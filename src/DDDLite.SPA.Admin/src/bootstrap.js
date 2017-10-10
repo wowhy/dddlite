@@ -11,7 +11,8 @@ require(`quasar/dist/quasar.${__THEME}.css`)
 
 import Vue from 'vue'
 import Quasar, { Alert } from 'quasar'
-import router from './router'
+
+import qs from 'qs'
 
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
@@ -21,8 +22,14 @@ import 'quasar-extras/ionicons'
 // import 'quasar-extras/fontawesome'
 import 'quasar-extras/animate'
 
-import axios from 'axios'
-import qs from 'qs'
+import $http from './http'
+import router from './router'
+import authService from './services/auth'
+
+Vue.config.productionTip = false
+Vue.use(Quasar) // Install Quasar Framework
+
+Vue.$http = Vue.prototype.$http = $http
 
 export default function() {
   return new Promise((resolve, reject) => {
@@ -41,15 +48,7 @@ const alert = msg => {
 }
 
 function init(resolve, reject) {
-  Vue.config.productionTip = false
-  Vue.use(Quasar) // Install Quasar Framework
-
   // init $http
-  let $http = axios.create()
-
-  Vue.prototype.$http = $http
-  Vue.$http = $http
-
   $http.interceptors.request.use((request) => {
     if (request.data && request.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
       request.data = qs.stringify(request.data)
@@ -83,7 +82,6 @@ function init(resolve, reject) {
   })
 
   // init router
-  const authService = require('./services/auth').default
   router.beforeEach((to, from, next) => {
     if (to.matched.some(k => k.meta.authorize)) {
       try {
