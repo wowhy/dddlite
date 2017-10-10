@@ -84,10 +84,10 @@ function init(resolve, reject) {
 
   // init router
   const authService = require('./services/auth').default
-  router.beforeEach(async(to, from, next) => {
+  router.beforeEach((to, from, next) => {
     if (to.matched.some(k => k.meta.authorize)) {
       try {
-        if (!await authService.sync()) {
+        if (!authService.isAuthed()) {
           return next('/login')
         }
       } catch (ex) {
@@ -99,7 +99,8 @@ function init(resolve, reject) {
   })
 
   // start quasar
-  Quasar.start(() => {
+  Quasar.start(async () => {
+    await authService.sync()
     resolve(router)
   })
 }

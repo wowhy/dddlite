@@ -4,78 +4,92 @@ import Vue from 'vue'
 const defaultSession = {
   expriesIn: 3480,
   loginAt: 0,
-  tokenType: '',
-  accessToken: '',
-  refreshToken: '',
+  tokenType: null,
+  accessToken: null,
+  refreshToken: null,
   user: null
 }
 
 class AuthService {
   constructor() {
-    this.authed = false
+    this.refreshTokenTimer = 0
     this.session = {
       ...defaultSession
     }
   }
 
+  // 同步登录状态
   sync() {
     return new Promise((resolve, reject) => {
-      this.syncSession()
-
-      if (this.authed) {
-        if (this.isExpired()) {
-          this.clearSession()
-        }
+      this.session = getSession()
+      if (this.session.refreshToken) {
+        this.refreshToken().then(resolve, resolve)
+      } else {
+        resolve()
       }
-
-      resolve(this.authed)
     })
   }
 
-  login(username, password) {
-    return ajaxPost('/api/v1/connect/token', {
+  enableAutoRefreshToken() {
+    this.refreshTokenTimer = setTimeout(() => {
+      this.refreshToken()
+    }, this.session.expriesIn * 1000)
+  }
+
+  disableAutoRefreshToken() {
+    if (this.refreshTokenTimer) {
+      clearTimeout(this.refreshTokenTimer)
+    }
+  }
+
+  // 登录
+  login(username, password, longSave = true) {
+    let params = {
       grant_type: 'password',
       username,
       password,
-      scope: 'offline_access phone email roles'
-    }, {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+      scope: 'phone email roles' + (longSave ? ' offline_access' : '')
+    }
+    return getToken(params).then(this.processLoginRequest.bind(this)).then(() => {
+      if (this.session.refresh_token) {
+        this.enableAutoRefreshToken()
       }
-    }).then((data) => {
-      this.authed = true
-
-      this.session.loginAt = Date.now()
-      this.session.expiresIn = data.expires_in - 120
-      this.session.tokenType = data.token_type
-      this.session.accessToken = data.access_token
-      this.session.refreshToken = data.refresh_token
-
-      Vue.$http.defaults.headers.common['Authorization'] = `${this.session.tokenType} ${this.session.accessToken}`
-
-      return this.refreshUserInfo()
     })
-  }
-
-  logout() {
-    this.authed = false
-    this.clearSession()
-  }
-
-  isAuthed() {
-    return this.authed
-  }
-
-  getUserInfo() {
-    return this.session.user
   }
 
   refreshUserInfo() {
     return ajaxGet('/api/v1/userinfo').then(data => {
       this.session.user = data.value
-      this.saveSession()
+      saveSession(this.session)
       return this.session.user
     })
+  }
+
+  refreshToken() {
+    let params = {
+      grant_type: 'refresh_token',
+      refresh_token: this.session.refreshToken
+    }
+    this.disableAutoRefreshToken()
+    return getToken(params).then(data => {
+      return this.processLoginRequest(data)
+    }).then(() => {
+      this.enableAutoRefreshToken()
+    })
+  }
+
+  // 退出
+  logout() {
+    this.session = { ...defaultSession }
+    clearSession()
+  }
+
+  isAuthed() {
+    return !this.isExpired()
+  }
+
+  getUserInfo() {
+    return this.session.user
   }
 
   isExpired() {
@@ -87,36 +101,61 @@ class AuthService {
     return false
   }
 
-  syncSession() {
-    try {
-      if (this.authed) return false
+  processLoginRequest(loginData) {
+    let now = Date.now()
+    let Authorization = `${loginData.token_type} ${loginData.access_token}`
+    return ajaxGet('/api/v1/userinfo', {}, {
+      headers: {
+        Authorization
+      }
+    }).then(userData => {
+      Vue.$http.defaults.headers.common['Authorization'] = Authorization
 
-      let value = localStorage.getItem('user_session')
-      if (!value) return false
+      this.session.loginAt = now
+      this.session.expiresIn = loginData.expires_in - 120
+      this.session.tokenType = loginData.token_type
+      this.session.accessToken = loginData.access_token
 
-      this.session = JSON.parse(value)
-
-      if (this.isExpired()) {
-        this.authed = false
-      } else {
-        this.authed = true
-        Vue.$http.defaults.common.headers['Authorization'] = `${this.session.tokenType} ${this.session.accessToken}`
+      if (loginData.refresh_token) {
+        this.session.refreshToken = loginData.refresh_token
       }
 
-      return true
-    } catch (ex) {
-      return false
-    }
-  }
+      this.session.user = userData.value
 
-  clearSession() {
-    this.session = { ...defaultSession }
-    localStorage.removeItem('user_session')
-  }
-
-  saveSession() {
-    localStorage.setItem('user_session', JSON.stringify(this.session))
+      saveSession(this.session)
+    })
   }
 }
 
 export default new AuthService()
+
+function getToken(model) {
+  let url = '/api/v1/connect/token'
+  let headers = {
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
+
+  return ajaxPost(url, model, {
+    headers
+  })
+}
+
+function getSession() {
+  try {
+    let value = localStorage.getItem('user_session')
+    if (!value) return { ...defaultSession }
+
+    let session = JSON.parse(value)
+    return session
+  } catch (ex) {
+    return { ...defaultSession }
+  }
+}
+
+function clearSession() {
+  localStorage.removeItem('user_session')
+}
+
+function saveSession(session) {
+  localStorage.setItem('user_session', JSON.stringify(session))
+}
