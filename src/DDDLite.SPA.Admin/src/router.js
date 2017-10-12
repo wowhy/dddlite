@@ -5,7 +5,7 @@ Vue.use(VueRouter)
 
 function load(component) {
   // '@' is aliased to src/components
-  return () => System.import(`src/pages/${component}`)
+  return () => System.import(`@/${component}.vue`)
 }
 
 export default new VueRouter({
@@ -24,20 +24,20 @@ export default new VueRouter({
   mode: 'history',
 
   routes: [
-    { path: '/login', component: load('Login') },
+    { path: '/login', component: load('pages/Login') },
     {
       path: '/',
-      component: load('Home'),
-      redirect: '/demo',
+      component: load('layouts/Main'),
+      redirect: '/index',
       meta: {
         authorize: true
       },
       children: [
-        { path: '/demo', component: load('Demo') }
+        { path: '/index', component: load('pages/Dashboard') }
       ]
     },
 
     // Always leave this last one
-    { path: '*', component: load('Error404') } // Not found
+    { path: '*', component: load('pages/Error404') } // Not found
   ]
 })

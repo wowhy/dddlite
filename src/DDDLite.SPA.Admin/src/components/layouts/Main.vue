@@ -6,8 +6,8 @@
       </q-btn>
 
       <q-toolbar-title>
-        Quasar App
-        <div slot="subtitle">Running on Quasar v{{$q.version}}</div>
+        DDDLite Admin
+        <div slot="subtitle">{{title}}</div>
       </q-toolbar-title>
     </q-toolbar>
 
@@ -45,35 +45,17 @@
 
 <script>
 import {
-  openURL,
-  QLayout,
-  QToolbar,
-  QToolbarTitle,
-  QBtn,
-  QIcon,
-  QList,
-  QListHeader,
-  QItem,
-  QItemSide,
-  QItemMain
+  openURL
 } from 'quasar'
 
 export default {
-  name: 'home',
-  components: {
-    QLayout,
-    QToolbar,
-    QToolbarTitle,
-    QBtn,
-    QIcon,
-    QList,
-    QListHeader,
-    QItem,
-    QItemSide,
-    QItemMain
-  },
   data() {
     return {}
+  },
+  computed: {
+    title() {
+      return this.$route.meta.title
+    }
   },
   methods: {
     launch(url) {
