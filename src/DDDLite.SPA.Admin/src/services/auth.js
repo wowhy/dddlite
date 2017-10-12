@@ -6,8 +6,7 @@ const defaultSession = {
   loginAt: 0,
   tokenType: null,
   accessToken: null,
-  refreshToken: null,
-  user: null
+  refreshToken: null
 }
 
 class AuthService {
