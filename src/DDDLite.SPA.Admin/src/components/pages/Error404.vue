@@ -6,7 +6,7 @@
     <div>
       <div class="error-card shadow-4 bg-white column items-center justify-center no-wrap">
         <q-icon name="error_outline" color="grey-5" />
-        <p class="caption text-center">Oops. Nothing here...</p>
+        <p class="caption text-center">当前页面不存在...</p>
         <p class="text-center group">
           <q-btn
             v-if="canGoBack"
@@ -15,7 +15,7 @@
             @click="goBack"
             icon="keyboard_arrow_left"
           >
-            Go back
+            后 退
           </q-btn>
           <q-btn
             color="primary"
@@ -23,7 +23,7 @@
             @click="$router.replace('/')"
             icon-right="home"
           >
-            Go home
+            返回主页
           </q-btn>
         </p>
       </div>

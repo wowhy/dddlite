@@ -85,7 +85,7 @@ class AuthService {
   }
 
   getUserInfo() {
-    return this.session.user
+    return this.user
   }
 
   isExpired() {
@@ -95,6 +95,12 @@ class AuthService {
     }
 
     return false
+  }
+
+  async getMenus() {
+    return [
+      { code: '001', text: '基础信息', children: [{ code: '100', text: '测试', url: '/demo' }] }
+    ]
   }
 
   async $$login(params) {
