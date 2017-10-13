@@ -1,5 +1,6 @@
 import { LocalStorage } from 'quasar'
 import { ajaxGet, ajaxPost } from './ajax'
+import $http from '../http'
 
 const defaultSession = {
   expiresIn: 3480,
@@ -99,7 +100,14 @@ class AuthService {
 
   async getMenus() {
     return [
-      { code: '001', text: '基础信息', children: [{ code: '100', text: '测试', url: '/demo' }] }
+      {
+        code: '001',
+        text: '基础信息',
+        children: [
+          { code: '100', text: '测试', url: '/demo' },
+          { code: '101', text: '产品管理', url: '/products' }
+        ]
+      }
     ]
   }
 
@@ -119,6 +127,7 @@ class AuthService {
       this.session.refreshToken = params.refresh_token
     }
 
+    $http.defaults.headers.common['Authorization'] = `${loginData.token_type} ${loginData.access_token}`
     LocalStorage.set('session', this.session)
     LocalStorage.set('user', this.user)
 

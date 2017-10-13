@@ -129,9 +129,8 @@ namespace Example.IdentityServer
 
                 options.DisableHttpsRequirement();
 
-                options.AddDevelopmentSigningCertificate();
-
                 options.UseJsonWebTokens();
+                options.AddEphemeralSigningKey();
             });
 
             return services;
@@ -155,6 +154,7 @@ namespace Example.IdentityServer
                         {
                             NameClaimType = OpenIdConnectConstants.Claims.Subject,
                             RoleClaimType = OpenIdConnectConstants.Claims.Role,
+                            ValidateAudience = false,
                             ValidateIssuer = false
                         };
                     });

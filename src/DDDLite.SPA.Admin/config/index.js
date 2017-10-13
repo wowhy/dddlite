@@ -52,6 +52,9 @@ module.exports = {
       },
       '/api/v1/userinfo': {
         target: 'http://localhost:5000'
+      },
+      '/api/v1/products': {
+        target: 'http://localhost:5001'
       }
     }
   }

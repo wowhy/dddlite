@@ -97,6 +97,7 @@
                         {
                             NameClaimType = OpenIdConnectConstants.Claims.Subject,
                             RoleClaimType = OpenIdConnectConstants.Claims.Role,
+                            ValidateAudience = false,
                             ValidateIssuer = false
                         };
                     });

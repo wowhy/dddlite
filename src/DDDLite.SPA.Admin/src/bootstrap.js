@@ -76,7 +76,7 @@ function init(resolve, reject) {
           message: '登录超时，请重新登录！'
         }
       }
-      router.push('/')
+      router.push('/login')
     }
 
     alert(data.error.message)

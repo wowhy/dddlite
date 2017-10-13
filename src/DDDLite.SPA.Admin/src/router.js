@@ -33,7 +33,9 @@ export default new VueRouter({
         authorize: true
       },
       children: [
-        { path: '/index', component: load('pages/Dashboard'), meta: { title: '主页' } }
+        { path: '/index', component: load('pages/Dashboard'), meta: { title: '主页' } },
+        { path: '/demo', component: load('pages/Demo'), meta: { title: '测试' } },
+        { path: '/products', component: load('pages/Products'), meta: { title: '产品管理' } }
       ]
     },
 
