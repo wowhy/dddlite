@@ -11,10 +11,6 @@ const defaultSession = {
 }
 
 class AuthService {
-  constructor() {
-    this.refreshTokenTimer = 0
-  }
-
   // 同步登录状态
   async sync() {
     try {
@@ -28,20 +24,22 @@ class AuthService {
       this.session = { ...defaultSession }
       this.user = {}
     }
+
+    this.enableAutoRefreshToken()
   }
 
   enableAutoRefreshToken() {
-    if (this.session.expiresIn && this.session.expiresIn > 0) {
-      this.refreshTokenTimer = setTimeout(() => {
-        this.refreshToken()
-      }, this.session.expiresIn * 1000)
-    }
-  }
-
-  disableAutoRefreshToken() {
-    if (this.refreshTokenTimer) {
-      clearTimeout(this.refreshTokenTimer)
-    }
+    setInterval(async () => {
+      if (!this.refreshing && this.session && this.session.refreshToken && this.isExpired()) {
+        this.refreshing = true
+        try {
+          await this.refreshToken()
+        } catch (ex) {
+          // nothing
+        }
+        this.refreshing = false
+      }
+    }, 1000)
   }
 
   // 登录
@@ -114,8 +112,6 @@ class AuthService {
   async $$login(params) {
     let now = Date.now()
 
-    this.disableAutoRefreshToken()
-
     let loginData = await getToken(params)
     let userData = await getUser(loginData.token_type, loginData.access_token)
 
@@ -130,10 +126,6 @@ class AuthService {
     $http.defaults.headers.common['Authorization'] = `${loginData.token_type} ${loginData.access_token}`
     LocalStorage.set('session', this.session)
     LocalStorage.set('user', this.user)
-
-    if (this.session.refreshToken) {
-      this.enableAutoRefreshToken()
-    }
   }
 }
 
