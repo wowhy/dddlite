@@ -47,7 +47,7 @@ export default function() {
   })
 }
 
-const alert = msg => {
+function notify (msg) {
   let instance = All.Alert.create({
     enter: 'bounceInRight',
     leave: 'bounceOutRight',
@@ -68,25 +68,23 @@ function init(resolve, reject) {
 
   $http.interceptors.response.use((res) => res.data, ({ response }) => {
     let data = response.data
-    if (typeof response.data !== 'object') {
-      data = {
-        error: {
-          code: 'Unknown',
-          message: '服务器发生未知错误，请联系管理员！'
-        }
-      }
+    let message = ''
+
+    if (data && data.error && data.error.message) {
+      message = data.error.message
     }
 
     if (response.status === 401) {
-      data = {
-        error: {
-          message: '登录超时，请重新登录！'
-        }
-      }
+      message = '登录超时，请重新登录！'
       router.push('/login')
+    } else if (response.status === 504) {
+      message = '无法连接到服务器！'
+    } else {
+      message = '服务器发生未知错误！'
+      console.log(data)
     }
 
-    alert(data.error.message)
+    notify(message)
 
     return Promise.reject(data)
   })

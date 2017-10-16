@@ -16,7 +16,13 @@
         </q-field>
       </q-card-main>
       <q-card-actions>
-        <q-btn color="primary" class="full-width" @click="login()">登录</q-btn>
+        <q-btn color="primary" class="full-width" loader @click="login">
+          登录
+          <span slot="loading">
+            <q-spinner-hourglass class="on-left" />
+            正在登录...
+          </span>
+        </q-btn>
       </q-card-actions>
     </q-card>
   </div>
@@ -33,10 +39,16 @@ export default {
     }
   },
   methods: {
-    login() {
-      authService.login(this.username, this.password, this.longsave).then(() => {
-        this.$router.replace('/')
-      })
+    async login(e, done) {
+      try {
+        await authService.login(this.username, this.password, this.longsave).then(() => {
+          this.$router.replace('/')
+        })
+      } catch (ex) {
+        // nothing
+      }
+
+      done()
     }
   }
 }

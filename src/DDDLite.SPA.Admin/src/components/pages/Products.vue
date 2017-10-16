@@ -1,7 +1,7 @@
 <template>
   <div class="layout-padding">
     <q-data-table :config="config" :columns="columns" :data="data" @refresh="refresh">
-      <template slot="col-detail" scope="cell">
+      <template slot="col-detail" slot-scope="cell">
         <span class="light-paragraph">{{cell.data.memo}}</span>
       </template>
     </q-data-table>
