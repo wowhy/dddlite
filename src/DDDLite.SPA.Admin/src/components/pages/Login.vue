@@ -67,12 +67,12 @@ export default {
 <style lang="stylus" scoped>
 @import '~variables'
 
-html, body, .page-login {
+.page-login {
   min-height: 100vh;
 }
 .page-login {
   background-color: $dark;
-  padding-top: 50px;
+  padding-top: 150px;
 }
 .login-title {
   color: #2a323c;
@@ -81,7 +81,7 @@ html, body, .page-login {
 }
 .login-box {
   margin: 0 auto;
-  max-width: 440px;
+  max-width: 420px;
   border-radius: 5px;
   background-color: #fff;
 }
