@@ -17,6 +17,7 @@ export default {
         rowHeight: '50px',
         refresh: true,
         title: '产品列表',
+        border: true,
         messages: {
           noData: '没有相关数据。',
           noDataAfterFiltering: '没有相关数据。'
