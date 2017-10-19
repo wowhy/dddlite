@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
+import authService from './services/auth'
+
 Vue.use(VueRouter)
 
 function load(component) {
@@ -8,7 +10,7 @@ function load(component) {
   return () => System.import(`@/${component}.vue`)
 }
 
-export default new VueRouter({
+const router = new VueRouter({
   /*
    * NOTE! VueRouter "history" mode DOESN'T works for Cordova builds,
    * it is only to be used only for websites.
@@ -24,7 +26,7 @@ export default new VueRouter({
   mode: 'history',
 
   routes: [
-    { path: '/login', component: load('pages/Login') },
+    { name: 'login', path: '/login', component: load('pages/Login') },
     {
       path: '/',
       component: load('layouts/Main'),
@@ -33,9 +35,9 @@ export default new VueRouter({
         authorize: true
       },
       children: [
-        { path: '/index', component: load('pages/Dashboard'), meta: { title: '主页' } },
-        { path: '/demo', component: load('pages/Demo'), meta: { title: '测试' } },
-        { path: '/products', component: load('pages/Products'), meta: { title: '产品管理' } }
+        { name: 'index', path: '/index', component: load('pages/Dashboard'), meta: { title: '主页' } },
+        { name: 'demo', path: '/demo', component: load('pages/Demo'), meta: { title: '测试' } },
+        { name: 'products', path: '/products', component: load('pages/Products'), meta: { title: '产品管理' } }
       ]
     },
 
@@ -43,3 +45,19 @@ export default new VueRouter({
     { path: '*', component: load('pages/Error404') } // Not found
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(k => k.meta.authorize)) {
+    try {
+      if (!authService.isAuthed()) {
+        return next('/login')
+      }
+    } catch (ex) {
+      return next(false)
+    }
+  }
+
+  next()
+})
+
+export default router

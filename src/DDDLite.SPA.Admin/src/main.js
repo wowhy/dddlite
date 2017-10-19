@@ -1,7 +1,8 @@
 import Vue from 'vue'
+import router from './router'
 import bootstrap from './bootstrap'
 
-bootstrap().then((router) => {
+bootstrap().then(() => {
   /* eslint-disable no-new */
   new Vue({
     el: '#q-app',

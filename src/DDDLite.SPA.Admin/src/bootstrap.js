@@ -16,8 +16,6 @@ import Vue from 'vue'
 import Quasar, * as All from 'quasar'
 import { VTable, VPagination } from 'vue-easytable'
 
-import qs from 'qs'
-
 if (__THEME === 'mat') {
   require('quasar-extras/roboto-font')
 }
@@ -27,7 +25,6 @@ import 'quasar-extras/ionicons'
 import 'quasar-extras/animate'
 
 import $http from './http'
-import router from './router'
 import authService from './services/auth'
 
 Vue.config.productionTip = false
@@ -43,70 +40,9 @@ Vue.$http = Vue.prototype.$http = $http
 
 export default function() {
   return new Promise((resolve, reject) => {
-    init(resolve, reject)
-  })
-}
-
-function notify (msg) {
-  let instance = All.Alert.create({
-    enter: 'bounceInRight',
-    leave: 'bounceOutRight',
-    html: msg
-  })
-
-  setTimeout(() => instance.dismiss(), 5000)
-}
-
-function init(resolve, reject) {
-  // init $http
-  $http.interceptors.request.use((request) => {
-    if (request.data && request.headers['Content-Type'] === 'application/x-www-form-urlencoded') {
-      request.data = qs.stringify(request.data)
-    }
-    return request
-  }, (error) => Promise.reject(error))
-
-  $http.interceptors.response.use((res) => res.data, ({ response }) => {
-    let data = response.data
-    let message = ''
-
-    if (data && data.error && data.error.message) {
-      message = data.error.message
-    }
-
-    if (response.status === 401) {
-      message = '登录超时，请重新登录！'
-      router.push('/login')
-    } else if (response.status === 504) {
-      message = '无法连接到服务器！'
-    } else {
-      message = '服务器发生未知错误！'
-      console.log(data)
-    }
-
-    notify(message)
-
-    return Promise.reject(data)
-  })
-
-  // init router
-  router.beforeEach((to, from, next) => {
-    if (to.matched.some(k => k.meta.authorize)) {
-      try {
-        if (!authService.isAuthed()) {
-          return next('/login')
-        }
-      } catch (ex) {
-        return next(false)
-      }
-    }
-
-    next()
-  })
-
-  // start quasar
-  Quasar.start(async () => {
-    await authService.sync()
-    resolve(router)
+    Quasar.start(async () => {
+      await authService.sync()
+      resolve()
+    })
   })
 }

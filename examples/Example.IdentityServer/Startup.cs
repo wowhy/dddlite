@@ -130,7 +130,8 @@ namespace Example.IdentityServer
                 options.DisableHttpsRequirement();
 
                 options.UseJsonWebTokens();
-                options.AddEphemeralSigningKey();
+                // options.AddEphemeralSigningKey();
+                options.AddDevelopmentSigningCertificate();
             });
 
             return services;

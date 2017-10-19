@@ -9,7 +9,7 @@
           <q-input v-model="username" placeholder="请输入用户名" class="full-width" />
         </q-field>
         <q-field icon="vpn_key">
-          <q-input v-model="password" type="password" placeholder="请输入密码" class="full-width" />
+          <q-input v-model="password" type="password" placeholder="请输入密码" class="full-width" @keyup.enter="login" />
         </q-field>
         <q-field>
           <q-checkbox v-model="longsave" label="自动登录" />

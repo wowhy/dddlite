@@ -17,6 +17,10 @@ class AuthService {
       this.session = LocalStorage.get.item('session') || { ...defaultSession }
       this.user = LocalStorage.get.item('user') || {}
 
+      if (this.session.accessToken) {
+        $http.defaults.headers.common['Authorization'] = `${this.session.tokenType} ${this.session.accessToken}`
+      }
+
       if (this.session.refreshToken) {
         await this.refreshToken()
       }

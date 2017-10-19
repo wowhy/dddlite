@@ -57,6 +57,15 @@ namespace Example.IdentityServer.Controllers
         var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, lockoutOnFailure: true);
         if (!result.Succeeded)
         {
+          if (result.IsLockedOut) 
+            return BadRequest(new ResponseError
+            {
+              Error = new ErrorData 
+              {
+                Code = OpenIdConnectConstants.Errors.InvalidGrant,
+                Message = "密码错误次数过多，账号已经被锁定，请稍后再试！"
+              }
+            });
           return InvalidUserOrPassword();
         }
 
@@ -119,11 +128,11 @@ namespace Example.IdentityServer.Controllers
         ticket.SetScopes(new[]
         {
           OpenIdConnectConstants.Scopes.OpenId,
+          OpenIdConnectConstants.Scopes.OfflineAccess,
           OpenIdConnectConstants.Scopes.Email,
           OpenIdConnectConstants.Scopes.Phone,
           OpenIdConnectConstants.Scopes.Address,
           OpenIdConnectConstants.Scopes.Profile,
-          OpenIdConnectConstants.Scopes.OfflineAccess,
           OpenIddictConstants.Scopes.Roles,
         }.Intersect(request.GetScopes()));
       }
