@@ -1,42 +1,19 @@
-// === DEFAULT / CUSTOM STYLE ===
-// WARNING! always comment out ONE of the two require() calls below.
-// 1. use next line to activate CUSTOM STYLE (./src/themes)
-// require(`./themes/app.${__THEME}.styl`)
-// 2. or, use next line to activate DEFAULT QUASAR STYLE
-require(`quasar/dist/quasar.${__THEME}.css`)
-
-// Uncomment the following lines if you need IE11/Edge support
-// require(`quasar/dist/quasar.ie`)
-// require(`quasar/dist/quasar.ie.${__THEME}.css`)
-
 import Vue from 'vue'
+import VueAxios from 'vue-axios'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
 
-import Quasar, * as All from 'quasar'
-
-if (__THEME === 'mat') {
-  require('quasar-extras/roboto-font')
-}
-import 'quasar-extras/material-icons'
-import 'quasar-extras/ionicons'
-// import 'quasar-extras/fontawesome'
-import 'quasar-extras/animate'
-
+import router from './router'
 import $http from './http'
+
 import authService from './services/auth'
 
-Vue.config.productionTip = false
-Vue.use(Quasar, {
-  components: All,
-  directives: All
-}) // Install Quasar Framework
-
 Vue.$http = Vue.prototype.$http = $http
+Vue.$router = router
+
+Vue.use(VueAxios, $http)
+Vue.use(ElementUI)
 
 export default function() {
-  return new Promise((resolve, reject) => {
-    Quasar.start(async () => {
-      await authService.sync()
-      resolve()
-    })
-  })
+  return authService.sync()
 }

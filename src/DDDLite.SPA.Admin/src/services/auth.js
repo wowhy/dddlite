@@ -1,4 +1,4 @@
-import { LocalStorage } from 'quasar'
+import { LocalStorage } from '../utils/web-storage'
 import { ajaxGet, ajaxPost } from './ajax'
 import $http from '../http'
 

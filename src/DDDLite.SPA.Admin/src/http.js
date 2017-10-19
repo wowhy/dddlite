@@ -1,6 +1,6 @@
+import { Notification } from 'element-ui'
 import axios from 'axios'
 import qs from 'qs'
-import { Alert } from 'quasar'
 
 const $http = axios.create()
 
@@ -41,11 +41,7 @@ $http.interceptors.response.use((res) => res.data, ({ response }) => {
 export default $http
 
 function notify (msg) {
-  let instance = Alert.create({
-    enter: 'bounceInRight',
-    leave: 'bounceOutRight',
-    html: msg
+  Notification.error({
+    message: msg
   })
-
-  setTimeout(() => instance.dismiss(), 5000)
 }

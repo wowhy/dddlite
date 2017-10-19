@@ -1,6 +1,6 @@
 <template>
   <div class="layout-padding">
-    
+    Demo Page
   </div>
 </template>
 

@@ -1,72 +1,22 @@
 <template>
-  <div class="error-page window-height window-width bg-light column items-center no-wrap">
-    <div class="error-code bg-primary flex items-center justify-center">
-      404
-    </div>
-    <div>
-      <div class="error-card shadow-4 bg-white column items-center justify-center no-wrap">
-        <q-icon name="error_outline" color="grey-5" />
-        <p class="caption text-center">当前页面不存在...</p>
-        <p class="text-center group">
-          <q-btn
-            v-if="canGoBack"
-            color="primary"
-            push
-            @click="goBack"
-            icon="keyboard_arrow_left"
-          >
-            后 退
-          </q-btn>
-          <q-btn
-            color="primary"
-            push
-            @click="$router.replace('/')"
-            icon-right="home"
-          >
-            返回主页
-          </q-btn>
-        </p>
-      </div>
-    </div>
+  <div class="page-404">
+    <h1>404!</h1>
+    <h2>Sorry, page not found</h2>
   </div>
 </template>
 
-<script>
-import { QBtn, QIcon } from 'quasar'
-
-export default {
-  components: {
-    QBtn,
-    QIcon
-  },
-  data () {
-    return {
-      canGoBack: window.history.length > 1
-    }
-  },
-  methods: {
-    goBack () {
-      window.history.go(-1)
-    }
+<style scoped>
+  .page-404 {
+    text-align: center;
   }
-}
-</script>
-
-<style lang="stylus">
-.error-page
-  .error-code
-    height 50vh
-    width 100%
-    padding-top 15vh
-    font-size 30vmax
-    color rgba(255, 255, 255, .2)
-    overflow hidden
-  .error-card
-    border-radius 2px
-    margin-top -50px
-    width 80vw
-    max-width 600px
-    padding 25px
-    > i
-      font-size 5rem
+  .page-404 h1 {
+    font-size: 98px;
+    font-weight: 700;
+    line-height: 150px;
+    text-shadow: rgba(61,61,61,.3) 1px 1px,rgba(61,61,61,.2) 2px 2px,rgba(61,61,61,.3) 3px 3px;
+  }
+  .page-404 h2 {
+    line-height: 30px;
+    font-size: 30px;
+  }
 </style>
