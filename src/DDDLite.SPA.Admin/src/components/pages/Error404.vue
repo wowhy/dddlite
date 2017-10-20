@@ -1,7 +1,7 @@
 <template>
   <div class="page-404">
     <h1>404!</h1>
-    <h2>Sorry, page not found</h2>
+    <h2>抱歉, 无法找到此页面！</h2>
   </div>
 </template>
 

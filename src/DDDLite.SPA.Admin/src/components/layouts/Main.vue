@@ -1,6 +1,6 @@
 <template>
-  <div class="layout" :class="{ 'mini-layout': !sidebar }">
-    <header class="layout-header">
+  <el-container class="layout" :class="{ 'mini-layout': !sidebar }">
+    <el-header class="layout-header">
       <div class="layout-header-icon">
         <h2>VUEADMIN</h2>
       </div>
@@ -10,35 +10,36 @@
         </div>
         <div class="pull-right" style="padding: 0 10px;">
           <span>你好，{{user.name}} !</span>
-          <el-button type="danger" size="small">退出</el-button>
+          <el-button type="text" size="normal" @click="logout">登出系统</el-button>
         </div>
       </nav>
-    </header>
-    <div class="layout-main">
+    </el-header>
+    <el-container class="layout-main">
       <el-menu class="sidebar-menu" router
-           :default-active="activeMenu"
-           :collapse="!sidebar">
-          <el-menu-item index="index">
-            <i class="fa fa-lg fa-tachometer"></i>
-            <span slot="title">主页</span>
+          :default-active="activeMenu"
+          :default-openeds="openeds"
+          :collapse="!sidebar">
+        <el-menu-item index="/index">
+          <i class="fa fa-lg fa-tachometer"></i>
+          <span slot="title">主页</span>
+        </el-menu-item>
+
+        <el-submenu v-for="menu in menus" :key="menu.code" :index="menu.code">
+          <template slot="title">
+            <i class="fa fa-lg" :class="'fa-' + menu.icon"></i>
+            <span slot="title">{{menu.text}}</span>
+          </template>
+          <el-menu-item v-for="subMenu in menu.children" :key="subMenu.code" :index="subMenu.url">
+            {{subMenu.text}}
           </el-menu-item>
+        </el-submenu>
+      </el-menu>
 
-          <el-submenu v-for="menu in menus" :key="menu.code" :index="menu.code">
-            <template slot="title">
-              <i class="fa fa-lg" :class="'fa-' + menu.icon"></i>
-              <span slot="title">{{menu.text}}</span>
-            </template>
-            <el-menu-item v-for="subMenu in menu.children" :key="subMenu.code" :index="subMenu.url">
-              {{subMenu.text}}
-            </el-menu-item>
-          </el-submenu>
-        </el-menu>
-
-      <section class="layout-content">
+      <el-main class="layout-content">
         <router-view></router-view>
-      </section>
-    </div>
-  </div>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
@@ -50,7 +51,8 @@ export default {
       menus: [],
       user: {},
       sidebar: true,
-      activeMenu: 'index'
+      activeMenu: this.$route.path,
+      openeds: []
     }
   },
   computed: {
@@ -60,14 +62,40 @@ export default {
   },
   methods: {
     logout() {
+      this.$confirm('是否登出系统?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        auth.logout()
+        this.$router.push('login')
+      }).catch(() => {})
     },
     toggleSidebar() {
       this.sidebar = !this.sidebar
     }
   },
+  watch: {
+    $route(val) {
+      this.activeMenu = val.path
+    }
+  },
   async created() {
     this.menus = await auth.getMenus()
     this.user = auth.getUserInfo()
+
+    let path = this.$route.path
+
+    this.menus.some((menu) => {
+      if (menu.children && menu.children.length) {
+        if (menu.children.some(k => k.url === path)) {
+          this.openeds.push(menu.code)
+          return true
+        }
+      }
+
+      return false
+    })
   }
 }
 </script>
@@ -84,6 +112,10 @@ $sidebar-mini-width = 63px;
   display: flex;
   flex-direction: column;
 
+  .el-header {
+    padding: 0;
+  }
+
   &-header {
     height: $header-height;
     overflow: hidden;
@@ -97,6 +129,7 @@ $sidebar-mini-width = 63px;
       width: $sidebar-width;
       text-align: center;
       overflow: hidden;
+      transition: 0.3s width;
 
       h2 {
         margin: 0;
@@ -118,12 +151,6 @@ $sidebar-mini-width = 63px;
     flex-direction: row;
   }
 
-  // &-sidebar {
-  //   width: $sidebar-width;
-  //   height: 100vh;
-  //   background-color: $dark;
-  // }
-
   &-content {
     flex: 1;
     padding: 10px;
@@ -131,7 +158,7 @@ $sidebar-mini-width = 63px;
   }
 
   .sidebar-menu {
-    height: 100vh;
+    height: "calc(100vh - %s)" % $header-height;
   }
 
   .sidebar-menu:not(.el-menu--collapse) {
@@ -147,7 +174,6 @@ $sidebar-mini-width = 63px;
   .layout {
     &-header-icon {
       width: $sidebar-mini-width;
-      transition: 0.3s width;
 
       h2 {
         display: none;

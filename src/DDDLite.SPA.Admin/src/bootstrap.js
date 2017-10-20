@@ -15,7 +15,7 @@ Vue.$http = Vue.prototype.$http = $http
 Vue.$router = router
 
 Vue.use(VueAxios, $http)
-Vue.use(ElementUI)
+Vue.use(ElementUI, { size: 'small' })
 
 export default function() {
   return authService.sync()

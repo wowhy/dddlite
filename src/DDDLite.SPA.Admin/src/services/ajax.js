@@ -45,13 +45,17 @@ export class RestfulService {
     let data = []
     generatePatch(resource, data, '/')
     return ajaxPatch(this.baseUrl + '/' + id, data, {
-      'If-Match': version
+      headers: {
+        'If-Match': version
+      }
     })
   }
 
   remove(id, version) {
     return ajaxDelete(this.baseUrl + '/' + id, {}, {
-      'If-Match': version
+      headers: {
+        'If-Match': version
+      }
     })
   }
 

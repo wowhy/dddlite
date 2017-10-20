@@ -112,9 +112,7 @@ export default {
 
       this.loading = false
     },
-    goAdd() {
-      this.go('/products/edit')
-    }
+    goAdd() {}
   },
   mounted() {
     this.refresh()
