@@ -14,6 +14,7 @@
     "axios": "^0.16.2",
     "babel-runtime": "^6.26.0",
     "element-ui": "^2.0.0-alpha.3",
+    "font-awesome": "^4.7.0",
     "jwt-decode": "^2.2.0",
     "qs": "^6.5.1",
     "vue": "^2.5.2",

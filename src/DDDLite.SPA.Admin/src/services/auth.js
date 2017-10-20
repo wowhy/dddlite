@@ -105,6 +105,7 @@ class AuthService {
       {
         code: '001',
         text: '基础信息',
+        icon: 'id-card',
         children: [
           { code: '100', text: '测试', url: '/demo' },
           { code: '101', text: '产品管理', url: '/products' }

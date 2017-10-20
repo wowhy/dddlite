@@ -1,5 +1,6 @@
 require(`./themes/app.${__THEME}.styl`)
 require('element-ui/lib/theme-chalk/index.css')
+require('font-awesome/css/font-awesome.css')
 
 import Vue from 'vue'
 import VueAxios from 'vue-axios'
