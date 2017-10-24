@@ -1,6 +1,6 @@
 <template>
   <div v-loading="loading">
-    <h3>产品列表</h3>
+    <h3 class="layout-title">产品列表</h3>
     <el-row type="flex">
       <el-form :inline="true" :model="searchForm">
         <el-form-item>

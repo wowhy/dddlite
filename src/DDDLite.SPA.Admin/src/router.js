@@ -29,7 +29,7 @@ const router = new VueRouter({
     { name: 'login', path: '/login', component: load('pages/Login') },
     {
       path: '/',
-      component: load('layouts/Main'),
+      component: load('layouts/Body'),
       redirect: '/index',
       meta: {
         authorize: true
