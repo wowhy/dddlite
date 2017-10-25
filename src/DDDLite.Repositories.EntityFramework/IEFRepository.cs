@@ -4,8 +4,9 @@
     using DDDLite.Domain;
     using Microsoft.EntityFrameworkCore;
 
-    public interface IEFRepository<TAggregateRoot> : IRepository<TAggregateRoot>
-        where TAggregateRoot : class, IAggregateRoot
+    public interface IEFRepository<TAggregateRoot, TKey> : IRepository<TAggregateRoot, TKey>
+        where TAggregateRoot : class, IAggregateRoot<TKey>
+        where TKey : IEquatable<TKey>
     {
         DbContext Context { get; }
     }

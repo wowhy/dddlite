@@ -5,7 +5,7 @@ namespace DDDLite.WebApi.Data
     using DDDLite.Domain;
     using Microsoft.AspNetCore.Identity;
 
-    public class ApplicationRole : IdentityRole<Guid>, IEntity
+    public class ApplicationRole : IdentityRole, IEntity<string>
     {
     }
 }

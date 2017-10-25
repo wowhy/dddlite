@@ -13,8 +13,9 @@ namespace DDDLite.WebApi.Internal.Query
     using Microsoft.Extensions.Primitives;
     using DDDLite.WebApi.Config;
 
-    internal abstract class BaseQueryContext<TAggregateRoot> : IQueryContext<TAggregateRoot>
-        where TAggregateRoot : class, IAggregateRoot
+    internal abstract class BaseQueryContext<TAggregateRoot, TKey> : IQueryContext<TAggregateRoot, TKey>
+        where TAggregateRoot : class, IAggregateRoot<TKey>
+        where TKey : IEquatable<TKey>
     {
         private static readonly Specification<TAggregateRoot> DefaultFilter = Specification<TAggregateRoot>.Any();
         private static readonly SortSpecification<TAggregateRoot> DefaultSorter = SortSpecification<TAggregateRoot>.SortByCreatedAtDesc;
@@ -47,7 +48,7 @@ namespace DDDLite.WebApi.Internal.Query
 
         public int? Skip { get; protected set; }
 
-        public abstract Task<ResponseValue<TAggregateRoot>> GetValueAsync(Guid id);
+        public abstract Task<ResponseValue<TAggregateRoot>> GetValueAsync(TKey id);
         public abstract ResponseValues<TAggregateRoot> GetValues();
 
         private void ParseParams()

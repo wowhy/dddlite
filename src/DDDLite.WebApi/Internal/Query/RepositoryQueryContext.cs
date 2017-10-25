@@ -13,22 +13,23 @@ namespace DDDLite.WebApi.Internal.Query
 
     using Microsoft.AspNetCore.Http;
 
-    internal class RepositoryQueryContext<TAggregateRoot> : BaseQueryContext<TAggregateRoot>
-        where TAggregateRoot : class, IAggregateRoot
+    internal class RepositoryQueryContext<TAggregateRoot, TKey> : BaseQueryContext<TAggregateRoot, TKey>
+        where TAggregateRoot : class, IAggregateRoot<TKey>
+        where TKey : IEquatable<TKey>
     {
-        private IRepository<TAggregateRoot> repository;
+        private IRepository<TAggregateRoot, TKey> repository;
 
-        public RepositoryQueryContext(IRepository<TAggregateRoot> repository, HttpContext context) : base(context)
+        public RepositoryQueryContext(IRepository<TAggregateRoot, TKey> repository, HttpContext context) : base(context)
         {
             this.repository = repository;
         }
 
-        public async override Task<ResponseValue<TAggregateRoot>> GetValueAsync(Guid id)
+        public async override Task<ResponseValue<TAggregateRoot>> GetValueAsync(TKey id)
         {
             var aggregateRoot = await repository.GetByIdAsync(id, Includes);
             if (aggregateRoot == null)
             {
-                throw new AggregateRootNotFoundException(id);
+                throw new AggregateRootNotFoundException<TKey>(id);
             }
 
             var response = new ResponseValue<TAggregateRoot>

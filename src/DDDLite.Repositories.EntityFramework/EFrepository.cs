@@ -8,8 +8,9 @@
     using DDDLite.Specifications;
     using Microsoft.EntityFrameworkCore;
 
-    public class EFRepository<TAggregateRoot> : Repository<TAggregateRoot>, IEFRepository<TAggregateRoot>
-        where TAggregateRoot : class, IAggregateRoot
+    public class EFRepository<TAggregateRoot, TKey> : Repository<TAggregateRoot, TKey>, IEFRepository<TAggregateRoot, TKey>
+        where TAggregateRoot : class, IAggregateRoot<TKey>
+        where TKey : IEquatable<TKey>
     {
         private readonly DbContext context;
 
@@ -37,7 +38,7 @@
             return Task.CompletedTask;
         }
 
-        public override Task<TAggregateRoot> GetByIdAsync(Guid id, params string[] includes)
+        public override Task<TAggregateRoot> GetByIdAsync(TKey id, params string[] includes)
         {
             if (includes != null)
             {
@@ -47,7 +48,7 @@
                     query = query.Include(include);
                 }
 
-                return query.Where(k => k.Id == id).FirstOrDefaultAsync();
+                return query.Where(k => k.Id.Equals(id)).FirstOrDefaultAsync();
             }
 
             return Context.Set<TAggregateRoot>().FindAsync(id);

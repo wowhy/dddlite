@@ -1,16 +1,25 @@
 namespace DDDLite.Exception
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Text;
+  using System;
+  using System.Collections.Generic;
+  using System.Text;
 
-    public class AggregateRootException : CoreException
+  public class AggregateRootException : CoreException
+  {
+    public AggregateRootException(object id, string message) : base(message)
     {
-        public AggregateRootException(Guid id, string message) : base(message)
-        {
-            this.Id = id;
-        }
-
-        public Guid Id { get; protected set; }
     }
+
+    public object Id { get; protected set; }
+  }
+
+  public class AggregateRootException<TKey> : AggregateRootException
+  {
+    public AggregateRootException(TKey id, string message) : base(id, message)
+    {
+      this.Id = id;
+    }
+
+    new public TKey Id { get; protected set; }
+  }
 }

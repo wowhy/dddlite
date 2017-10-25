@@ -4,6 +4,6 @@ namespace DDDLite.WebApi.Provider
 
     public interface ICurrentUserProvider
     {
-        Guid? GetCurrentUserId();
+        string GetCurrentUserId();
     }
 }

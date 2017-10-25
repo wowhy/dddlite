@@ -4,10 +4,11 @@ namespace DDDLite.Domain
   using System.ComponentModel.DataAnnotations;
   using System.ComponentModel.DataAnnotations.Schema;
 
-  public abstract class Entity : IEntity
+  public abstract class Entity<TKey> : IEntity<TKey>
+    where TKey : IEquatable<TKey>
   {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.None)]
-    public Guid Id { get; set; }
+    public TKey Id { get; set; }
   }
 }

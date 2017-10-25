@@ -7,9 +7,9 @@
     public interface ITrackable
     {
         DateTime CreatedAt { get; set; }
-        Guid? CreatedById { get; set; }
+        string CreatedById { get; set; }
 
         DateTime LastUpdatedAt { get; set; }
-        Guid? LastUpdatedById { get; set; }
+        string LastUpdatedById { get; set; }
     }
 }

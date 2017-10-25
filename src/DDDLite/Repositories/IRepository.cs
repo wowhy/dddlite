@@ -7,12 +7,13 @@
     using DDDLite.Specifications;
     using DDDLite.Querying;
 
-    public interface IRepository<TAggregateRoot>
-        where TAggregateRoot : class, IAggregateRoot
+    public interface IRepository<TAggregateRoot, TKey>
+        where TAggregateRoot : class, IAggregateRoot<TKey>
+        where TKey : IEquatable<TKey>
     {
         IUnitOfWork UnitOfWork { get; }
 
-        Task<TAggregateRoot> GetByIdAsync(Guid id, params string[] includes);
+        Task<TAggregateRoot> GetByIdAsync(TKey id, params string[] includes);
 
         Task AddAsync(TAggregateRoot entity);
 

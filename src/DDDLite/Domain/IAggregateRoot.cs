@@ -2,7 +2,8 @@
 {
   using System;
 
-  public interface IAggregateRoot : IEntity, IConcurrencyToken, ITrackable
+  public interface IAggregateRoot<TKey> : IEntity<TKey>, IConcurrencyToken, ITrackable
+    where TKey : IEquatable<TKey>
   {
   }
 }

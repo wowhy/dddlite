@@ -36,11 +36,11 @@
 
         public static readonly SortSpecification<T> None = new SortSpecification<T>();
 
-        public static readonly SortSpecification<T> SortById = new SortSpecification<T>(nameof(IAggregateRoot.Id));
+        public static readonly SortSpecification<T> SortById = new SortSpecification<T>(nameof(IAggregateRoot<Guid>.Id));
 
-        public static readonly SortSpecification<T> SortByCreatedAtAsc = new SortSpecification<T>(nameof(IAggregateRoot.CreatedAt));
+        public static readonly SortSpecification<T> SortByCreatedAtAsc = new SortSpecification<T>(nameof(IAggregateRoot<Guid>.CreatedAt));
 
-        public static readonly SortSpecification<T> SortByCreatedAtDesc = new SortSpecification<T>(nameof(IAggregateRoot.CreatedAt), SortDirection.Desc);
+        public static readonly SortSpecification<T> SortByCreatedAtDesc = new SortSpecification<T>(nameof(IAggregateRoot<Guid>.CreatedAt), SortDirection.Desc);
 
         public SortSpecification()
         {

@@ -28,14 +28,15 @@ namespace DDDLite.WebApi.Controllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [Authorize]
-    public class SimpleApiController<TAggregateRoot> : Controller
-            where TAggregateRoot : class, IAggregateRoot
+    public class SimpleApiController<TAggregateRoot, TKey> : Controller
+            where TAggregateRoot : class, IAggregateRoot<TKey>
+            where TKey : IEquatable<TKey>
     {
-        private readonly IRepository<TAggregateRoot> repository;
+        private readonly IRepository<TAggregateRoot, TKey> repository;
 
-        protected IRepository<TAggregateRoot> Repository => this.repository;
+        protected IRepository<TAggregateRoot, TKey> Repository => this.repository;
 
-        public SimpleApiController(IRepository<TAggregateRoot> repository)
+        public SimpleApiController(IRepository<TAggregateRoot, TKey> repository)
         {
             this.repository = repository;
 
@@ -44,16 +45,16 @@ namespace DDDLite.WebApi.Controllers
         [HttpGet]
         public virtual IActionResult Get()
         {
-            var context = new RepositoryQueryContext<TAggregateRoot>(Repository, HttpContext);
+            var context = new RepositoryQueryContext<TAggregateRoot, TKey>(Repository, HttpContext);
             var values = context.GetValues();
 
             return Ok(values);
         }
 
         [HttpGet("{id}")]
-        public virtual async Task<IActionResult> Get(Guid id)
+        public virtual async Task<IActionResult> Get(TKey id)
         {
-            var context = new RepositoryQueryContext<TAggregateRoot>(Repository, HttpContext);
+            var context = new RepositoryQueryContext<TAggregateRoot, TKey>(Repository, HttpContext);
             var value = await context.GetValueAsync(id);
 
             this.Response.Headers.Add("ETag", new StringValues(value.Value.RowVersion.ToString()));
@@ -65,14 +66,19 @@ namespace DDDLite.WebApi.Controllers
         [Produces("application/json")]
         public virtual async Task<IActionResult> Post([FromBody] TAggregateRoot aggregateRoot)
         {
-            if (aggregateRoot.Id == Guid.Empty)
+            if (aggregateRoot is IAggregateRoot<Guid> && ((IAggregateRoot<Guid>)aggregateRoot).Id == Guid.Empty)
             {
-                aggregateRoot.NewIdentity();
+                ((IAggregateRoot<Guid>)aggregateRoot).NewIdentity();
             }
 
-            if (Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id == aggregateRoot.Id)))
+            if (aggregateRoot is IAggregateRoot<string> && string.IsNullOrEmpty(((IAggregateRoot<string>)aggregateRoot).Id))
             {
-                throw new AggregateRootExistsException(aggregateRoot.Id);
+                ((IAggregateRoot<string>)aggregateRoot).NewIdentity();
+            }
+
+            if (Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id.Equals(aggregateRoot.Id))))
+            {
+                throw new AggregateRootExistsException<TKey>(aggregateRoot.Id);
             }
 
             aggregateRoot.CreatedAt = DateTime.Now;
@@ -82,16 +88,16 @@ namespace DDDLite.WebApi.Controllers
 
             await AddAsync(aggregateRoot);
 
-            return Created(Url.Action("Get", new { id = aggregateRoot.Id }), new ResponseValue<Guid>(aggregateRoot.Id));
+            return Created(Url.Action("Get", new { id = aggregateRoot.Id }), new ResponseValue<TKey>(aggregateRoot.Id));
         }
 
         [HttpPut("{id}")]
         [Produces("application/json")]
-        public virtual async Task<IActionResult> Put(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] TAggregateRoot aggregateRoot)
+        public virtual async Task<IActionResult> Put(TKey id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] TAggregateRoot aggregateRoot)
         {
-            if (!Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id == id)))
+            if (!Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id.Equals(id))))
             {
-                throw new AggregateRootNotFoundException(id);
+                throw new AggregateRootNotFoundException<TKey>(id);
             }
 
             if (concurrencyToken == null)
@@ -111,12 +117,12 @@ namespace DDDLite.WebApi.Controllers
 
         [HttpPatch("{id}")]
         [Produces("application/json")]
-        public virtual async Task<IActionResult> Patch(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] JsonPatchDocument<TAggregateRoot> patch)
+        public virtual async Task<IActionResult> Patch(TKey id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] JsonPatchDocument<TAggregateRoot> patch)
         {
             var aggregateRoot = await Repository.GetByIdAsync(id);
             if (aggregateRoot == null)
             {
-                throw new AggregateRootNotFoundException(id);
+                throw new AggregateRootNotFoundException<TKey>(id);
             }
 
             if (concurrencyToken == null)
@@ -137,12 +143,12 @@ namespace DDDLite.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public virtual async Task<IActionResult> Delete(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken)
+        public virtual async Task<IActionResult> Delete(TKey id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken)
         {
             var aggregateRoot = await Repository.GetByIdAsync(id);
             if (aggregateRoot == null)
             {
-                throw new AggregateRootNotFoundException(id);
+                throw new AggregateRootNotFoundException<TKey>(id);
             }
 
             if (concurrencyToken == null)
@@ -159,7 +165,7 @@ namespace DDDLite.WebApi.Controllers
             return NoContent();
         }
 
-        protected virtual Guid? GetCurrentUserId()
+        protected virtual string GetCurrentUserId()
         {
             var provider = HttpContext.RequestServices.GetService<ICurrentUserProvider>();
             return provider.GetCurrentUserId();

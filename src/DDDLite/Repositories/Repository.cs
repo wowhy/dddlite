@@ -7,8 +7,9 @@
     using System.Linq;
     using DDDLite.Querying;
 
-    public abstract class Repository<TAggregateRoot> : IRepository<TAggregateRoot>
-        where TAggregateRoot : class, IAggregateRoot
+    public abstract class Repository<TAggregateRoot, TKey> : IRepository<TAggregateRoot, TKey>
+        where TAggregateRoot : class, IAggregateRoot<TKey>
+        where TKey : IEquatable<TKey>
     {
         protected Repository(IUnitOfWork unitOfWork)
         {
@@ -20,7 +21,7 @@
         public abstract Task AddAsync(TAggregateRoot entity);
         public abstract Task UpdateAsync(TAggregateRoot entity);
         public abstract Task DeleteAsync(TAggregateRoot entity);
-        public abstract Task<TAggregateRoot> GetByIdAsync(Guid id, params string[] includes);
+        public abstract Task<TAggregateRoot> GetByIdAsync(TKey id, params string[] includes);
 
         public virtual IQueryable<TAggregateRoot> Search(params string[] includes)
         {

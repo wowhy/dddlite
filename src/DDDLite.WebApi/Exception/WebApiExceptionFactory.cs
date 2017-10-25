@@ -28,7 +28,7 @@ namespace DDDLite.WebApi.Exception
         {
             if (ex is CoreException)
             {
-                if (ex is AggregateRootNotFoundException)
+                if (ex.GetType().Name.Contains("AggregateRootNotFoundException"))
                 {
                     return 404;
                 }

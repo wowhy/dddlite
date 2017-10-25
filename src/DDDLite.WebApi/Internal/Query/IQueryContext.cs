@@ -7,8 +7,9 @@ namespace DDDLite.WebApi.Internal.Query
     using DDDLite.Specifications;
     using DDDLite.WebApi.Models;
 
-    internal interface IQueryContext<TAggregateRoot>
-        where TAggregateRoot : class, IAggregateRoot
+    internal interface IQueryContext<TAggregateRoot, TKey>
+        where TAggregateRoot : class, IAggregateRoot<TKey>
+        where TKey : IEquatable<TKey>
     {
         bool HasCount { get; }
 
@@ -26,7 +27,7 @@ namespace DDDLite.WebApi.Internal.Query
 
         Specification<TAggregateRoot> Filter { get; }
 
-        Task<ResponseValue<TAggregateRoot>> GetValueAsync(Guid id);
+        Task<ResponseValue<TAggregateRoot>> GetValueAsync(TKey id);
 
         ResponseValues<TAggregateRoot> GetValues();
     }

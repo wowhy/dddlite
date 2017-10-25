@@ -4,14 +4,15 @@ namespace DDDLite.Domain
   using System.ComponentModel.DataAnnotations;
   using System.ComponentModel.DataAnnotations.Schema;
 
-  public abstract class AggregateRoot : Entity, IAggregateRoot
+  public abstract class AggregateRoot<TKey> : Entity<TKey>, IAggregateRoot<TKey>
+    where TKey : IEquatable<TKey>
   {
     [ConcurrencyCheck]
     public long RowVersion { get; set; }
 
     public DateTime CreatedAt { get; set; }
-    public Guid? CreatedById { get; set; }
+    public string CreatedById { get; set; }
     public DateTime LastUpdatedAt { get; set; }
-    public Guid? LastUpdatedById { get; set; }
+    public string LastUpdatedById { get; set; }
   }
 }
