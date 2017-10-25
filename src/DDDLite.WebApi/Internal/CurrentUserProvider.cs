@@ -2,7 +2,6 @@ namespace DDDLite.WebApi.Internal
 {
     using System;
     using System.Security.Claims;
-    using AspNet.Security.OpenIdConnect.Primitives;
     using DDDLite.WebApi.Provider;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Identity;
@@ -22,7 +21,7 @@ namespace DDDLite.WebApi.Internal
             var user = accessor.HttpContext.User;
             if (user.Identity.IsAuthenticated)
             {
-                var claim = user.FindFirst(k => k.Type == OpenIdConnectConstants.Claims.Subject);
+                var claim = user.FindFirst(k => k.Type == "sub");
                 return Guid.Parse(claim.Value);
             }
 
