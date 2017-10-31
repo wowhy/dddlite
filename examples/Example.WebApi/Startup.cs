@@ -48,8 +48,8 @@
 
             services.AddDbContext<ExampleDbContext>(options => options.UseNpgsql(connectionString, b => b.MigrationsAssembly(migrationsAssembly)));
 
-            services.AddScoped<IRepository<Order>, EFRepositoryBase<Order>>();
-            services.AddScoped<IRepository<Product>, EFRepositoryBase<Product>>();
+            services.AddScoped<IRepository<Order, Guid>, EFRepositoryBase<Order>>();
+            services.AddScoped<IRepository<Product, Guid>, EFRepositoryBase<Product>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

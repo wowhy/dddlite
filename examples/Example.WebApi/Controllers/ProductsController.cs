@@ -7,9 +7,9 @@ namespace Example.WebApi.Controllers
     using Example.Core.Domain;
     using Microsoft.AspNetCore.Authorization;
 
-    public class ProductsController : SimpleApiController<Product>
+    public class ProductsController : SimpleApiController<Product, Guid>
     {
-        public ProductsController(IRepository<Product> repository) : base(repository)
+        public ProductsController(IRepository<Product, Guid> repository) : base(repository)
         {
         }
     }
