@@ -1,4 +1,4 @@
-namespace DDDLite.WebApi.Internal.Parser
+namespace DDDLite.WebApi.Parser
 {
     using System;
     using System.Collections.Generic;
@@ -26,6 +26,11 @@ namespace DDDLite.WebApi.Internal.Parser
         {
             try
             {
+                if(string.IsNullOrWhiteSpace(filter)) 
+                {
+                    return Specification<TAggregateRoot>.Any();
+                }
+
                 var parser = new ExpressionParser(filter);
                 var expr = parser.Parse();
 

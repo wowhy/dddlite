@@ -63,7 +63,7 @@ namespace FilterParser
 
             for (int i = 0; i < count; i++)
             {
-                var test = new DDDLite.WebApi.Internal.Parser.FilterParser<Person>("name ne null or name ne '123'").Parse();
+                var test = new DDDLite.WebApi.Parser.FilterParser<Person>("name ne null or name ne '123'").Parse();
             }
 
             var avg = (double)stop.ElapsedMilliseconds / count;

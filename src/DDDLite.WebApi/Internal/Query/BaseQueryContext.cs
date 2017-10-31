@@ -7,7 +7,7 @@ namespace DDDLite.WebApi.Internal.Query
     using DDDLite.Specifications;
     using DDDLite.WebApi.Exception;
     using DDDLite.WebApi.Models;
-    using DDDLite.WebApi.Internal.Parser;
+    using DDDLite.WebApi.Parser;
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Primitives;
