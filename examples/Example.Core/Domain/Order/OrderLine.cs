@@ -3,7 +3,7 @@ namespace Example.Core.Domain
   using System;
   using DDDLite.Domain;
 
-  public class OrderLine : Entity
+  public class OrderLine : Entity<Guid>
   {
     public Guid OrderId { get; set; }
 

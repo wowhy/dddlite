@@ -5,7 +5,7 @@ using DDDLite.Specifications;
 
 namespace FilterParser
 {
-    public class Person : AggregateRoot
+    public class Person : AggregateRoot<Guid>
     {
         public string Name { get; set; }
 

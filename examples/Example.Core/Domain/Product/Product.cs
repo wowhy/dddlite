@@ -2,7 +2,7 @@ namespace Example.Core.Domain
 {
     using System;
     using DDDLite.Domain;
-    public class Product : AggregateRoot, ILogicalDelete
+    public class Product : AggregateRoot<Guid>, ILogicalDelete
     {
         public Product() 
         {

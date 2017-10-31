@@ -1,10 +1,12 @@
 namespace Example.Repositories.EntityFramework
 {
-    public class EFRepositoryBase<TAggregateRoot> : DDDLite.Repositories.EntityFramework.EFRepository<TAggregateRoot>
-        where TAggregateRoot : class, DDDLite.Domain.IAggregateRoot
+    using System;
+
+    public class EFRepositoryBase<TAggregateRoot> : DDDLite.Repositories.EntityFramework.EFRepository<TAggregateRoot, Guid>
+        where TAggregateRoot : class, DDDLite.Domain.IAggregateRoot<Guid>
     {
         public EFRepositoryBase(ExampleDbContext context) : base(context)
         {
-        }        
+        }
     }
 }

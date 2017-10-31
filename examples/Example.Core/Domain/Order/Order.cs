@@ -9,7 +9,7 @@ namespace Example.Core.Domain
     New
   }
 
-  public class Order : AggregateRoot
+  public class Order : AggregateRoot<Guid>
   {
     public Order()
     {
