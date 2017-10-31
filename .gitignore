@@ -12,3 +12,5 @@ npm-debug.log
 *.userprefs
 package-lock.json
 src/DDDLite.AdminTemplate/package-lock.json
+
+*.nupkg
