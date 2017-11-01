@@ -1,10 +1,10 @@
 namespace Example.IdentityServer.Data
 {
-    using DDDLite.WebApi.Data;
+    using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
     using Microsoft.EntityFrameworkCore;
 
-    public class ExampleIdentityDbContext : ApplicationDbContext
+    public class ExampleIdentityDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public ExampleIdentityDbContext(DbContextOptions<ExampleIdentityDbContext> options) : base(options)
         {

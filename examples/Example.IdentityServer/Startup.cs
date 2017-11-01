@@ -18,7 +18,6 @@ namespace Example.IdentityServer
     using OpenIddict.Models;
 
     using DDDLite.WebApi;
-    using DDDLite.WebApi.Data;
 
     using Example.IdentityServer.Data;
     using System.IdentityModel.Tokens.Jwt;

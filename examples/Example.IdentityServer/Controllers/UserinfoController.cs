@@ -5,7 +5,7 @@ namespace Example.IdentityServer.Controllers
   using System.Threading.Tasks;
   using AspNet.Security.OAuth.Validation;
   using AspNet.Security.OpenIdConnect.Primitives;
-  using DDDLite.WebApi.Data;
+  using Example.IdentityServer.Data;
   using DDDLite.WebApi.Models;
   using Microsoft.AspNetCore.Authentication.JwtBearer;
   using Microsoft.AspNetCore.Authorization;

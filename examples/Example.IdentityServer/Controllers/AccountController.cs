@@ -3,7 +3,7 @@ namespace Example.IdentityServer.Controllers
     using System.Linq;
     using System.Threading.Tasks;
     using AspNet.Security.OAuth.Validation;
-    using DDDLite.WebApi.Data;
+    using Example.IdentityServer.Data;
     using DDDLite.WebApi.Exception;
     using Example.IdentityServer.Models;
     using Microsoft.AspNetCore.Authorization;

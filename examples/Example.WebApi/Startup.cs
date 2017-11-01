@@ -18,7 +18,6 @@
     using DDDLite.WebApi;
     using DDDLite.Repositories;
     using DDDLite.Repositories.EntityFramework;
-    using DDDLite.WebApi.Data;
 
     using Example.Core.Domain;
     using Example.Repositories.EntityFramework;

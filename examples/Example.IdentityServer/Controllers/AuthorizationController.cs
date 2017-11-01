@@ -7,7 +7,7 @@ namespace Example.IdentityServer.Controllers
   using AspNet.Security.OpenIdConnect.Extensions;
   using AspNet.Security.OpenIdConnect.Primitives;
   using AspNet.Security.OpenIdConnect.Server;
-  using DDDLite.WebApi.Data;
+  using Example.IdentityServer.Data;
   using DDDLite.WebApi.Models;
   using Microsoft.AspNetCore.Authentication;
   using Microsoft.AspNetCore.Identity;
