@@ -40,7 +40,7 @@
                         case EntityState.Modified:
                             var originValues = entry.GetDatabaseValues();
                             entry.CurrentValues[nameof(ITrackable.CreatedAt)] = originValues.GetValue<DateTime?>(nameof(ITrackable.CreatedAt));
-                            entry.CurrentValues[nameof(ITrackable.CreatedById)] = originValues.GetValue<Guid?>(nameof(ITrackable.CreatedById));
+                            entry.CurrentValues[nameof(ITrackable.CreatedById)] = originValues.GetValue<string>(nameof(ITrackable.CreatedById));
                             break;
                     }
                 }
