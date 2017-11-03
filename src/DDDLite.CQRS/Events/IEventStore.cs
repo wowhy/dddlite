@@ -6,8 +6,10 @@ namespace DDDLite.CQRS.Events
 
   public interface IEventStore
   {
-    Task SaveAsync(IEnumerable<IEvent> events);
+    Task SaveAsync<TEventSource>(IEnumerable<IEvent> events)
+      where TEventSource : class, IEventSource;
 
-    Task<IEnumerable<IEvent>> GetAsync(Guid aggregateRootId, long fromVersion);
+    Task<IEnumerable<IEvent>> GetAsync<TEventSource>(Guid aggregateRootId, long fromVersion)
+      where TEventSource : class, IEventSource;
   }
 }

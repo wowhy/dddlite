@@ -2,17 +2,19 @@ namespace DDDLite.CQRS.Events
 {
   using System;
 
-  public class EventDescriptor<TEvent>
-    where TEvent : class, IEvent
+  public class EventDescriptor<TEventSource>
+    where TEventSource : class, IEventSource
   {
-    public EventDescriptor(TEvent data)
+    public EventDescriptor(object data)
     {
       this.Data = data;
-      this.Id = data.Id;
-      this.AggregateRootId = data.AggregateRootId;
-      this.Timestamp = data.Timestamp;
-      this.RowVersion = data.RowVersion;
-      this.OperatorId = data.OperatorId;
+
+      var e = (IEvent)data;
+      this.Id = e.Id;
+      this.AggregateRootId = e.AggregateRootId;
+      this.Timestamp = e.Timestamp;
+      this.RowVersion = e.RowVersion;
+      this.OperatorId = e.OperatorId;
     }
 
     public Guid Id { get; set; }
@@ -25,6 +27,6 @@ namespace DDDLite.CQRS.Events
 
     public string OperatorId { get; set; }
 
-    public TEvent Data { get; set; }
+    public object Data { get; set; }
   }
 }
