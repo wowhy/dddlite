@@ -4,7 +4,7 @@ namespace DDDLite.CQRS.Events
 {
   public class Event : IEvent
   {
-    public Event() 
+    public Event()
     {
       this.Id = SequentialGuid.Create();
     }
@@ -16,5 +16,7 @@ namespace DDDLite.CQRS.Events
     public long RowVersion { get; set; }
 
     public DateTime Timestamp { get; set; }
+
+    public string OperatorId { get; set; }
   }
 }

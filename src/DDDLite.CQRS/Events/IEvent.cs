@@ -12,5 +12,7 @@ namespace DDDLite.CQRS.Events
     long RowVersion { get; set; }
 
     DateTime Timestamp { get; set; }
+
+    string OperatorId { get; set; }
   }
 }
