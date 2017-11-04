@@ -4,11 +4,41 @@ using System.Threading.Tasks;
 using DDDLite.CQRS;
 using DDDLite.CQRS.Events;
 using DDDLite.CQRS.Npgsql;
+using DDDLite.CQRS.Snapshots;
+using Newtonsoft.Json;
 
 namespace StoreTest
 {
-  public class Order : EventSource
-  { }
+  public class Order : SnapshotEventSource<OrderSnapshot>
+  {
+    public string Product { get; set; }
+    public string Memo { get; set; }
+
+    public string Status { get; set; }
+
+    public override OrderSnapshot GetSnapshot()
+    {
+      var snapshot = new OrderSnapshot
+      {
+        Id = this.Id,
+        RowVersion = this.RowVersion,
+        Product = this.Product
+      };
+      return snapshot;
+    }
+
+    public override void RestoreFromSnapshot(OrderSnapshot snapshot)
+    {
+      this.Id = snapshot.Id;
+      this.RowVersion = snapshot.RowVersion;
+      this.Product = snapshot.Product;
+    }
+  }
+
+  public class OrderSnapshot : Snapshot
+  {
+    public string Product { get; set; }
+  }
 
   public class OrderCreated : Event
   {
@@ -36,10 +66,32 @@ namespace StoreTest
     static string connectionString = "Server=127.0.0.1;Port=5432;Database=store_test;User Id=postgres;Password=hongyuan;";
     static Guid order1 = Guid.Parse("39e29467-1865-42ee-98d3-c6ad5b875ed4");
     static Guid order2 = Guid.Parse("39e29467-1866-4e3a-09c8-00503cf9de40");
+
     static void Main(string[] args)
     {
-      // TestWrite().Wait();
+      TestWrite().Wait();
       TestRead().Wait();
+      TestSnapshots().Wait();
+    }
+
+    async static Task TestSnapshots()
+    {
+      var store = new NpgsqlSnapshotStore(connectionString);
+      var snapshot = await store.GetAsync<OrderSnapshot>(order1);
+
+      if (snapshot == null) 
+      {
+        await store.SaveAsync(new OrderSnapshot
+        {
+          Id = order1,
+          RowVersion = 1,
+          Product = "test"
+        });
+      } else 
+      {
+        Console.WriteLine("Find snapshot: ");
+        Console.WriteLine(JsonConvert.SerializeObject(snapshot));
+      }
     }
 
     async static Task TestRead()

@@ -6,9 +6,6 @@ namespace DDDLite.CQRS.Npgsql
   using System.Linq;
   using DDDLite.CQRS.Events;
   using Marten;
-  using Newtonsoft.Json;
-  using System.IO;
-  using Newtonsoft.Json.Linq;
 
   public class NpgsqlEventStore : IEventStore
   {
@@ -19,6 +16,7 @@ namespace DDDLite.CQRS.Npgsql
       this.store = DocumentStore.For(config =>
       {
         config.Connection(connectionString);
+        config.DatabaseSchemaName = "events";
       });
     }
 
@@ -27,13 +25,11 @@ namespace DDDLite.CQRS.Npgsql
     {
       using (var session = store.LightweightSession())
       {
-        var documents = session.Query<EventDescriptor<TEventSource>>().Where(k => k.AggregateRootId == aggregateRootId && k.RowVersion > fromVersion);
-        var jsons = await documents.Select(k => k.Data).ToListAsync();
-        return jsons.Select(k =>
+        var query = session.Query<EventDescriptor<TEventSource>>().Where(k => k.AggregateRootId == aggregateRootId && k.RowVersion > fromVersion);
+        var documents = await query.ToListAsync();
+        return documents.Select(d =>
         {
-          var obj = (JObject)JsonConvert.DeserializeObject(k.ToString());
-          var type = Type.GetType(obj["$type"].ToString());
-          return (IEvent)obj.ToObject(type);
+          return (IEvent)d.Data;
         });
       }
     }
@@ -45,7 +41,6 @@ namespace DDDLite.CQRS.Npgsql
       {
         var documents = events.Select(k => new EventDescriptor<TEventSource>(k));
         session.InsertObjects(documents);
-        // session.DocumentStore
         await session.SaveChangesAsync();
       }
     }

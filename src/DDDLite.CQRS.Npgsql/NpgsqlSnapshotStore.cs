@@ -3,21 +3,38 @@ namespace DDDLite.CQRS.Npgsql
   using System;
   using System.Threading.Tasks;
   using DDDLite.CQRS.Snapshots;
+  using Marten;
 
   public class NpgsqlSnapshotStore : ISnapshotStore
   {
-    public NpgsqlSnapshotStore()
+    private readonly DocumentStore store;
+
+    public NpgsqlSnapshotStore(string connectionString)
     {
+      this.store = DocumentStore.For(config =>
+      {
+        config.Connection(connectionString);
+        config.DatabaseSchemaName = "snapshots";
+      });
     }
 
-    Task<TSnapshot> ISnapshotStore.GetAsync<TSnapshot>(Guid id)
+    public async Task<TSnapshot> GetAsync<TSnapshot>(Guid id)
+     where TSnapshot : class, ISnapshot
     {
-      throw new NotImplementedException();
+      using (var session = store.LightweightSession())
+      {
+        return await session.LoadAsync<TSnapshot>(id);
+      }
     }
 
-    Task ISnapshotStore.SaveAsync<TSnapshot>(TSnapshot snapshot)
+    public async Task SaveAsync<TSnapshot>(TSnapshot snapshot)
+     where TSnapshot : class, ISnapshot
     {
-      throw new NotImplementedException();
+      using (var session = store.LightweightSession())
+      {
+        session.Store(snapshot);
+        await session.SaveChangesAsync();
+      }
     }
   }
 }
