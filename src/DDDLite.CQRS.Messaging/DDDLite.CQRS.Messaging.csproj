@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DDDLite\DDDLite.csproj"/>
+    <ProjectReference Include="..\DDDLite.CQRS\DDDLite.CQRS.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Foundatio" Version="*"/>
+    <PackageReference Include="Foundatio.Redis" Version="*"/>
+  </ItemGroup>
+</Project>
