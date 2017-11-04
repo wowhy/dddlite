@@ -5,34 +5,36 @@ namespace DDDLite.CQRS.Messaging.Redis
   using DDDLite.CQRS.Events;
   using Newtonsoft.Json;
   using StackExchange.Redis;
-  using FS = Foundatio.Messaging;
 
   public class RedisEventBus : IEventPublisher
   {
+    private string toptic = "events";
     private readonly ConnectionMultiplexer redis;
     private readonly ISubscriber subscriber;
-    private readonly FS.RedisMessageBus innerBus;
 
     public RedisEventBus(ConnectionMultiplexer redis)
     {
       this.redis = redis;
       this.subscriber = redis.GetSubscriber();
-      this.innerBus = new FS.RedisMessageBus(new FS.RedisMessageBusOptions
-      {
-        Subscriber = this.subscriber
-      });
     }
 
     public Task PublishAsync<TEvent>(TEvent @event) where TEvent : class, IEvent
     {
-      return this.innerBus.PublishAsync(typeof(TEvent), JsonConvert.SerializeObject(@event));
+      return this.subscriber.PublishAsync(toptic, JsonConvert.SerializeObject(@event));
     }
 
-    public void RegisterHandler<TEvent>(Func<IEvent, Task> handler) where TEvent : class, IEvent
+    public void RegisterHandler<TEvent>(Func<TEvent, Task> handler) where TEvent : class, IEvent
     {
-      this.innerBus.SubscribeAsync<TEvent>((@event, cancellationToken) =>
+      this.subscriber.Subscribe(toptic, async (chanel, message) =>
       {
-        return handler(@event);
+        try
+        {
+          var @event = (TEvent)JsonConvert.DeserializeObject((string)message, typeof(TEvent));
+          await handler(@event);
+        }
+        catch (Exception)
+        {
+        }
       });
     }
   }

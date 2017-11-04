@@ -8,7 +8,7 @@
     <ProjectReference Include="..\DDDLite.CQRS\DDDLite.CQRS.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Foundatio" Version="*"/>
-    <PackageReference Include="Foundatio.Redis" Version="*"/>
+    <PackageReference Include="StackExchange.Redis" Version="1.2.6"/>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3"/>
   </ItemGroup>
 </Project>

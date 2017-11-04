@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DDDLite\DDDLite.csproj"/>
+    <ProjectReference Include="..\..\src\DDDLite.CQRS\DDDLite.CQRS.csproj"/>
+    <ProjectReference Include="..\..\src\DDDLite.CQRS.Messaging\DDDLite.CQRS.Messaging.csproj"/>
+  </ItemGroup>
+</Project>
