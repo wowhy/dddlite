@@ -13,5 +13,7 @@ namespace DDDLite.CQRS
     IEvent[] FlushUncommitedChanges();
 
     void LoadFromHistory(IEnumerable<IEvent> histories);
+
+    void ApplyChange(IEvent @event);
   }
 }

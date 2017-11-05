@@ -70,7 +70,7 @@ namespace DDDLite.CQRS
       }
     }
 
-    protected void ApplyChange(IEvent @event)
+    public void ApplyChange(IEvent @event)
     {
       lock (uncommitedChanges)
       {

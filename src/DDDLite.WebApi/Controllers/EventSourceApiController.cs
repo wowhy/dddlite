@@ -33,23 +33,18 @@ namespace DDDLite.WebApi.Controllers
     where TReadModel : class, IAggregateRoot<Guid>
   {
     private readonly ICommandSender commandSender;
-    private readonly IDomainRepository<TEventSource> domainRepository;
     private readonly IRepository<TReadModel, Guid> readModelRepository;
 
     public EventSourceApiController(
       ICommandSender commandSender,
-      IDomainRepository<TEventSource> domainRepository,
       IRepository<TReadModel, Guid> readModelRepository
     )
     {
       this.commandSender = commandSender;
-      this.domainRepository = domainRepository;
       this.readModelRepository = readModelRepository;
     }
 
     protected ICommandSender CommandSender => this.CommandSender;
-
-    protected IDomainRepository<TEventSource> DomainRepository => this.domainRepository;
 
     protected IRepository<TReadModel, Guid> ReadModelRepository => this.readModelRepository;
 

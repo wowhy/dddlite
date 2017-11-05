@@ -14,7 +14,7 @@ namespace DDDLite.CQRS.Messaging.InMemory
 
     protected ImmutableDictionary<Type, List<Func<IMessage, Task>>> Routes => _routes.ToImmutableDictionary();
 
-    protected void RegisterHandler<T>(Func<IMessage, Task> handler) where T : class, IMessage
+    protected void AddHandler<T>(Func<IMessage, Task> handler) where T : class, IMessage
     {
       List<Func<IMessage, Task>> handlers;
 
@@ -27,29 +27,47 @@ namespace DDDLite.CQRS.Messaging.InMemory
       handlers.Add((x => handler((T)x)));
     }
 
-    protected Task CommitAsync<T>(T message) where T : class, IMessage
+    protected async Task CommitAsync<T>(T message) where T : class, IMessage
     {
-      List<Func<IMessage, Task>> handlers;
+      try
+      {
+        List<Func<IMessage, Task>> handlers;
 
-      if (_routes.TryGetValue(message.GetType(), out handlers))
-      {
-        if (handlers.Count != 1) throw new InvalidOperationException("cannot send to more than one handler");
-        return handlers[0](message);
+        if (_routes.TryGetValue(message.GetType(), out handlers))
+        {
+          if (handlers.Count != 1) throw new InvalidOperationException("cannot send to more than one handler");
+          await handlers[0](message);
+        }
+        else
+        {
+          throw new InvalidOperationException("no handler registered");
+        }
       }
-      else
+      catch
       {
-        throw new InvalidOperationException("no handler registered");
+        // nothing
       }
     }
 
-    protected Task DispatchAsync<T>(T @event) where T : class, IMessage
+    protected async Task DispatchAsync<T>(T @event) where T : class, IMessage
     {
       List<Func<IMessage, Task>> handlers;
 
       if (!_routes.TryGetValue(@event.GetType(), out handlers))
-        return Task.CompletedTask;
+        return;
 
-      return Task.WhenAll(handlers.Select(handler => handler(@event)));
+
+      foreach (var handler in handlers)
+      {
+        try
+        {
+          await handler(@event);
+        }
+        catch
+        {
+          // nothing
+        }
+      }
     }
   }
 }
