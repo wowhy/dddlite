@@ -27,7 +27,7 @@ namespace DDDLite.CQRS.Messaging.InMemory
       handlers.Add((x => handler((T)x)));
     }
 
-    protected async Task CommitAsync<T>(T message) where T : class, IMessage
+    protected async Task CommitAsync(IMessage message)
     {
       try
       {
@@ -49,7 +49,7 @@ namespace DDDLite.CQRS.Messaging.InMemory
       }
     }
 
-    protected async Task DispatchAsync<T>(T @event) where T : class, IMessage
+    protected async Task DispatchAsync(IMessage @event)
     {
       List<Func<IMessage, Task>> handlers;
 

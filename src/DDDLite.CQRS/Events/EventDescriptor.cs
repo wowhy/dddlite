@@ -2,9 +2,10 @@ namespace DDDLite.CQRS.Events
 {
   using System;
 
-  public class EventDescriptor<TEventSource>
-    where TEventSource : class, IEventSource
+  public class EventDescriptor
   {
+    public EventDescriptor() { }
+
     public EventDescriptor(IEvent data)
     {
       this.Data = data;
@@ -30,6 +31,14 @@ namespace DDDLite.CQRS.Events
 
     public string EventType { get; set; }
 
-    public object Data { get; set; }
+    public IEvent Data { get; set; }
+  }
+
+  public class EventDescriptor<TEventSource> : EventDescriptor
+    where TEventSource : class, IEventSource
+  {
+    public EventDescriptor(IEvent data) : base(data)
+    {
+    }
   }
 }

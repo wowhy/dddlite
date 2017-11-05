@@ -9,8 +9,8 @@ namespace CQRSCore.CRUD.Domain
     public InventoryItem()
     {
     }
-    public string Name;
-    public int CurrentCount;
-    public bool Activated;
+    public string Name { get; set; }
+    public int CurrentCount { get; set; }
+    public bool Activated { get; set; }
   }
 }

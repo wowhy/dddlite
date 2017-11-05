@@ -79,7 +79,8 @@ namespace CQRSWebApi
     {
       var connectionString = configuration.GetConnectionString("Default");
 
-      services.AddDbContext<InventoryDbContext>(options => options.UseNpgsql(connectionString));
+      services.AddDbContext<InventoryDbContext>(options => options.UseNpgsql(connectionString))
+              .AddScoped<IUnitOfWork, InventoryDbContext>();
       services.AddScoped<IRepository<Crud.InventoryItem, Guid>, EFRepository<Crud.InventoryItem, Guid>>();
 
       return services;

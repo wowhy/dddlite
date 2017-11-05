@@ -25,6 +25,7 @@ namespace CQRSCore.CRUD.Handlers
 
     public async Task HandleAsync(InventoryItemCreated message)
     {
+      Console.WriteLine("InventoryItemCreated: " + message.Id);
       var item = new InventoryItem
       {
         Id = message.AggregateRootId,
@@ -41,6 +42,7 @@ namespace CQRSCore.CRUD.Handlers
 
     public async Task HandleAsync(InventoryItemRenamed message)
     {
+      Console.WriteLine("InventoryItemRenamed: " + message.Id);
       var item = await this.repository.GetByIdAsync(message.AggregateRootId);
 
       item.RowVersion = message.RowVersion;
@@ -55,6 +57,7 @@ namespace CQRSCore.CRUD.Handlers
 
     public async Task HandleAsync(ItemsCheckedInToInventory message)
     {
+      Console.WriteLine("ItemsCheckedInToInventory: " + message.Id);
       var item = await this.repository.GetByIdAsync(message.AggregateRootId);
 
       item.RowVersion = message.RowVersion;
@@ -69,6 +72,7 @@ namespace CQRSCore.CRUD.Handlers
 
     public async Task HandleAsync(ItemsRemovedFromInventory message)
     {
+      Console.WriteLine("ItemsRemovedFromInventory: " + message.Id);
       var item = await this.repository.GetByIdAsync(message.AggregateRootId);
 
       item.RowVersion = message.RowVersion;
@@ -83,6 +87,7 @@ namespace CQRSCore.CRUD.Handlers
 
     public async Task HandleAsync(InventoryItemDeactivated message)
     {
+      Console.WriteLine("InventoryItemDeactivated: " + message.Id);
       var item = await this.repository.GetByIdAsync(message.AggregateRootId);
 
       item.RowVersion = message.RowVersion;
