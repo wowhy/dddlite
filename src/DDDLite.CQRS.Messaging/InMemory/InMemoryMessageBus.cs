@@ -27,14 +27,14 @@ namespace DDDLite.CQRS.Messaging.InMemory
       handlers.Add((x => handler((T)x)));
     }
 
-    protected Task CommitAsync<T>(T command) where T : class, IMessage
+    protected Task CommitAsync<T>(T message) where T : class, IMessage
     {
       List<Func<IMessage, Task>> handlers;
 
-      if (_routes.TryGetValue(typeof(T), out handlers))
+      if (_routes.TryGetValue(message.GetType(), out handlers))
       {
         if (handlers.Count != 1) throw new InvalidOperationException("cannot send to more than one handler");
-        return handlers[0](command);
+        return handlers[0](message);
       }
       else
       {

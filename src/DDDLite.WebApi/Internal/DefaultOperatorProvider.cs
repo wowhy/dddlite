@@ -2,32 +2,38 @@ namespace DDDLite.WebApi.Internal
 {
   using System;
   using System.Security.Claims;
-  using DDDLite.WebApi.Provider;
   using Microsoft.AspNetCore.Http;
   using Microsoft.AspNetCore.Identity;
   using Microsoft.Extensions.Options;
 
-  internal class CurrentUserProvider : ICurrentUserProvider
+  using DDDLite.Domain;
+  using DDDLite.WebApi.Provider;
+
+  internal class DefaultOperatorProvider : IOperatorProvider
   {
     private IHttpContextAccessor accessor;
 
-    public CurrentUserProvider(IHttpContextAccessor httpContextAccessor)
+    public DefaultOperatorProvider(IHttpContextAccessor httpContextAccessor)
     {
       this.accessor = httpContextAccessor;
     }
 
-    public string GetCurrentUserId()
+    public Operator GetCurrentOperator()
     {
       var user = accessor.HttpContext.User;
       if (user.Identity.IsAuthenticated)
       {
-        var claim = user.FindFirst(k => k.Type == "sub");
-        if (string.IsNullOrEmpty(claim.Value))
+        var userIdClaim = user.FindFirst("sub");
+        if (string.IsNullOrEmpty(userIdClaim.Value))
         {
           return null;
         }
 
-        return claim.Value;
+        return new Operator
+        {
+          UserId = userIdClaim.Value,
+          UserName = user.FindFirst("name").Value
+        };
       }
 
       return null;
