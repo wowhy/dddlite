@@ -52,11 +52,7 @@ namespace CQRSWebApi
         var bus = (RedisEventBus)scope.ServiceProvider.GetRequiredService<IEventPublisher>();
         var provider = scope.ServiceProvider;
 
-        bus.RegisterHandler(GetEventHandler<InventoryItemCreated, InventoryEventHandlers>(provider));
-        bus.RegisterHandler(GetEventHandler<InventoryItemRenamed, InventoryEventHandlers>(provider));
-        bus.RegisterHandler(GetEventHandler<ItemsCheckedInToInventory, InventoryEventHandlers>(provider));
-        bus.RegisterHandler(GetEventHandler<ItemsRemovedFromInventory, InventoryEventHandlers>(provider));
-        bus.RegisterHandler(GetEventHandler<InventoryItemDeactivated, InventoryEventHandlers>(provider));
+        app.RegisterCommandHandlers<InventoryEventHandlers>(provider, bus);
       }
       return app;
     }
@@ -69,12 +65,6 @@ namespace CQRSWebApi
         var provider = scope.ServiceProvider;
 
         app.RegisterCommandHandlers<InventoryCommandHandlers>(provider, bus);
-
-        // bus.RegisterHandler(GetCommandHandler<CreateInventoryItem, InventoryCommandHandlers>(provider));
-        // bus.RegisterHandler(GetCommandHandler<RenameInventoryItem, InventoryCommandHandlers>(provider));
-        // bus.RegisterHandler(GetCommandHandler<CheckInItemsToInventory, InventoryCommandHandlers>(provider));
-        // bus.RegisterHandler(GetCommandHandler<RemoveItemsFromInventory, InventoryCommandHandlers>(provider));
-        // bus.RegisterHandler(GetCommandHandler<DeactivateInventoryItem, InventoryCommandHandlers>(provider));
       }
 
       return app;
