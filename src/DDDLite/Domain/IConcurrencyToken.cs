@@ -2,6 +2,6 @@
 {
   public interface IConcurrencyToken
   {
-    long RowVersion { get; set; }
+    long Version { get; set; }
   }
 }

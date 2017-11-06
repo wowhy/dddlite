@@ -63,7 +63,7 @@ namespace DDDLite.WebApi.Controllers
       var context = new RepositoryQueryContext<TReadModel, Guid>(readModelRepository, HttpContext);
       var value = await context.GetValueAsync(id);
 
-      this.Response.Headers.Add("ETag", new StringValues(value.Value.RowVersion.ToString()));
+      this.Response.Headers.Add("ETag", new StringValues(value.Value.Version.ToString()));
 
       return Ok(value);
     }

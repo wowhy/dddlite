@@ -29,9 +29,10 @@ namespace CQRSCore.CRUD.Handlers
       var item = new InventoryItem
       {
         Id = message.Id,
-        RowVersion = message.RowVersion,
         CreatedAt = message.Timestamp,
         CreatedById = message.OperatorId,
+        LastUpdatedAt = message.Timestamp,
+        LastUpdatedById = message.OperatorId,
 
         CurrentCount = 0,
         Name = message.Name
@@ -45,7 +46,7 @@ namespace CQRSCore.CRUD.Handlers
       Console.WriteLine("InventoryItemRenamed: " + message.Id);
       var item = await this.repository.GetByIdAsync(message.Id);
 
-      item.RowVersion = message.RowVersion;
+      item.Version = message.OriginalVersion;
       item.LastUpdatedAt = message.Timestamp;
       item.LastUpdatedById = message.OperatorId;
 
@@ -60,7 +61,7 @@ namespace CQRSCore.CRUD.Handlers
       Console.WriteLine("ItemsCheckedInToInventory: " + message.Id);
       var item = await this.repository.GetByIdAsync(message.Id);
 
-      item.RowVersion = message.RowVersion;
+      item.Version = message.OriginalVersion;
       item.LastUpdatedAt = message.Timestamp;
       item.LastUpdatedById = message.OperatorId;
 
@@ -75,7 +76,7 @@ namespace CQRSCore.CRUD.Handlers
       Console.WriteLine("ItemsRemovedFromInventory: " + message.Id);
       var item = await this.repository.GetByIdAsync(message.Id);
 
-      item.RowVersion = message.RowVersion;
+      item.Version = message.OriginalVersion;
       item.LastUpdatedAt = message.Timestamp;
       item.LastUpdatedById = message.OperatorId;
 
@@ -90,7 +91,7 @@ namespace CQRSCore.CRUD.Handlers
       Console.WriteLine("InventoryItemDeactivated: " + message.Id);
       var item = await this.repository.GetByIdAsync(message.Id);
 
-      item.RowVersion = message.RowVersion;
+      item.Version = message.OriginalVersion;
       item.LastUpdatedAt = message.Timestamp;
       item.LastUpdatedById = message.OperatorId;
 

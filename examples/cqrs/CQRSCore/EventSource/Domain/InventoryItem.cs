@@ -59,7 +59,7 @@ namespace CQRSCore.EventSource.Domain
       var snapshot = new InventoryItemSnapshot
       {
         Id = Id,
-        RowVersion = RowVersion,
+        Version = Version,
         CreatedAt = CreatedAt,
         CreatedById = CreatedById,
         LastUpdatedAt = LastUpdatedAt,
@@ -74,7 +74,7 @@ namespace CQRSCore.EventSource.Domain
     public override void RestoreFromSnapshot(InventoryItemSnapshot snapshot)
     {
       this.Id = snapshot.Id;
-      this.RowVersion = snapshot.RowVersion;
+      this.Version = snapshot.Version;
       this.CreatedAt = snapshot.CreatedAt;
       this.CreatedById = snapshot.CreatedById;
       this.LastUpdatedAt = snapshot.LastUpdatedAt;

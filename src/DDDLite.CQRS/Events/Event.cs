@@ -6,7 +6,10 @@ namespace DDDLite.CQRS.Events
   {
     public Guid Id { get; set; }
 
-    public long RowVersion { get; set; }
+    public long Version { get; set; }
+
+    [Newtonsoft.Json.JsonIgnore]
+    public long OriginalVersion => this.Version - 1;
 
     public DateTime Timestamp { get; set; }
 

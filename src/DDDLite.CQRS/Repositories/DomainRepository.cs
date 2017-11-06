@@ -26,7 +26,7 @@ namespace DDDLite.CQRS.Repositories
 
     public virtual async Task SaveAsync(TEventSource aggregateRoot)
     {
-      if ((await storage.GetAsync<TEventSource>(aggregateRoot.Id, aggregateRoot.RowVersion)).Any())
+      if ((await storage.GetAsync<TEventSource>(aggregateRoot.Id, aggregateRoot.Version)).Any())
       {
         throw new ConcurrencyException(null);
       }
@@ -45,7 +45,7 @@ namespace DDDLite.CQRS.Repositories
 
     protected async virtual Task<TEventSource> RestoreAggregateRootAsync(TEventSource aggregateRoot)
     {
-      var events = await this.storage.GetAsync<TEventSource>(aggregateRoot.Id, aggregateRoot.RowVersion);
+      var events = await this.storage.GetAsync<TEventSource>(aggregateRoot.Id, aggregateRoot.Version);
       if (!events.Any())
       {
         throw new AggregateRootNotFoundException<Guid>(aggregateRoot.Id);

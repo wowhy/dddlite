@@ -13,7 +13,7 @@ namespace DDDLite.CQRS.Events
       this.Data = data;
       this.AggregateRootId = data.Id;
       this.Timestamp = data.Timestamp;
-      this.RowVersion = data.RowVersion;
+      this.Version = data.Version;
       this.OperatorId = data.OperatorId;
 
       this.EventType = data.GetType().FullName;
@@ -25,7 +25,7 @@ namespace DDDLite.CQRS.Events
 
     public DateTime Timestamp { get; set; }
 
-    public long RowVersion { get; set; }
+    public long Version { get; set; }
 
     public string OperatorId { get; set; }
 

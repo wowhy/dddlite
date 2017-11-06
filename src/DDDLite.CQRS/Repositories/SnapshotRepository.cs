@@ -43,7 +43,7 @@ namespace DDDLite.CQRS.Repositories
       var aggregateRoot = new TEventSource
       {
         Id = id,
-        RowVersion = -1
+        Version = -1
       };
 
       var snapshot = await this.snapshotStore.GetAsync<TSnapshot>(id);

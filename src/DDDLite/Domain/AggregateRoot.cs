@@ -8,7 +8,7 @@ namespace DDDLite.Domain
     where TKey : IEquatable<TKey>
   {
     [ConcurrencyCheck]
-    public long RowVersion { get; set; }
+    public long Version { get; set; }
 
     public DateTime CreatedAt { get; set; }
     public string CreatedById { get; set; }

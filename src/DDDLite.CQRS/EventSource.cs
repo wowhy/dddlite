@@ -15,6 +15,7 @@ namespace DDDLite.CQRS
 
     public EventSource()
     {
+      this.Version = -1;
     }
 
     public IEvent[] FlushUncommitedChanges()
@@ -35,11 +36,23 @@ namespace DDDLite.CQRS
             @event.Id = Id;
           }
 
-          @event.RowVersion = RowVersion + i + 1;
+          @event.Version = Version + i + 1;
           @event.Timestamp = DateTime.Now;
         }
 
-        RowVersion = RowVersion + changes.Length;
+        if (changes.Length > 0)
+        {
+          if (Version == -1)
+          {
+            CreatedAt = changes[0].Timestamp;
+            CreatedById = changes[0].OperatorId;
+          }
+
+          LastUpdatedAt = changes[changes.Length - 1].Timestamp;
+          LastUpdatedById = changes[changes.Length - 1].OperatorId;
+        }
+
+        Version = Version + changes.Length;
         uncommitedChanges.Clear();
         return changes;
       }
@@ -57,15 +70,31 @@ namespace DDDLite.CQRS
     {
       lock (uncommitedChanges)
       {
-        foreach (var @event in histories.ToArray())
+        var events = histories.ToArray();
+        if (events.Length == 0)
         {
-          if (@event.RowVersion != RowVersion + 1)
+          return;
+        }
+
+        if (Version == -1)
+        {
+          CreatedAt = events[0].Timestamp;
+          CreatedById = events[0].OperatorId;
+        }
+
+        foreach (var @event in events)
+        {
+          if (@event.Version != Version + 1)
           {
             throw new EventsOutOfOrderException(@event.Id);
           }
+
           ApplyEvent(@event);
+
           Id = @event.Id;
-          RowVersion++;
+          Version++;
+          LastUpdatedAt = @event.Timestamp;
+          LastUpdatedById = @event.OperatorId;
         }
       }
     }

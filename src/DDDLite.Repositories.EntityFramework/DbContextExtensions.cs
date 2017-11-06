@@ -56,11 +56,11 @@
                     switch (entry.State)
                     {
                         case EntityState.Deleted:
-                            entry.OriginalValues[nameof(IConcurrencyToken.RowVersion)] = entry.CurrentValues[nameof(IConcurrencyToken.RowVersion)];
+                            entry.OriginalValues[nameof(IConcurrencyToken.Version)] = entry.CurrentValues[nameof(IConcurrencyToken.Version)];
                             break;
                         case EntityState.Modified:
-                            entry.OriginalValues[nameof(IConcurrencyToken.RowVersion)] = entry.CurrentValues[nameof(IConcurrencyToken.RowVersion)];
-                            entry.CurrentValues[nameof(IConcurrencyToken.RowVersion)] = (long)entry.CurrentValues[nameof(IConcurrencyToken.RowVersion)] + 1;
+                            entry.OriginalValues[nameof(IConcurrencyToken.Version)] = entry.CurrentValues[nameof(IConcurrencyToken.Version)];
+                            entry.CurrentValues[nameof(IConcurrencyToken.Version)] = (long)entry.CurrentValues[nameof(IConcurrencyToken.Version)] + 1;
                             break;
                     }
                 }

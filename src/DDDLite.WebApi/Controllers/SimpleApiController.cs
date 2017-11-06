@@ -53,7 +53,7 @@ namespace DDDLite.WebApi.Controllers
       var context = new RepositoryQueryContext<TAggregateRoot, TKey>(Repository, HttpContext);
       var value = await context.GetValueAsync(id);
 
-      this.Response.Headers.Add("ETag", new StringValues(value.Value.RowVersion.ToString()));
+      this.Response.Headers.Add("ETag", new StringValues(value.Value.Version.ToString()));
 
       return Ok(value);
     }
@@ -80,7 +80,7 @@ namespace DDDLite.WebApi.Controllers
       aggregateRoot.CreatedAt = DateTime.Now;
       aggregateRoot.CreatedById = GetAuthUserId();
       aggregateRoot.LastUpdatedAt = aggregateRoot.CreatedAt;
-      aggregateRoot.LastUpdatedById = aggregateRoot.LastUpdatedById;
+      aggregateRoot.LastUpdatedById = aggregateRoot.CreatedById;
 
       await AddEntityAsync(aggregateRoot);
 
@@ -104,7 +104,7 @@ namespace DDDLite.WebApi.Controllers
       aggregateRoot.Id = id;
       aggregateRoot.LastUpdatedAt = DateTime.Now;
       aggregateRoot.LastUpdatedById = GetAuthUserId();
-      aggregateRoot.RowVersion = long.Parse(concurrencyToken);
+      aggregateRoot.Version = long.Parse(concurrencyToken);
 
       await UpdateEntityAsync(aggregateRoot);
 
@@ -131,7 +131,7 @@ namespace DDDLite.WebApi.Controllers
       aggregateRoot.Id = id;
       aggregateRoot.LastUpdatedAt = DateTime.Now;
       aggregateRoot.LastUpdatedById = GetAuthUserId();
-      aggregateRoot.RowVersion = long.Parse(concurrencyToken);
+      aggregateRoot.Version = long.Parse(concurrencyToken);
 
       await UpdateEntityAsync(aggregateRoot);
 
@@ -154,7 +154,7 @@ namespace DDDLite.WebApi.Controllers
 
       aggregateRoot.LastUpdatedAt = DateTime.Now;
       aggregateRoot.LastUpdatedById = GetAuthUserId();
-      aggregateRoot.RowVersion = long.Parse(concurrencyToken);
+      aggregateRoot.Version = long.Parse(concurrencyToken);
 
       await DeleteEntityAsync(aggregateRoot);
 

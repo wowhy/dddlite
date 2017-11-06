@@ -7,7 +7,9 @@ namespace DDDLite.CQRS.Events
   {
     Guid Id { get; set; }
 
-    long RowVersion { get; set; }
+    long Version { get; set; }
+
+    long OriginalVersion { get; }
 
     DateTime Timestamp { get; set; }
 

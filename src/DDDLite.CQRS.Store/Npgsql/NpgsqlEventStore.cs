@@ -25,7 +25,7 @@ namespace DDDLite.CQRS.Store.Npgsql
     {
       using (var session = store.LightweightSession())
       {
-        var query = session.Query<EventDescriptor<TEventSource>>().Where(k => k.AggregateRootId == aggregateRootId && k.RowVersion > fromVersion);
+        var query = session.Query<EventDescriptor<TEventSource>>().Where(k => k.AggregateRootId == aggregateRootId && k.Version > fromVersion);
         var documents = await query.ToListAsync();
         return documents.Select(d =>
         {
