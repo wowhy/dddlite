@@ -12,7 +12,7 @@ namespace CQRSCore.EventSource.Commands
     }
     public CreateInventoryItem(Guid id, string name)
     {
-      this.AggregateRootId = id;
+      this.Id = id;
       this.Name = name;
     }
   }

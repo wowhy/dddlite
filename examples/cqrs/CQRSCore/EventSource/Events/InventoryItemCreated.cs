@@ -8,7 +8,7 @@ namespace CQRSCore.EventSource.Events
     public readonly string Name;
     public InventoryItemCreated(Guid id, string name)
     {
-      AggregateRootId = id;
+      Id = id;
       Name = name;
     }
   }

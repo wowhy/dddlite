@@ -4,8 +4,8 @@ namespace DDDLite.CQRS.Commands
   using DDDLite.CQRS.Messages;
   public interface ICommand : IMessage
   {
-    Guid AggregateRootId { get; set; }
-    long RowVersion { get; set; }
+    Guid Id { get; set; }
+    long OriginalVersion { get; set; }
     string OperatorId { get; set; }
   }
 }

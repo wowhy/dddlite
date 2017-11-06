@@ -8,10 +8,10 @@ namespace DDDLite.CQRS.Events
 
     public EventDescriptor(IEvent data)
     {
-      this.Data = data;
+      this.Id = SequentialGuid.Create();
 
-      this.Id = data.Id;
-      this.AggregateRootId = data.AggregateRootId;
+      this.Data = data;
+      this.AggregateRootId = data.Id;
       this.Timestamp = data.Timestamp;
       this.RowVersion = data.RowVersion;
       this.OperatorId = data.OperatorId;

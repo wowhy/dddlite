@@ -7,8 +7,6 @@ namespace DDDLite.CQRS.Events
   {
     Guid Id { get; set; }
 
-    Guid AggregateRootId { get; set; }
-
     long RowVersion { get; set; }
 
     DateTime Timestamp { get; set; }

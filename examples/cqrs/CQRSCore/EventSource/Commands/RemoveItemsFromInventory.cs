@@ -8,9 +8,9 @@ namespace CQRSCore.EventSource.Commands
 
     public RemoveItemsFromInventory(Guid id, int count, int originalVersion)
     {
-      this.AggregateRootId = id;
+      this.Id = id;
       Count = count;
-      this.RowVersion = originalVersion;
+      this.OriginalVersion = originalVersion;
     }
   }
 }

@@ -8,9 +8,9 @@ namespace CQRSCore.EventSource.Commands
 
     public RenameInventoryItem(Guid id, string newName, int originalVersion)
     {
-      this.AggregateRootId = id;
+      this.Id = id;
       NewName = newName;
-      this.RowVersion = originalVersion;
+      this.OriginalVersion = originalVersion;
     }
   }
 }

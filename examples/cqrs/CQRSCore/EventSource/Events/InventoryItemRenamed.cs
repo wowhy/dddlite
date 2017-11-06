@@ -9,7 +9,7 @@ namespace CQRSCore.EventSource.Events
 
     public InventoryItemRenamed(Guid id, string newName)
     {
-      this.AggregateRootId = id;
+      this.Id = id;
       this.NewName = newName;
     }
 

@@ -9,7 +9,7 @@ namespace CQRSCore.EventSource.Events
 
     public ItemsCheckedInToInventory(Guid id, int count)
     {
-      this.AggregateRootId = id;
+      this.Id = id;
       this.Count = count;
     }
 

@@ -74,14 +74,14 @@ namespace DDDLite.WebApi.Controllers
     {
       var command = this.GetCreateCommand(model);
       command.OperatorId = this.GetAuthUserId();
-      if (command.AggregateRootId == Guid.Empty)
+      if (command.Id == Guid.Empty)
       {
-        command.AggregateRootId = SequentialGuid.Create();
+        command.Id = SequentialGuid.Create();
       }
 
       await this.commandSender.SendAsync(command);
 
-      return Created(Url.Action("Get", new { id = command.AggregateRootId }), new ResponseValue<Guid>(command.AggregateRootId));
+      return Created(Url.Action("Get", new { id = command.Id }), new ResponseValue<Guid>(command.Id));
     }
 
     [HttpPatch("{id}")]
@@ -90,8 +90,8 @@ namespace DDDLite.WebApi.Controllers
     {
       var rowVersion = long.Parse(concurrencyToken);
       var command = this.GetUpdateCommand(id, rowVersion, patch);
-      command.AggregateRootId = id;
-      command.RowVersion = rowVersion;
+      command.Id = id;
+      command.OriginalVersion = rowVersion;
       command.OperatorId = this.GetAuthUserId();
 
       await this.commandSender.SendAsync(command);
@@ -104,8 +104,8 @@ namespace DDDLite.WebApi.Controllers
     {
       var rowVersion = long.Parse(concurrencyToken);
       var command = this.GetDeleteCommand(id, rowVersion);
-      command.AggregateRootId = id;
-      command.RowVersion = rowVersion;
+      command.Id = id;
+      command.OriginalVersion = rowVersion;
       command.OperatorId = this.GetAuthUserId();
 
       await this.commandSender.SendAsync(command);

@@ -9,7 +9,7 @@ namespace CQRSCore.EventSource.Events
 
     public InventoryItemDeactivated(Guid id)
     {
-      this.AggregateRootId = id;
+      this.Id = id;
     }
   }
 }

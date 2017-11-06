@@ -25,14 +25,14 @@ namespace DDDLite.CQRS
         for (var i = 0; i < changes.Length; i++)
         {
           var @event = changes[i];
-          if (@event.AggregateRootId == Guid.Empty && Id == Guid.Empty)
+          if (@event.Id == Guid.Empty && Id == Guid.Empty)
           {
             throw new AggregateOrEventMissingIdException(GetType(), @event.GetType());
           }
 
-          if (@event.AggregateRootId == Guid.Empty)
+          if (@event.Id == Guid.Empty)
           {
-            @event.AggregateRootId = Id;
+            @event.Id = Id;
           }
 
           @event.RowVersion = RowVersion + i + 1;
@@ -61,10 +61,10 @@ namespace DDDLite.CQRS
         {
           if (@event.RowVersion != RowVersion + 1)
           {
-            throw new EventsOutOfOrderException(@event.AggregateRootId);
+            throw new EventsOutOfOrderException(@event.Id);
           }
           ApplyEvent(@event);
-          Id = @event.AggregateRootId;
+          Id = @event.Id;
           RowVersion++;
         }
       }

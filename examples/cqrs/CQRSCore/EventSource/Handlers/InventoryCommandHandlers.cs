@@ -24,34 +24,34 @@ namespace CQRSCore.EventSource.Handlers
 
     public async Task HandleAsync(CreateInventoryItem message)
     {
-      var item = new InventoryItem(message.AggregateRootId, message.Name);
+      var item = new InventoryItem(message.Id, message.Name);
       await this.repository.SaveAsync(item);
     }
 
     public async Task HandleAsync(RenameInventoryItem message)
     {
-      var item = await this.repository.GetByIdAsync(message.AggregateRootId);
+      var item = await this.repository.GetByIdAsync(message.Id);
       item.ChangeName(message.NewName);
       await this.repository.SaveAsync(item);
     }
 
     public async Task HandleAsync(DeactivateInventoryItem message)
     {
-      var item = await this.repository.GetByIdAsync(message.AggregateRootId);
+      var item = await this.repository.GetByIdAsync(message.Id);
       item.Deactivate();
       await this.repository.SaveAsync(item);
     }
 
     public async Task HandleAsync(CheckInItemsToInventory message)
     {
-      var item = await this.repository.GetByIdAsync(message.AggregateRootId);
+      var item = await this.repository.GetByIdAsync(message.Id);
       item.CheckIn(message.Count);
       await this.repository.SaveAsync(item);
     }
 
     public async Task HandleAsync(RemoveItemsFromInventory message)
     {
-      var item = await this.repository.GetByIdAsync(message.AggregateRootId);
+      var item = await this.repository.GetByIdAsync(message.Id);
       item.Remove(message.Count);
       await this.repository.SaveAsync(item);
     }

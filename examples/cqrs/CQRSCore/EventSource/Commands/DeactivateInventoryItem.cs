@@ -6,8 +6,8 @@ namespace CQRSCore.EventSource.Commands
   {
     public DeactivateInventoryItem(Guid id, int originalVersion)
     {
-      this.AggregateRootId = id;
-      this.RowVersion = originalVersion;
+      this.Id = id;
+      this.OriginalVersion = originalVersion;
     }
   }
 }

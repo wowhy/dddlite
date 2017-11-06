@@ -4,9 +4,9 @@ namespace DDDLite.CQRS.Commands
 
   public class Command : ICommand
   {
-    public Guid AggregateRootId { get; set; }
+    public Guid Id { get; set; }
 
-    public long RowVersion { get; set; }
+    public long OriginalVersion { get; set; }
 
     public string OperatorId { get; set; }
   }
