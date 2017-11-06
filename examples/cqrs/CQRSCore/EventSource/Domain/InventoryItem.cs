@@ -9,8 +9,6 @@ namespace CQRSCore.EventSource.Domain
 
   public class InventoryItem : SnapshotEventSource<InventoryItemSnapshot>
   {
-    private bool _activated;
-
     public InventoryItem() { }
 
     public InventoryItem(Guid id, string name)
@@ -19,16 +17,16 @@ namespace CQRSCore.EventSource.Domain
       ApplyChange(new InventoryItemCreated(id, name));
     }
 
-    public bool Activated => this._activated;
+    public bool Activated { get; set; }
 
     private void Apply(InventoryItemCreated e)
     {
-      _activated = true;
+      Activated = true;
     }
 
     private void Apply(InventoryItemDeactivated e)
     {
-      _activated = false;
+      Activated = false;
     }
 
     public void ChangeName(string newName)
@@ -52,7 +50,7 @@ namespace CQRSCore.EventSource.Domain
 
     public void Deactivate()
     {
-      if (!_activated) throw new InvalidOperationException("already deactivated");
+      if (!Activated) throw new InvalidOperationException("already deactivated");
       ApplyChange(new InventoryItemDeactivated(Id));
     }
 
@@ -81,7 +79,7 @@ namespace CQRSCore.EventSource.Domain
       this.CreatedById = snapshot.CreatedById;
       this.LastUpdatedAt = snapshot.LastUpdatedAt;
       this.LastUpdatedById = snapshot.LastUpdatedById;
-      this._activated = snapshot.Activated;
+      this.Activated = snapshot.Activated;
     }
   }
 }

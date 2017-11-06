@@ -23,6 +23,7 @@ namespace CQRSWebApi
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.EntityFrameworkCore;
+  using Microsoft.Extensions.Caching.Distributed;
   using Microsoft.Extensions.Configuration;
   using Microsoft.Extensions.DependencyInjection;
   using Microsoft.Extensions.Logging;
@@ -91,13 +92,19 @@ namespace CQRSWebApi
       var connectionString = configuration.GetConnectionString("Default");
       var redis = ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis"));
 
+      services.AddDistributedRedisCache(options =>
+      {
+        options.Configuration = configuration.GetConnectionString("Redis");
+        options.InstanceName = "master";
+      });
       services.AddSingleton<ICommandSender>(p => new InMemoryCommandBus());
       services.AddSingleton<IEventPublisher>(p => new RedisEventBus(redis));
 
       services.AddSingleton<IEventStore>(p => new InventoryEventStore(connectionString));
       services.AddSingleton<ISnapshotStore>(p => new InventorySnapshotStore(connectionString));
 
-      services.AddScoped<IDomainRepository<EventSource.InventoryItem>, SnapshotRepository<EventSource.InventoryItem, InventoryItemSnapshot>>();
+      services.AddScoped<SnapshotRepository<EventSource.InventoryItem, InventoryItemSnapshot>>();
+      services.AddScoped<IDomainRepository<EventSource.InventoryItem>, CacheRepositoryDecorator<EventSource.InventoryItem>>(p => new CacheRepositoryDecorator<EventSource.InventoryItem>(p.GetService<IDistributedCache>(), p.GetService<SnapshotRepository<EventSource.InventoryItem, InventoryItemSnapshot>>()));
 
       services.AddTransient<InventoryCommandHandlers>();
       services.AddTransient<InventoryEventHandlers>();
