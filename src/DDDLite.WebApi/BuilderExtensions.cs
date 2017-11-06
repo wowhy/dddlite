@@ -1,16 +1,17 @@
 namespace DDDLite.WebApi
 {
-  using DDDLite.WebApi.Exception;
+  using System;
+  using DDDLite.CQRS.Commands;
+  using DDDLite.CQRS.Messaging;
   using DDDLite.WebApi.Internal;
   using DDDLite.WebApi.Internal.Versioning;
   using DDDLite.WebApi.Middleware;
   using DDDLite.WebApi.Provider;
   using Microsoft.AspNetCore.Builder;
-  using Microsoft.AspNetCore.Diagnostics;
   using Microsoft.AspNetCore.Http;
-  using Microsoft.AspNetCore.Localization;
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.Extensions.DependencyInjection;
+  using DDDLite.CQRS.Events;
 
   public static class BuilderExtensions
   {
@@ -49,6 +50,16 @@ namespace DDDLite.WebApi
     public static IApplicationBuilder UseWebApiErrorHandler(this IApplicationBuilder app)
     {
       return app.UseMiddleware<WebApiExceptionMiddleware>();
+    }
+
+    public static IApplicationBuilder RegisterCommandHandlers<THandlers>(this IApplicationBuilder app, IServiceProvider provider, IHandlerRegister register)
+    {
+      return new DynamicHandlerRegister(app, provider, register, typeof(THandlers), typeof(ICommandHandler<>)).Register();
+    }
+
+    public static IApplicationBuilder RegisterEventHandlers<THandlers>(this IApplicationBuilder app, IServiceProvider provider, IHandlerRegister register)
+    {
+      return new DynamicHandlerRegister(app, provider, register, typeof(THandlers), typeof(IEventHandler<>)).Register();
     }
   }
 }

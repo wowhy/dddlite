@@ -1,7 +1,7 @@
 namespace DDDLite.CQRS.Events
 {
   using System;
-  using DDDLite.CQRS.Messages;
+  using DDDLite.CQRS.Messaging;
 
   public interface IEvent : IMessage
   {

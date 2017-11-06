@@ -1,4 +1,4 @@
-namespace DDDLite.CQRS.Messages
+namespace DDDLite.CQRS.Messaging
 {
   public interface IMessage
   {

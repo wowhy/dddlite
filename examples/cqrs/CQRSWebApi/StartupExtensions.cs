@@ -13,13 +13,14 @@ namespace CQRSWebApi
   using CQRSInfrastructure.Store;
   using DDDLite.CQRS.Commands;
   using DDDLite.CQRS.Events;
-  using DDDLite.CQRS.Messages;
+  using DDDLite.CQRS.Messaging;
   using DDDLite.CQRS.Messaging.InMemory;
   using DDDLite.CQRS.Messaging.Redis;
   using DDDLite.CQRS.Repositories;
   using DDDLite.CQRS.Snapshots;
   using DDDLite.Repositories;
   using DDDLite.Repositories.EntityFramework;
+  using DDDLite.WebApi;
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.EntityFrameworkCore;
@@ -67,12 +68,15 @@ namespace CQRSWebApi
         var bus = (InMemoryCommandBus)scope.ServiceProvider.GetRequiredService<ICommandSender>();
         var provider = scope.ServiceProvider;
 
-        bus.RegisterHandler(GetCommandHandler<CreateInventoryItem, InventoryCommandHandlers>(provider));
-        bus.RegisterHandler(GetCommandHandler<RenameInventoryItem, InventoryCommandHandlers>(provider));
-        bus.RegisterHandler(GetCommandHandler<CheckInItemsToInventory, InventoryCommandHandlers>(provider));
-        bus.RegisterHandler(GetCommandHandler<RemoveItemsFromInventory, InventoryCommandHandlers>(provider));
-        bus.RegisterHandler(GetCommandHandler<DeactivateInventoryItem, InventoryCommandHandlers>(provider));
+        app.RegisterCommandHandlers<InventoryCommandHandlers>(provider, bus);
+
+        // bus.RegisterHandler(GetCommandHandler<CreateInventoryItem, InventoryCommandHandlers>(provider));
+        // bus.RegisterHandler(GetCommandHandler<RenameInventoryItem, InventoryCommandHandlers>(provider));
+        // bus.RegisterHandler(GetCommandHandler<CheckInItemsToInventory, InventoryCommandHandlers>(provider));
+        // bus.RegisterHandler(GetCommandHandler<RemoveItemsFromInventory, InventoryCommandHandlers>(provider));
+        // bus.RegisterHandler(GetCommandHandler<DeactivateInventoryItem, InventoryCommandHandlers>(provider));
       }
+
       return app;
     }
 

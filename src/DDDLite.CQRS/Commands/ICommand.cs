@@ -1,7 +1,7 @@
 namespace DDDLite.CQRS.Commands
 {
   using System;
-  using DDDLite.CQRS.Messages;
+  using DDDLite.CQRS.Messaging;
   public interface ICommand : IMessage
   {
     Guid Id { get; set; }

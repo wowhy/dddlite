@@ -35,7 +35,8 @@ namespace CQRSCore.CRUD.Handlers
         LastUpdatedById = message.OperatorId,
 
         CurrentCount = 0,
-        Name = message.Name
+        Name = message.Name,
+        Activated = true
       };
       await this.repository.AddAsync(item);
       await this.repository.UnitOfWork.CommitAsync();

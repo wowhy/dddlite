@@ -8,6 +8,7 @@ namespace CQRSCore.CRUD.Domain
   {
     public InventoryItem()
     {
+      this.Activated = true;
     }
     public string Name { get; set; }
     public int CurrentCount { get; set; }

@@ -6,25 +6,25 @@ namespace DDDLite.CQRS.Messaging.InMemory
   using System.Threading.Tasks;
   using System.Linq;
 
-  using DDDLite.CQRS.Messages;
+  using DDDLite.CQRS.Messaging;
 
-  public abstract class InMemoryMessageBus
+  public abstract class InMemoryMessageBus : IHandlerRegister
   {
     private readonly Dictionary<Type, List<Func<IMessage, Task>>> _routes = new Dictionary<Type, List<Func<IMessage, Task>>>();
 
     protected ImmutableDictionary<Type, List<Func<IMessage, Task>>> Routes => _routes.ToImmutableDictionary();
 
-    protected void AddHandler<T>(Func<IMessage, Task> handler) where T : class, IMessage
+    public void RegisterHandler<TMessage>(Func<TMessage, Task> handler) where TMessage : IMessage
     {
       List<Func<IMessage, Task>> handlers;
 
-      if (!_routes.TryGetValue(typeof(T), out handlers))
+      if (!_routes.TryGetValue(typeof(TMessage), out handlers))
       {
         handlers = new List<Func<IMessage, Task>>();
-        _routes.Add(typeof(T), handlers);
+        _routes.Add(typeof(TMessage), handlers);
       }
 
-      handlers.Add((x => handler((T)x)));
+      handlers.Add((x => handler((TMessage)x)));
     }
 
     protected async Task CommitAsync(IMessage message)
