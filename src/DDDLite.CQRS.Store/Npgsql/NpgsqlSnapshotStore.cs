@@ -1,4 +1,4 @@
-namespace DDDLite.CQRS.Npgsql
+namespace DDDLite.CQRS.Store.Npgsql
 {
   using System;
   using System.Threading.Tasks;

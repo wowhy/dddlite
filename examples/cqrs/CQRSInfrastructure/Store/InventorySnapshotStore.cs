@@ -1,6 +1,6 @@
 namespace CQRSInfrastructure.Store
 {
-  using DDDLite.CQRS.Npgsql;
+  using DDDLite.CQRS.Store.Npgsql;
 
   public class InventorySnapshotStore : NpgsqlSnapshotStore
   {

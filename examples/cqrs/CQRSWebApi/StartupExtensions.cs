@@ -10,12 +10,12 @@ namespace CQRSWebApi
   using CQRSCore.EventSource.Handlers;
   using CQRSCore.EventSource.Snapshots;
   using CQRSInfrastructure.EntityFramework;
+  using CQRSInfrastructure.Store;
   using DDDLite.CQRS.Commands;
   using DDDLite.CQRS.Events;
   using DDDLite.CQRS.Messages;
   using DDDLite.CQRS.Messaging.InMemory;
   using DDDLite.CQRS.Messaging.Redis;
-  using DDDLite.CQRS.Npgsql;
   using DDDLite.CQRS.Repositories;
   using DDDLite.CQRS.Snapshots;
   using DDDLite.Repositories;
@@ -94,8 +94,8 @@ namespace CQRSWebApi
       services.AddSingleton<ICommandSender>(p => new InMemoryCommandBus());
       services.AddSingleton<IEventPublisher>(p => new RedisEventBus(redis));
 
-      services.AddSingleton<IEventStore>(p => new NpgsqlEventStore(connectionString));
-      services.AddSingleton<ISnapshotStore>(p => new NpgsqlSnapshotStore(connectionString));
+      services.AddSingleton<IEventStore>(p => new InventoryEventStore(connectionString));
+      services.AddSingleton<ISnapshotStore>(p => new InventorySnapshotStore(connectionString));
 
       services.AddScoped<IDomainRepository<EventSource.InventoryItem>, SnapshotRepository<EventSource.InventoryItem, InventoryItemSnapshot>>();
 

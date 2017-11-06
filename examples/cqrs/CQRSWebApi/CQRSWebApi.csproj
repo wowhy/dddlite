@@ -19,7 +19,7 @@
     <ProjectReference Include="..\..\..\src\DDDLite.WebApi\DDDLite.WebApi.csproj"/>
     <ProjectReference Include="..\..\..\src\DDDLite.CQRS\DDDLite.CQRS.csproj"/>
     <ProjectReference Include="..\..\..\src\DDDLite.CQRS.Messaging\DDDLite.CQRS.Messaging.csproj"/>
-    <ProjectReference Include="..\..\..\src\DDDLite.CQRS.Npgsql\DDDLite.CQRS.Npgsql.csproj"/>
+    <ProjectReference Include="..\..\..\src\DDDLite.CQRS.Store\DDDLite.CQRS.Store.csproj"/>
     <ProjectReference Include="..\CQRSCore\CQRSCore.csproj"/>
     <ProjectReference Include="..\CQRSInfrastructure\CQRSInfrastructure.csproj"/>
   </ItemGroup>
