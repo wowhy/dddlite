@@ -23,7 +23,7 @@ namespace DDDLite.WebApi.Controllers
   using DDDLite.WebApi.Internal.Query;
   using DDDLite.WebApi.Models;
 
-  using @N = DDDLite.WebApi.Internal.ApiParams;
+  using @N = DDDLite.WebApi.Config.ApiParams;
 
   [ApiVersion("1.0")]
   [Route("api/v{version:apiVersion}/[controller]")]

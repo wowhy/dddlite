@@ -23,7 +23,7 @@ namespace DDDLite.WebApi.Controllers
   using DDDLite.WebApi.Provider;
   using DDDLite.WebApi.Models;
 
-  using @N = DDDLite.WebApi.Internal.ApiParams;
+  using @N = DDDLite.WebApi.Config.ApiParams;
 
   public abstract class SimpleApiController<TAggregateRoot, TKey> : ApiControllerBase
           where TAggregateRoot : class, IAggregateRoot<TKey>
