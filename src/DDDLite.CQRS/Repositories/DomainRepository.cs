@@ -45,13 +45,16 @@ namespace DDDLite.CQRS.Repositories
 
     protected async virtual Task<TEventSource> RestoreAggregateRootAsync(TEventSource aggregateRoot)
     {
-      var events = await this.storage.GetAsync<TEventSource>(aggregateRoot.Id, aggregateRoot.Version);
-      if (!events.Any())
+      var events = (await this.storage.GetAsync<TEventSource>(aggregateRoot.Id, aggregateRoot.Version)).ToList();
+      if (aggregateRoot.Version == -1 && events.Count == 0)
       {
         throw new AggregateRootNotFoundException<Guid>(aggregateRoot.Id);
       }
 
-      aggregateRoot.LoadFromHistory(events);
+      if (events.Count > 0)
+      {
+        aggregateRoot.LoadFromHistory(events);
+      }
 
       return aggregateRoot;
     }
