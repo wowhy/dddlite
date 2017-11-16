@@ -59,7 +59,7 @@ namespace DDDLite.WebApi
 
     public static DynamicHandlerRegister BeginRegisterEventHandlers(this IServiceProvider provider, IHandlerRegister register)
     {
-      return new DynamicHandlerRegister(provider, register, typeof(ICommandHandler<>));
+      return new DynamicHandlerRegister(provider, register, typeof(IEventHandler<>));
     }
   }
 }
