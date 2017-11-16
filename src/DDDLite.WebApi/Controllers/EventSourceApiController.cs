@@ -44,7 +44,7 @@ namespace DDDLite.WebApi.Controllers
       this.readModelRepository = readModelRepository;
     }
 
-    protected ICommandSender CommandSender => this.CommandSender;
+    protected ICommandSender CommandSender => this.commandSender;
 
     protected IRepository<TReadModel, Guid> ReadModelRepository => this.readModelRepository;
 
