@@ -6,6 +6,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\DDDLite\DDDLite.csproj"/>
     <ProjectReference Include="..\..\src\DDDLite.CQRS\DDDLite.CQRS.csproj"/>
-    <ProjectReference Include="..\..\src\DDDLite.CQRS.Npgsql\DDDLite.CQRS.Npgsql.csproj"/>
+    <ProjectReference Include="..\..\src\DDDLite.CQRS.Store\DDDLite.CQRS.Store.csproj"/>
   </ItemGroup>
 </Project>

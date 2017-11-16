@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using DDDLite.CQRS;
 using DDDLite.CQRS.Events;
-using DDDLite.CQRS.Npgsql;
+using DDDLite.CQRS.Store.Npgsql;
 using DDDLite.CQRS.Snapshots;
 using Newtonsoft.Json;
 
@@ -21,7 +21,7 @@ namespace StoreTest
       var snapshot = new OrderSnapshot
       {
         Id = this.Id,
-        RowVersion = this.RowVersion,
+        Version = this.Version,
         Product = this.Product
       };
       return snapshot;
@@ -30,7 +30,7 @@ namespace StoreTest
     public override void RestoreFromSnapshot(OrderSnapshot snapshot)
     {
       this.Id = snapshot.Id;
-      this.RowVersion = snapshot.RowVersion;
+      this.Version = snapshot.Version;
       this.Product = snapshot.Product;
     }
   }
@@ -84,7 +84,7 @@ namespace StoreTest
         await store.SaveAsync(new OrderSnapshot
         {
           Id = order1,
-          RowVersion = 1,
+          Version = 1,
           Product = "test"
         });
       } else 
@@ -101,7 +101,7 @@ namespace StoreTest
 
       foreach (var e in events)
       {
-        Console.WriteLine($"Id: {e.Id}, AggregateRootId: {e.AggregateRootId}, Type: {e.GetType().Name}");
+        Console.WriteLine($"Id: {e.Id}, Type: {e.GetType().Name}");
       }
     }
 
@@ -118,38 +118,38 @@ namespace StoreTest
       {
         new OrderCreated
         {
-          AggregateRootId = order1,
+          Id = order1,
           Product = "test1",
           Counts = 10,
           TotalPrice = 1024,
-          RowVersion = 0
+          Version = 0
         },
         new OrderCreated
         {
-          AggregateRootId = order2,
+          Id = order2,
           Product = "test1",
           Counts = 10,
           TotalPrice = 1024,
-          RowVersion = 0
+          Version = 0
         },
         new OrderCanceled
         {
-          AggregateRootId = order1,
+          Id = order1,
           Memo = "Hello, World!",
-          RowVersion = 1
+          Version = 1
         },
         new OrderPaymented
         {
-          AggregateRootId = order2,
+          Id = order2,
           PaymentMoney = 100,
           PaymentTime = DateTime.Now,
-          RowVersion = 1
+          Version = 1
         },
         new OrderCanceled
         {
-          AggregateRootId = order2,
+          Id = order2,
           Memo = "!!!!!!!!!!!!!",
-          RowVersion = 2
+          Version = 2
         }
       };
     }

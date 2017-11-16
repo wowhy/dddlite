@@ -52,14 +52,14 @@ namespace DDDLite.WebApi
       return app.UseMiddleware<WebApiExceptionMiddleware>();
     }
 
-    public static IApplicationBuilder RegisterCommandHandlers<THandlers>(this IApplicationBuilder app, IServiceProvider provider, IHandlerRegister register)
+    public static DynamicHandlerRegister BeginRegisterCommandHandlers(this IServiceProvider provider, IHandlerRegister register)
     {
-      return new DynamicHandlerRegister(app, provider, register, typeof(THandlers), typeof(ICommandHandler<>)).Register();
+      return new DynamicHandlerRegister(provider, register, typeof(ICommandHandler<>));
     }
 
-    public static IApplicationBuilder RegisterEventHandlers<THandlers>(this IApplicationBuilder app, IServiceProvider provider, IHandlerRegister register)
+    public static DynamicHandlerRegister BeginRegisterEventHandlers(this IServiceProvider provider, IHandlerRegister register)
     {
-      return new DynamicHandlerRegister(app, provider, register, typeof(THandlers), typeof(IEventHandler<>)).Register();
+      return new DynamicHandlerRegister(provider, register, typeof(ICommandHandler<>));
     }
   }
 }

@@ -9,9 +9,11 @@ namespace DDDLite.CQRS
   using DDDLite.CQRS.Exceptions;
   using System.Reflection;
 
-  public abstract class EventSource : AggregateRoot<Guid>, IEventSource
+  public abstract class EventSource : AggregateRoot<Guid>, IEventSource, ILogicalDelete
   {
     private readonly List<IEvent> uncommitedChanges = new List<IEvent>();
+
+    public bool Deleted { get; set; }
 
     public EventSource()
     {
@@ -89,7 +91,7 @@ namespace DDDLite.CQRS
             throw new EventsOutOfOrderException(@event.Id);
           }
 
-          ApplyEvent(@event);
+          InvokeEvent(@event);
 
           Id = @event.Id;
           Version++;
@@ -103,12 +105,12 @@ namespace DDDLite.CQRS
     {
       lock (uncommitedChanges)
       {
-        ApplyEvent(@event);
+        InvokeEvent(@event);
         uncommitedChanges.Add(@event);
       }
     }
 
-    protected virtual void ApplyEvent(IEvent @event)
+    protected virtual void InvokeEvent(IEvent @event)
     {
       var eventType = @event.GetType();
       var method = this.GetType().GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)

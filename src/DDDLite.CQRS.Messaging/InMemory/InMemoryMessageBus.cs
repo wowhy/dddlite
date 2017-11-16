@@ -29,23 +29,16 @@ namespace DDDLite.CQRS.Messaging.InMemory
 
     protected async Task CommitAsync(IMessage message)
     {
-      try
-      {
-        List<Func<IMessage, Task>> handlers;
+      List<Func<IMessage, Task>> handlers;
 
-        if (_routes.TryGetValue(message.GetType(), out handlers))
-        {
-          if (handlers.Count != 1) throw new InvalidOperationException("cannot send to more than one handler");
-          await handlers[0](message);
-        }
-        else
-        {
-          throw new InvalidOperationException("no handler registered");
-        }
-      }
-      catch
+      if (_routes.TryGetValue(message.GetType(), out handlers))
       {
-        // nothing
+        if (handlers.Count != 1) throw new InvalidOperationException("cannot send to more than one handler");
+        await handlers[0](message);
+      }
+      else
+      {
+        throw new InvalidOperationException("no handler registered");
       }
     }
 

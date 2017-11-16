@@ -1,4 +1,4 @@
-namespace DDDLite.WebApi.Internal
+namespace DDDLite.WebApi
 {
   using System;
   using System.Linq;
@@ -9,32 +9,29 @@ namespace DDDLite.WebApi.Internal
 
   public class DynamicHandlerRegister
   {
-    private readonly IApplicationBuilder app;
     private readonly IServiceProvider provider;
     private readonly IHandlerRegister register;
-    private readonly Type handlersType;
     private readonly Type handlerType;
 
-    public DynamicHandlerRegister(IApplicationBuilder app, IServiceProvider provider, IHandlerRegister register, Type handlersType, Type handlerType)
+    public DynamicHandlerRegister(IServiceProvider provider, IHandlerRegister register, Type handlerType)
     {
-      this.handlerType = handlerType;
-      this.handlersType = handlersType;
-      this.app = app;
       this.provider = provider;
       this.register = register;
+      this.handlerType = handlerType;
     }
 
-    public IApplicationBuilder Register()
+    public DynamicHandlerRegister Register<THandlers>()
     {
+      var handlersType = typeof(THandlers);
       var interfaces = handlersType.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == handlerType);
 
       foreach (var interfaceType in interfaces)
       {
-        var handler = BuildHandler(interfaceType);
+        var handler = BuildHandler(interfaceType, handlersType);
         this.InvokeRegisterHandler(handler);
       }
 
-      return app;
+      return this;
     }
 
     private void InvokeRegisterHandler(object handler)
@@ -44,7 +41,7 @@ namespace DDDLite.WebApi.Internal
       method.Invoke(register, new object[] { handler });
     }
 
-    private object BuildHandler(Type interfaceType)
+    private object BuildHandler(Type interfaceType, Type handlersType)
     {
       var handleMethod = interfaceType.GetInterfaces()[0].GetMethod("HandleAsync");
       var getServiceMethod = typeof(ServiceProviderServiceExtensions).GetMethod("GetService").MakeGenericMethod(handlersType);

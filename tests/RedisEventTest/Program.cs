@@ -59,7 +59,7 @@ namespace RedisEventTest
 
       eventBus.RegisterHandler<TestCreated>((@event) =>
       {
-        throw new ArgumentException("evnet");
+        // throw new ArgumentException("evnet");
         Console.WriteLine("Task 3: {0}", @event.Message);
         return Task.CompletedTask;
       });

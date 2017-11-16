@@ -52,7 +52,9 @@ namespace CQRSWebApi
         var bus = (RedisEventBus)scope.ServiceProvider.GetRequiredService<IEventPublisher>();
         var provider = scope.ServiceProvider;
 
-        app.RegisterCommandHandlers<InventoryEventHandlers>(provider, bus);
+        // provider.RegisterCommandHandlers<InventoryEventHandlers>(bus);
+        provider.BeginRegisterEventHandlers(bus)
+          .Register<InventoryEventHandlers>();
       }
       return app;
     }
@@ -64,7 +66,8 @@ namespace CQRSWebApi
         var bus = (InMemoryCommandBus)scope.ServiceProvider.GetRequiredService<ICommandSender>();
         var provider = scope.ServiceProvider;
 
-        app.RegisterCommandHandlers<InventoryCommandHandlers>(provider, bus);
+        provider.BeginRegisterCommandHandlers(bus)
+          .Register<InventoryCommandHandlers>();
       }
 
       return app;
