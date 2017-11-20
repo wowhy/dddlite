@@ -15,6 +15,7 @@ namespace CQRSWebApi
   using DDDLite.CQRS.Events;
   using DDDLite.CQRS.Messaging;
   using DDDLite.CQRS.Messaging.InMemory;
+  using DDDLite.CQRS.Messaging.Kafka;
   using DDDLite.CQRS.Messaging.Redis;
   using DDDLite.CQRS.Repositories;
   using DDDLite.CQRS.Snapshots;
@@ -49,12 +50,32 @@ namespace CQRSWebApi
     {
       using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
       {
-        var bus = (RedisEventBus)scope.ServiceProvider.GetRequiredService<IEventPublisher>();
-        var provider = scope.ServiceProvider;
+        var bus = (KafkaEventBus)scope.ServiceProvider.GetRequiredService<IEventPublisher>();
+        var lifetime = scope.ServiceProvider.GetRequiredService<IApplicationLifetime>();
 
-        // provider.RegisterCommandHandlers<InventoryEventHandlers>(bus);
+        var provider = scope.ServiceProvider;
         provider.BeginRegisterEventHandlers(bus)
           .Register<InventoryEventHandlers>();
+
+        var cts = new System.Threading.CancellationTokenSource();
+        var task = Task.Factory.StartNew(() =>
+        {
+          try 
+          {
+            bus.Listening(cts.Token);
+          } catch { }
+
+          bus.Dispose();
+        });
+
+        lifetime.ApplicationStopping.Register(() =>
+        {
+          try 
+          {
+            cts.Cancel();
+            task.Wait();
+          } catch { }
+        });
       }
       return app;
     }
@@ -87,7 +108,6 @@ namespace CQRSWebApi
     public static IServiceCollection AddEventSourceContext(this IServiceCollection services, IConfiguration configuration)
     {
       var connectionString = configuration.GetConnectionString("Default");
-      var redis = ConnectionMultiplexer.Connect(configuration.GetConnectionString("Redis"));
 
       services.AddDistributedRedisCache(options =>
       {
@@ -95,7 +115,7 @@ namespace CQRSWebApi
         options.InstanceName = "master";
       });
       services.AddSingleton<ICommandSender>(p => new InMemoryCommandBus());
-      services.AddSingleton<IEventPublisher>(p => new RedisEventBus(redis));
+      services.AddSingleton<IEventPublisher>(p => new KafkaEventBus(configuration.GetConnectionString("kafka"), "cqrs-demo", "cqrs-demo"));
 
       services.AddSingleton<IEventStore>(p => new InventoryEventStore(connectionString));
       services.AddSingleton<ISnapshotStore>(p => new InventorySnapshotStore(connectionString));
