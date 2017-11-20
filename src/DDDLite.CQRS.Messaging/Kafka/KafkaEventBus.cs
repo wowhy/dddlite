@@ -4,6 +4,7 @@ namespace DDDLite.CQRS.Messaging.Kafka
   using System.Collections.Generic;
   using System.Text;
   using System.Threading.Tasks;
+  using System.Linq;
 
   using Confluent.Kafka;
   using Confluent.Kafka.Serialization;
@@ -37,7 +38,6 @@ namespace DDDLite.CQRS.Messaging.Kafka
         { "bootstrap.servers", host },
         { "group.id", groupId }
       }, null, new StringDeserializer(Encoding.UTF8));
-      this.consumer.Subscribe(topic);
     }
     public void Dispose()
     {
@@ -63,10 +63,13 @@ namespace DDDLite.CQRS.Messaging.Kafka
 
     public void Listening(CancellationToken cancellationToken, params string[] topics)
     {
-      if (topics != null && topics.Length > 0)
+      var tmp = new List<string> { topic };
+      if (topics != null)
       {
-        this.consumer.Subscribe(topics);
+        tmp.AddRange(topics);
       }
+
+      this.consumer.Subscribe(tmp.Distinct().ToArray());
 
       while (true)
       {
