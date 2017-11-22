@@ -29,6 +29,11 @@ namespace DDDLite.WebApi
       services.AddHttpContextAccessor()
               .AddOperatorProvider();
 
+      services.Configure<MvcJsonOptions>(options =>
+      {
+        options.SerializerSettings.DateTimeZoneHandling = Newtonsoft.Json.DateTimeZoneHandling.Local;
+      });
+
       return services;
     }
 
