@@ -2,6 +2,7 @@ namespace DDDLite.CQRS.Repositories
 {
   using System;
   using System.Threading.Tasks;
+  using DDDLite.Serialization;
   using Microsoft.Extensions.Caching.Distributed;
   using Newtonsoft.Json;
 
@@ -10,53 +11,69 @@ namespace DDDLite.CQRS.Repositories
   {
     private readonly IDomainRepository<TEventSource> repository;
     private readonly IDistributedCache cache;
-    private readonly JsonSerializerSettings settings;
+    private readonly IObjectSerializer serializer;
 
     private readonly string keyPrefix = "__es__";
 
-    public CacheRepositoryDecorator(IDistributedCache cache, IDomainRepository<TEventSource> repository)
+    public CacheRepositoryDecorator(
+      IDistributedCache cache,
+      IDomainRepository<TEventSource> repository,
+      IObjectSerializer serializer)
     {
       this.repository = repository;
       this.cache = cache;
-      this.settings = new JsonSerializerSettings
-      {
-        TypeNameHandling = TypeNameHandling.Auto
-      };
+      this.serializer = serializer;
     }
 
     public async virtual Task<TEventSource> GetByIdAsync(Guid id)
     {
-      var aggregateRoot = await this.TryGetCacheAsync(id);
+      var aggregateRoot = await this.GetFromCacheAsync(id);
       if (aggregateRoot != null)
       {
         return aggregateRoot;
       }
 
       aggregateRoot = await this.repository.GetByIdAsync(id);
-      await this.TrySaveCacheAsync(aggregateRoot);
+      await this.SaveCacheAsync(aggregateRoot);
       return aggregateRoot;
     }
 
     public async virtual Task SaveAsync(TEventSource aggregateRoot)
     {
       await this.repository.SaveAsync(aggregateRoot);
-      await this.TrySaveCacheAsync(aggregateRoot);
+      await this.SaveCacheAsync(aggregateRoot);
     }
 
-    private async Task<TEventSource> TryGetCacheAsync(Guid id)
+    private async Task<TEventSource> GetFromCacheAsync(Guid id)
     {
-      var value = await this.cache.GetStringAsync(keyPrefix + id);
-      if (string.IsNullOrEmpty(value))
+      try
       {
-        return null;
+        var value = await this.cache.GetAsync(keyPrefix + id);
+        if (value == null)
+        {
+          return null;
+        }
+
+        return serializer.Deserialize<TEventSource>(value);
+      }
+      catch
+      {
       }
 
-      return JsonConvert.DeserializeObject<TEventSource>(value, settings);
+      return null;
     }
 
-    private Task TrySaveCacheAsync(TEventSource aggregateRoot)
+    private Task SaveCacheAsync(TEventSource aggregateRoot)
     {
-      return this.cache.SetStringAsync(keyPrefix + aggregateRoot, JsonConvert.SerializeObject(aggregateRoot, settings));
+      try
+      {
+        return this.cache.SetAsync(keyPrefix + aggregateRoot, serializer.Serialize(aggregateRoot));
+      }
+      catch
+      {
+      }
+
+      return Task.CompletedTask;
     }
   }
 }

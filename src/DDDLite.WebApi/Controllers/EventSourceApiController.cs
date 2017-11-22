@@ -58,7 +58,7 @@ namespace DDDLite.WebApi.Controllers
     }
 
     [HttpGet("{id}")]
-    public virtual async Task<IActionResult> Get(Guid id)
+    public virtual async Task<IActionResult> GetAsync(Guid id)
     {
       var context = new RepositoryQueryContext<TReadModel, Guid>(readModelRepository, HttpContext);
       var value = await context.GetValueAsync(id);
@@ -70,7 +70,7 @@ namespace DDDLite.WebApi.Controllers
 
     [HttpPost]
     [Produces("application/json")]
-    public virtual async Task<IActionResult> Post([FromBody]JObject model)
+    public virtual async Task<IActionResult> CreateAsync([FromBody]JObject model)
     {
       var command = this.GetCreateCommand(model);
       command.OperatorId = this.GetAuthUserId();
@@ -86,7 +86,7 @@ namespace DDDLite.WebApi.Controllers
 
     [HttpPatch("{id}")]
     [Produces("application/json")]
-    public virtual async Task<IActionResult> Patch(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] JsonPatchDocument patch)
+    public virtual async Task<IActionResult> UpdateAsync(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] JsonPatchDocument patch)
     {
       var rowVersion = long.Parse(concurrencyToken);
       var command = this.GetUpdateCommand(id, rowVersion, patch);
@@ -100,10 +100,10 @@ namespace DDDLite.WebApi.Controllers
     }
 
     [HttpDelete("{id}")]
-    public virtual async Task<IActionResult> Delete(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken)
+    public virtual async Task<IActionResult> RemoveAsync(Guid id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken)
     {
       var rowVersion = long.Parse(concurrencyToken);
-      var command = this.GetDeleteCommand(id, rowVersion);
+      var command = this.GetRemoveCommand(id, rowVersion);
       command.Id = id;
       command.OriginalVersion = rowVersion;
       command.OperatorId = this.GetAuthUserId();
@@ -117,6 +117,6 @@ namespace DDDLite.WebApi.Controllers
 
     protected abstract Command GetUpdateCommand(Guid id, long rowVersion, JsonPatchDocument patch);
 
-    protected abstract Command GetDeleteCommand(Guid id, long rowVersion);
+    protected abstract Command GetRemoveCommand(Guid id, long rowVersion);
   }
 }

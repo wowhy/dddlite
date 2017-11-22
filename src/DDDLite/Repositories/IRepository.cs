@@ -15,7 +15,7 @@
 
         Task<TAggregateRoot> GetByIdAsync(TKey id, params string[] includes);
 
-        Task AddAsync(TAggregateRoot entity);
+        Task InsertAsync(TAggregateRoot entity);
 
         Task UpdateAsync(TAggregateRoot entity);
 

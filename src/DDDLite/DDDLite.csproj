@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="*" />
+    <PackageReference Include="MessagePack" Version="*"/>
+    <PackageReference Include="Newtonsoft.Json" Version="*"/>
   </ItemGroup>
 
 </Project>

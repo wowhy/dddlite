@@ -48,7 +48,7 @@ namespace DDDLite.WebApi.Controllers
     }
 
     [HttpGet("{id}")]
-    public virtual async Task<IActionResult> Get(TKey id)
+    public virtual async Task<IActionResult> GetAsync(TKey id)
     {
       var context = new RepositoryQueryContext<TAggregateRoot, TKey>(Repository, HttpContext);
       var value = await context.GetValueAsync(id);
@@ -60,7 +60,7 @@ namespace DDDLite.WebApi.Controllers
 
     [HttpPost]
     [Produces("application/json")]
-    public virtual async Task<IActionResult> Post([FromBody] TAggregateRoot aggregateRoot)
+    public virtual async Task<IActionResult> CreateAsync([FromBody] TAggregateRoot aggregateRoot)
     {
       if (aggregateRoot is IAggregateRoot<Guid> && ((IAggregateRoot<Guid>)aggregateRoot).Id == Guid.Empty)
       {
@@ -82,14 +82,14 @@ namespace DDDLite.WebApi.Controllers
       aggregateRoot.LastUpdatedAt = aggregateRoot.CreatedAt;
       aggregateRoot.LastUpdatedById = aggregateRoot.CreatedById;
 
-      await AddEntityAsync(aggregateRoot);
+      await CreateEntityAsync(aggregateRoot);
 
       return Created(Url.Action("Get", new { id = aggregateRoot.Id }), new ResponseValue<TKey>(aggregateRoot.Id));
     }
 
     [HttpPut("{id}")]
     [Produces("application/json")]
-    public virtual async Task<IActionResult> Put(TKey id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] TAggregateRoot aggregateRoot)
+    public virtual async Task<IActionResult> ReplaceAsync(TKey id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] TAggregateRoot aggregateRoot)
     {
       if (!Repository.Exists(Specification<TAggregateRoot>.Eval(k => k.Id.Equals(id))))
       {
@@ -113,7 +113,7 @@ namespace DDDLite.WebApi.Controllers
 
     [HttpPatch("{id}")]
     [Produces("application/json")]
-    public virtual async Task<IActionResult> Patch(TKey id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] JsonPatchDocument<TAggregateRoot> patch)
+    public virtual async Task<IActionResult> UpdateAsync(TKey id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken, [FromBody] JsonPatchDocument<TAggregateRoot> patch)
     {
       var aggregateRoot = await Repository.GetByIdAsync(id);
       if (aggregateRoot == null)
@@ -139,7 +139,7 @@ namespace DDDLite.WebApi.Controllers
     }
 
     [HttpDelete("{id}")]
-    public virtual async Task<IActionResult> Delete(TKey id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken)
+    public virtual async Task<IActionResult> RemoveAsync(TKey id, [FromHeader(Name = @N.ROWVERSION)] string concurrencyToken)
     {
       var aggregateRoot = await Repository.GetByIdAsync(id);
       if (aggregateRoot == null)
@@ -156,14 +156,14 @@ namespace DDDLite.WebApi.Controllers
       aggregateRoot.LastUpdatedById = GetAuthUserId();
       aggregateRoot.Version = long.Parse(concurrencyToken);
 
-      await DeleteEntityAsync(aggregateRoot);
+      await RemoveEntityAsync(aggregateRoot);
 
       return NoContent();
     }
 
-    protected virtual async Task AddEntityAsync(TAggregateRoot aggregateRoot)
+    protected virtual async Task CreateEntityAsync(TAggregateRoot aggregateRoot)
     {
-      await Repository.AddAsync(aggregateRoot);
+      await Repository.InsertAsync(aggregateRoot);
       await Repository.UnitOfWork.CommitAsync();
     }
 
@@ -173,7 +173,7 @@ namespace DDDLite.WebApi.Controllers
       await Repository.UnitOfWork.CommitAsync();
     }
 
-    protected virtual async Task DeleteEntityAsync(TAggregateRoot aggregateRoot)
+    protected virtual async Task RemoveEntityAsync(TAggregateRoot aggregateRoot)
     {
       await Repository.DeleteAsync(aggregateRoot);
       await Repository.UnitOfWork.CommitAsync();

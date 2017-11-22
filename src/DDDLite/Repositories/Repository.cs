@@ -18,7 +18,7 @@
 
         public IUnitOfWork UnitOfWork { get; protected set; }
 
-        public abstract Task AddAsync(TAggregateRoot entity);
+        public abstract Task InsertAsync(TAggregateRoot entity);
         public abstract Task UpdateAsync(TAggregateRoot entity);
         public abstract Task DeleteAsync(TAggregateRoot entity);
         public abstract Task<TAggregateRoot> GetByIdAsync(TKey id, params string[] includes);

@@ -21,7 +21,7 @@
 
         public DbContext Context => this.context;
 
-        public override async Task AddAsync(TAggregateRoot entity)
+        public override async Task InsertAsync(TAggregateRoot entity)
         {
             await Context.Set<TAggregateRoot>().AddAsync(entity);
         }
