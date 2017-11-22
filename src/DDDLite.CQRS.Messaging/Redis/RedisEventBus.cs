@@ -21,7 +21,7 @@ namespace DDDLite.CQRS.Messaging.Redis
     {
       this.settings = new JsonSerializerSettings
       {
-        TypeNameHandling = TypeNameHandling.Auto
+        TypeNameHandling = TypeNameHandling.All
       };
       this.redis = redis;
       this.subscriber = redis.GetSubscriber();
@@ -31,16 +31,15 @@ namespace DDDLite.CQRS.Messaging.Redis
 
     public override Task PublishAsync<TEvent>(TEvent @event)
     {
-      var desc = new EventDescriptor(@event);
-      return this.subscriber.PublishAsync(toptic, JsonConvert.SerializeObject(desc, this.settings));
+      return this.subscriber.PublishAsync(toptic, JsonConvert.SerializeObject(@event, this.settings));
     }
 
     protected async virtual void OnMessage(RedisChannel channel, RedisValue message)
     {
       try
       {
-        var desc = JsonConvert.DeserializeObject<EventDescriptor>((string)message, this.settings);
-        await this.DispatchAsync((IEvent)desc.Data);
+        var data = JsonConvert.DeserializeObject<IEvent>((string)message, this.settings);
+        await this.DispatchAsync(data);
       }
       catch (Exception)
       {

@@ -18,26 +18,22 @@ namespace DDDLite.CQRS.Messaging.Kafka
   public class KafkaEventBus : InMemoryEventBus, IEventPublisher, IDisposable
   {
     private readonly string topic;
-    private Producer<Null, string> producer;
-    private Consumer<Null, string> consumer;
-    private readonly JsonSerializerSettings settings = new JsonSerializerSettings
-    {
-      TypeNameHandling = TypeNameHandling.Auto
-    };
+    private Producer<Null, IEvent> producer;
+    private Consumer<Null, IEvent> consumer;
 
     public KafkaEventBus(string host, string groupId, string topic)
     {
       this.topic = topic;
-      this.producer = new Producer<Null, string>(new Dictionary<string, object>
+      this.producer = new Producer<Null, IEvent>(new Dictionary<string, object>
       {
         { "bootstrap.servers", host }
-      }, null, new StringSerializer(Encoding.UTF8));
+      }, null, new EventSerializer());
 
-      this.consumer = new Consumer<Null, string>(new Dictionary<string, object>
+      this.consumer = new Consumer<Null, IEvent>(new Dictionary<string, object>
       {
         { "bootstrap.servers", host },
         { "group.id", groupId }
-      }, null, new StringDeserializer(Encoding.UTF8));
+      }, null, new EventDeserializer());
     }
     public void Dispose()
     {
@@ -57,8 +53,7 @@ namespace DDDLite.CQRS.Messaging.Kafka
 
     public async override Task PublishAsync<TEvent>(TEvent @event)
     {
-      var desc = new EventDescriptor(@event);
-      await this.producer.ProduceAsync(topic, null, JsonConvert.SerializeObject(desc, this.settings));
+      await this.producer.ProduceAsync(topic, null, @event);
     }
 
     public void Listening(CancellationToken cancellationToken, params string[] topics)
@@ -74,7 +69,7 @@ namespace DDDLite.CQRS.Messaging.Kafka
       while (true)
       {
         cancellationToken.ThrowIfCancellationRequested();
-        Message<Null, string> msg;
+        Message<Null, IEvent> msg;
         if (!consumer.Consume(out msg, TimeSpan.FromMilliseconds(100)))
         {
           continue;
@@ -87,13 +82,11 @@ namespace DDDLite.CQRS.Messaging.Kafka
       }
     }
 
-    protected async Task OnMessage(Message<Null, string> e)
+    protected async Task OnMessage(Message<Null, IEvent> e)
     {
       try
       {
-        var message = e.Value;
-        var desc = JsonConvert.DeserializeObject<EventDescriptor>(message, this.settings);
-        await this.DispatchAsync((IEvent)desc.Data);
+        await this.DispatchAsync(e.Value);
       }
       catch (Exception)
       {
