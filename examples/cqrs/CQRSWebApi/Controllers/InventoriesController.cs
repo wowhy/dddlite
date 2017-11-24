@@ -27,7 +27,7 @@ namespace CQRSWebApi.Controllers
       return new CreateInventoryItem((string)model["name"]);
     }
 
-    protected override Command GetDeleteCommand(Guid id, long rowVersion)
+    protected override Command GetRemoveCommand(Guid id, long rowVersion)
     {
       throw new NotImplementedException();
     }

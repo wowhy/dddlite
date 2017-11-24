@@ -9,6 +9,7 @@ namespace DDDLite.CQRS.Messaging.Kafka
   using Confluent.Kafka;
   using Confluent.Kafka.Serialization;
   using Newtonsoft.Json;
+  using Microsoft.Extensions.Logging;
 
   using DDDLite.CQRS.Events;
 
@@ -17,22 +18,25 @@ namespace DDDLite.CQRS.Messaging.Kafka
 
   public class KafkaEventBus : InMemoryEventBus, IEventPublisher, IDisposable
   {
-    private readonly string topic;
+    private readonly KafkaEventBusOptions options;
+    private readonly ILogger<KafkaEventBus> logger;
     private Producer<Null, IEvent> producer;
     private Consumer<Null, IEvent> consumer;
 
-    public KafkaEventBus(string host, string groupId, string topic)
+    public KafkaEventBus(KafkaEventBusOptions options, ILogger<KafkaEventBus> logger)
     {
-      this.topic = topic;
+      this.options = options;
+      this.logger = logger;
+
       this.producer = new Producer<Null, IEvent>(new Dictionary<string, object>
       {
-        { "bootstrap.servers", host }
+        { "bootstrap.servers", options.Host }
       }, null, new EventSerializer());
 
       this.consumer = new Consumer<Null, IEvent>(new Dictionary<string, object>
       {
-        { "bootstrap.servers", host },
-        { "group.id", groupId }
+        { "bootstrap.servers", options.Host },
+        { "group.id", options.GroupId }
       }, null, new EventDeserializer());
     }
     public void Dispose()
@@ -53,18 +57,18 @@ namespace DDDLite.CQRS.Messaging.Kafka
 
     public async override Task PublishAsync<TEvent>(TEvent @event)
     {
-      await this.producer.ProduceAsync(topic, null, @event);
+      await this.producer.ProduceAsync(options.PublishToptic, null, @event);
     }
 
-    public void Listening(CancellationToken cancellationToken, params string[] topics)
+    public void Listening(CancellationToken cancellationToken)
     {
-      var tmp = new List<string> { topic };
-      if (topics != null)
+      var toptics = new List<string> { options.PublishToptic };
+      if (options.SubscribeToptics != null)
       {
-        tmp.AddRange(topics);
+        toptics.AddRange(options.SubscribeToptics);
       }
 
-      this.consumer.Subscribe(tmp.Distinct().ToArray());
+      this.consumer.Subscribe(toptics.Distinct().ToArray());
 
       while (true)
       {
@@ -88,9 +92,9 @@ namespace DDDLite.CQRS.Messaging.Kafka
       {
         await this.DispatchAsync(e.Value);
       }
-      catch (Exception)
+      catch (Exception ex)
       {
-        // nothing
+        logger?.LogWarning(0, ex.Message, ex);
       }
     }
   }

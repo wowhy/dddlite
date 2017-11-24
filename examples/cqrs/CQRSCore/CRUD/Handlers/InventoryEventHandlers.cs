@@ -38,7 +38,7 @@ namespace CQRSCore.CRUD.Handlers
         Name = message.Name,
         Activated = true
       };
-      await this.repository.AddAsync(item);
+      await this.repository.InsertAsync(item);
       await this.repository.UnitOfWork.CommitAsync();
     }
 

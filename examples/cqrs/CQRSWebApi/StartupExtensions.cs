@@ -22,6 +22,7 @@ namespace CQRSWebApi
   using DDDLite.Repositories;
   using DDDLite.Repositories.EntityFramework;
   using DDDLite.WebApi;
+  using DDDLite.Serialization;
   using Microsoft.AspNetCore.Builder;
   using Microsoft.AspNetCore.Hosting;
   using Microsoft.EntityFrameworkCore;
@@ -115,13 +116,21 @@ namespace CQRSWebApi
         options.InstanceName = "master";
       });
       services.AddSingleton<ICommandSender>(p => new InMemoryCommandBus());
-      services.AddSingleton<IEventPublisher>(p => new KafkaEventBus(configuration.GetConnectionString("kafka"), "cqrs-demo", "cqrs-demo"));
+      services.AddSingleton<IEventPublisher>(p => new KafkaEventBus(new KafkaEventBusOptions
+      {
+        Host = configuration.GetConnectionString("kafka"), 
+        GroupId = "cqrs-demo", 
+        PublishToptic = "cqrs-demo"
+      }, p.GetService<ILogger<KafkaEventBus>>()));
 
       services.AddSingleton<IEventStore>(p => new InventoryEventStore(connectionString));
       services.AddSingleton<ISnapshotStore>(p => new InventorySnapshotStore(connectionString));
 
       services.AddScoped<SnapshotRepository<EventSource.InventoryItem, InventoryItemSnapshot>>();
-      services.AddScoped<IDomainRepository<EventSource.InventoryItem>, CacheRepositoryDecorator<EventSource.InventoryItem>>(p => new CacheRepositoryDecorator<EventSource.InventoryItem>(p.GetService<IDistributedCache>(), p.GetService<SnapshotRepository<EventSource.InventoryItem, InventoryItemSnapshot>>()));
+      services.AddScoped<IDomainRepository<EventSource.InventoryItem>, CacheRepositoryDecorator<EventSource.InventoryItem>>(p => new CacheRepositoryDecorator<EventSource.InventoryItem>(
+        p.GetService<IDistributedCache>(), 
+        p.GetService<SnapshotRepository<EventSource.InventoryItem, InventoryItemSnapshot>>(),
+        new MsgPackSerializer()));
 
       services.AddTransient<InventoryCommandHandlers>();
       services.AddTransient<InventoryEventHandlers>();
