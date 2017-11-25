@@ -39,7 +39,6 @@ namespace DDDLite.CQRS
           }
 
           @event.Version = Version + i + 1;
-          @event.Timestamp = DateTime.Now;
         }
 
         if (changes.Length > 0)

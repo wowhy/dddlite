@@ -4,6 +4,11 @@ namespace DDDLite.CQRS.Events
 {
   public class Event : IEvent
   {
+    public Event()
+    {
+      this.Timestamp = DateTime.Now;
+    }
+
     public Guid Id { get; set; }
 
     public long Version { get; set; }
