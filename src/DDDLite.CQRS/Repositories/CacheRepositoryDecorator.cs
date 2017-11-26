@@ -25,22 +25,25 @@ namespace DDDLite.CQRS.Repositories
       this.serializer = serializer;
     }
 
-    public async virtual Task<TEventSource> GetByIdAsync(Guid id)
+    public async virtual Task<TEventSource> GetByIdAsync(Guid id, long? expectedVersion)
     {
       var aggregateRoot = await this.GetFromCacheAsync(id);
       if (aggregateRoot != null)
       {
-        return aggregateRoot;
+        if (expectedVersion == null || aggregateRoot.Version == expectedVersion)
+        {
+          return aggregateRoot;
+        }
       }
 
-      aggregateRoot = await this.repository.GetByIdAsync(id);
+      aggregateRoot = await this.repository.GetByIdAsync(id, expectedVersion);
       await this.SaveCacheAsync(aggregateRoot);
       return aggregateRoot;
     }
 
-    public async virtual Task SaveAsync(TEventSource aggregateRoot)
+    public async virtual Task SaveAsync(TEventSource aggregateRoot, long expectedVersion)
     {
-      await this.repository.SaveAsync(aggregateRoot);
+      await this.repository.SaveAsync(aggregateRoot, expectedVersion);
       await this.SaveCacheAsync(aggregateRoot);
     }
 
