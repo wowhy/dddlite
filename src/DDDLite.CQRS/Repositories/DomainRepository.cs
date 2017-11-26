@@ -13,6 +13,9 @@ namespace DDDLite.CQRS.Repositories
     private readonly IEventStore storage;
     private readonly IEventPublisher publisher;
 
+    protected IEventStore Storage => this.storage;
+    protected IEventPublisher Publisher => this.publisher;
+
     public DomainRepository(IEventStore storage, IEventPublisher publisher)
     {
       this.storage = storage;
@@ -46,16 +49,11 @@ namespace DDDLite.CQRS.Repositories
     protected async virtual Task<TEventSource> RestoreAggregateRootAsync(TEventSource aggregateRoot)
     {
       var events = (await this.storage.GetAsync<TEventSource>(aggregateRoot.Id, aggregateRoot.Version)).ToList();
-      if (aggregateRoot.Version == -1 && events.Count == 0)
+      if (events.Count == 0)
       {
         throw new AggregateRootNotFoundException<Guid>(aggregateRoot.Id);
       }
-
-      if (events.Count > 0)
-      {
-        aggregateRoot.LoadFromHistory(events);
-      }
-
+      aggregateRoot.LoadFromHistory(events);
       return aggregateRoot;
     }
   }

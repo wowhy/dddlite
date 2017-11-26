@@ -12,9 +12,9 @@ namespace DDDLite.CQRS.Repositories
    where TEventSource : class, IEventSource, ISnapshotDecorator<TSnapshot>, new()
    where TSnapshot : class, ISnapshot
   {
-    private readonly IEventStore eventStore;
-    private readonly IEventPublisher publisher;
     private readonly ISnapshotStore snapshotStore;
+
+    protected ISnapshotStore SnapshotStore => this.snapshotStore;
 
     public SnapshotRepository(
       IEventStore eventStore,
@@ -22,14 +22,12 @@ namespace DDDLite.CQRS.Repositories
       ISnapshotStore snapshotStore) :
       base(eventStore, publisher)
     {
-      this.eventStore = eventStore;
-      this.publisher = publisher;
       this.snapshotStore = snapshotStore;
     }
 
     public async override Task<TEventSource> GetByIdAsync(Guid id)
     {
-      return await RestoreAggregateRootAsync(await CreateAggregateRootAsync(id));
+      return await RestoreAggregateRootFromSnapshotAsync(new TEventSource { Id = id });
     }
 
     public async override Task SaveAsync(TEventSource aggregateRoot)
@@ -58,6 +56,25 @@ namespace DDDLite.CQRS.Repositories
     {
       var snapshot = aggregateRoot.GetSnapshot();
       await this.snapshotStore.SaveAsync(snapshot);
+    }
+
+    protected async virtual Task<TEventSource> RestoreAggregateRootFromSnapshotAsync(TEventSource aggregateRoot)
+    {
+      var snapshot = await this.snapshotStore.GetAsync<TSnapshot>(aggregateRoot.Id);
+      if (snapshot != null)
+      {
+        aggregateRoot.RestoreFromSnapshot(snapshot);
+        var events = (await this.Storage.GetAsync<TEventSource>(aggregateRoot.Id, aggregateRoot.Version)).ToList();
+        if (events.Count > 0)
+        {
+          aggregateRoot.LoadFromHistory(events);
+        }
+        return aggregateRoot;
+      }
+      else
+      {
+        return await base.RestoreAggregateRootAsync(aggregateRoot);
+      }
     }
   }
 }
