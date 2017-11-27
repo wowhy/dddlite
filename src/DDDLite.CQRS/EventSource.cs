@@ -25,6 +25,7 @@ namespace DDDLite.CQRS
       lock (uncommitedChanges)
       {
         var changes = uncommitedChanges.ToArray();
+
         for (var i = 0; i < changes.Length; i++)
         {
           var @event = changes[i];
@@ -77,7 +78,7 @@ namespace DDDLite.CQRS
           return;
         }
 
-        if (Version == -1)
+        if (events[0].Version == 0)
         {
           CreatedAt = events[0].Timestamp;
           CreatedById = events[0].OperatorId;

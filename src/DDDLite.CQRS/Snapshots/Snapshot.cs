@@ -4,7 +4,8 @@ namespace DDDLite.CQRS.Snapshots
 
   using DDDLite.Domain;
 
-  public class Snapshot : AggregateRoot<Guid>, ISnapshot
+  public class Snapshot : AggregateRoot<Guid>, ISnapshot, ILogicalDelete
   {
+    public bool Deleted { get; set; }
   }
 }
