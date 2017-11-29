@@ -2,9 +2,9 @@ namespace DDDLite.CQRS.Repositories
 {
   using System;
   using System.Threading.Tasks;
+  using DDDLite.Exception;
   using DDDLite.Serialization;
   using Microsoft.Extensions.Caching.Distributed;
-  using Newtonsoft.Json;
 
   public class CacheRepositoryDecorator<TEventSource> : IDomainRepository<TEventSource>
     where TEventSource : class, IEventSource, new()
@@ -25,19 +25,27 @@ namespace DDDLite.CQRS.Repositories
       this.serializer = serializer;
     }
 
-    public async virtual Task<TEventSource> GetByIdAsync(Guid id, long? expectedVersion)
+    public async virtual Task<TEventSource> GetByIdAsync(Guid id)
     {
       var aggregateRoot = await this.GetFromCacheAsync(id);
       if (aggregateRoot != null)
       {
-        if (expectedVersion == null || aggregateRoot.Version == expectedVersion)
-        {
-          return aggregateRoot;
-        }
+        return aggregateRoot;
       }
 
-      aggregateRoot = await this.repository.GetByIdAsync(id, expectedVersion);
+      aggregateRoot = await this.repository.GetByIdAsync(id);
       await this.SaveCacheAsync(aggregateRoot);
+      return aggregateRoot;
+    }
+
+    public async virtual Task<TEventSource> GetByIdAsync(Guid id, long expectedVersion)
+    {
+      var aggregateRoot = await this.GetByIdAsync(id);
+      if (aggregateRoot.Version != expectedVersion)
+      {
+        throw new ConcurrencyException();
+      }
+
       return aggregateRoot;
     }
 

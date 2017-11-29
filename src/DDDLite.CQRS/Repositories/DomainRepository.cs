@@ -22,12 +22,18 @@ namespace DDDLite.CQRS.Repositories
       this.publisher = publisher;
     }
 
-    public virtual async Task<TEventSource> GetByIdAsync(Guid id, long? expectedVersion)
+    public virtual async Task<TEventSource> GetByIdAsync(Guid id)
     {
       var aggregateRoot = await RestoreAggregateRootAsync(new TEventSource() { Id = id });
-      if (expectedVersion != null && aggregateRoot.Version != expectedVersion) 
+      return aggregateRoot;
+    }
+
+    public virtual async Task<TEventSource> GetByIdAsync(Guid id, long expectedVersion)
+    {
+      var aggregateRoot = await this.GetByIdAsync(id);
+      if (aggregateRoot.Version != expectedVersion)
       {
-        throw new ConcurrencyException(); 
+        throw new ConcurrencyException();
       }
       return aggregateRoot;
     }

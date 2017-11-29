@@ -25,10 +25,15 @@ namespace DDDLite.CQRS.Repositories
       this.snapshotStore = snapshotStore;
     }
 
-    public async override Task<TEventSource> GetByIdAsync(Guid id, long? expectedVersion)
+    public override Task<TEventSource> GetByIdAsync(Guid id)
     {
-      var aggregateRoot = await RestoreAggregateRootFromSnapshotAsync(new TEventSource { Id = id });
-      if (expectedVersion != null && aggregateRoot.Version != expectedVersion)
+      return RestoreAggregateRootFromSnapshotAsync(new TEventSource { Id = id });
+    }
+
+    public async override Task<TEventSource> GetByIdAsync(Guid id, long expectedVersion)
+    {
+      var aggregateRoot = await this.GetByIdAsync(id);
+      if (aggregateRoot.Version != expectedVersion)
       {
         throw new ConcurrencyException();
       }
