@@ -7,14 +7,14 @@ namespace DDDLite.CQRS.Events
   using DDDLite.Domain;
   using DDDLite.Repositories;
 
-  public class DtoEventHandlers<TReadModel>
-   where TReadModel : class, IDto, new()
+  public abstract class DtoEventHandlers<TReadModel>
+    where TReadModel : class, IDto, new()
   {
     private readonly IRepository<TReadModel, Guid> repository;
 
     public IRepository<TReadModel, Guid> Repository => this.repository;
 
-    public DtoEventHandlers(IRepository<TReadModel, Guid> repository)
+    protected DtoEventHandlers(IRepository<TReadModel, Guid> repository)
     {
       this.repository = repository;
     }

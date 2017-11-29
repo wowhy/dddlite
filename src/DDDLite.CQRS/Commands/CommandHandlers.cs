@@ -8,12 +8,12 @@ namespace DDDLite.CQRS.Commands
   using DDDLite.CQRS;
   using DDDLite.CQRS.Repositories;
 
-  public class CommandHandlers<TAggregateRoot>
+  public abstract class CommandHandlers<TAggregateRoot>
      where TAggregateRoot : class, IEventSource, new()
   {
     private readonly IDomainRepository<TAggregateRoot> repository;
 
-    public CommandHandlers(IDomainRepository<TAggregateRoot> repository)
+    protected CommandHandlers(IDomainRepository<TAggregateRoot> repository)
     {
       this.repository = repository;
     }
