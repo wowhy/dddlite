@@ -77,7 +77,7 @@ namespace StoreTest
     async static Task TestSnapshots()
     {
       var store = new NpgsqlSnapshotStore(connectionString);
-      var snapshot = await store.GetAsync<OrderSnapshot>(order1);
+      var snapshot = await store.GetByIdAsync<OrderSnapshot>(order1);
 
       if (snapshot == null) 
       {
@@ -97,7 +97,7 @@ namespace StoreTest
     async static Task TestRead()
     {
       var eventStore = new NpgsqlEventStore(connectionString);
-      var events = await eventStore.GetAsync<Order>(order2, -1);
+      var events = await eventStore.GetByIdAsync<Order>(order2, -1);
 
       foreach (var e in events)
       {

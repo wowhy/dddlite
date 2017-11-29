@@ -14,7 +14,7 @@ namespace CQRSCore.EventSource.Domain
     public InventoryItem(Guid id, string name)
     {
       Id = id;
-      ApplyChange(new InventoryItemCreated(id, name));
+      ApplyEvent(new InventoryItemCreated(id, name));
     }
 
     public bool Activated { get; set; }
@@ -32,26 +32,26 @@ namespace CQRSCore.EventSource.Domain
     public void ChangeName(string newName)
     {
       if (string.IsNullOrEmpty(newName)) throw new ArgumentException("newName");
-      ApplyChange(new InventoryItemRenamed(Id, newName));
+      ApplyEvent(new InventoryItemRenamed(Id, newName));
     }
 
     public void Remove(int count)
     {
       if (count <= 0) throw new InvalidOperationException("cant remove negative count from inventory");
-      ApplyChange(new ItemsRemovedFromInventory(Id, count));
+      ApplyEvent(new ItemsRemovedFromInventory(Id, count));
     }
 
 
     public void CheckIn(int count)
     {
       if (count <= 0) throw new InvalidOperationException("must have a count greater than 0 to add to inventory");
-      ApplyChange(new ItemsCheckedInToInventory(Id, count));
+      ApplyEvent(new ItemsCheckedInToInventory(Id, count));
     }
 
     public void Deactivate()
     {
       if (!Activated) throw new InvalidOperationException("already deactivated");
-      ApplyChange(new InventoryItemDeactivated(Id));
+      ApplyEvent(new InventoryItemDeactivated(Id));
     }
 
     public override InventoryItemSnapshot GetSnapshot()

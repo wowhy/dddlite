@@ -20,7 +20,7 @@ namespace DDDLite.CQRS.Store.Npgsql
       });
     }
 
-    public async Task<IEnumerable<IEvent>> GetAsync<TEventSource>(Guid aggregateRootId, long fromVersion)
+    public async Task<IEnumerable<IEvent>> GetByIdAsync<TEventSource>(Guid aggregateRootId, long fromVersion)
       where TEventSource : class, IEventSource
     {
       using (var session = store.LightweightSession())

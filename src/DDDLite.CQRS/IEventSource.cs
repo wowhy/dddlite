@@ -12,12 +12,12 @@ namespace DDDLite.CQRS
 
     long Version { get; set; }
 
-    IEvent[] GetUncommittedChanges();
+    IEvent[] GetUndispatchedEvents();
 
-    IEvent[] FlushUncommitedChanges();
+    IEvent[] FlushUndispatchedEvents();
 
     void LoadFromHistory(IEnumerable<IEvent> histories);
 
-    void ApplyChange(IEvent @event);
+    void ApplyEvent(IEvent @event);
   }
 }

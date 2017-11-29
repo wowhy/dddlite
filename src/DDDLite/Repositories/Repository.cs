@@ -6,6 +6,7 @@
   using DDDLite.Specifications;
   using System.Linq;
   using DDDLite.Querying;
+  using System.Linq.Expressions;
 
   public abstract class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
       where TEntity : class, IEntity<TKey>
@@ -22,6 +23,7 @@
     public abstract Task UpdateAsync(TEntity entity);
     public abstract Task DeleteAsync(TEntity entity);
     public abstract Task<TEntity> GetByIdAsync(TKey id, params string[] includes);
+    public abstract IQueryable<TEntity> Search(Specification<TEntity> filter, SortSpecification<TEntity> sorter, params string[] includes);
 
     public virtual IQueryable<TEntity> Search(params string[] includes)
     {
@@ -38,29 +40,29 @@
       return this.Search(Specification<TEntity>.Any(), sorter, includes);
     }
 
-    public virtual PagedResult<TEntity> PagedSearch(int top, int skip, SortSpecification<TEntity> sorter, params string[] includes)
+    public virtual IQueryable<TEntity> Search(Expression<Func<TEntity, bool>> predicate, Sorter sorter, params string[] includes)
     {
-      return this.PagedSearch(top, skip, Specification<TEntity>.Any(), sorter, includes);
+      return this.Search(
+        Specification<TEntity>.Eval(predicate),
+        sorter == null ? SortSpecification<TEntity>.None : new SortSpecification<TEntity>(sorter.Property, sorter.SortOrder),
+        includes);
     }
 
-    public virtual PagedResult<TEntity> PagedSearch(int top, int skip, Specification<TEntity> filter, SortSpecification<TEntity> sorter, params string[] includes)
+    public virtual IQueryable<TEntity> Search(Expression<Func<TEntity, bool>> predicate, params string[] includes)
     {
-      if (sorter == null)
-      {
-        throw new ArgumentNullException(nameof(sorter));
-      }
-
-      var query = this.Search(filter, sorter, includes);
-      var count = query.Count();
-      var data = query.Skip(skip).Take(top).ToList();
-      return new PagedResult<TEntity>(count, data);
+      return this.Search(
+        Specification<TEntity>.Eval(predicate),
+        includes);
     }
-
-    public abstract IQueryable<TEntity> Search(Specification<TEntity> filter, SortSpecification<TEntity> sorter, params string[] includes);
 
     public virtual bool Exists(Specification<TEntity> filter)
     {
       return this.Search(filter).Any();
+    }
+
+    public bool Exists(Expression<Func<TEntity, bool>> predicate)
+    {
+      return this.Exists(Specification<TEntity>.Eval(predicate));
     }
   }
 }

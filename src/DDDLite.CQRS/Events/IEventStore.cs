@@ -9,7 +9,7 @@ namespace DDDLite.CQRS.Events
     Task SaveAsync<TEventSource>(IEnumerable<IEvent> events)
       where TEventSource : class, IEventSource;
 
-    Task<IEnumerable<IEvent>> GetAsync<TEventSource>(Guid aggregateRootId, long fromVersion)
+    Task<IEnumerable<IEvent>> GetByIdAsync<TEventSource>(Guid aggregateRootId, long fromVersion)
       where TEventSource : class, IEventSource;
   }
 }

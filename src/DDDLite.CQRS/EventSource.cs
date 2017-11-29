@@ -11,7 +11,7 @@ namespace DDDLite.CQRS
 
   public abstract class EventSource : IEventSource, ILogicalDelete
   {
-    private readonly List<IEvent> uncommitedChanges = new List<IEvent>();
+    private readonly List<IEvent> undispatchedEvents = new List<IEvent>();
 
     public Guid Id { get; set; }
 
@@ -23,11 +23,11 @@ namespace DDDLite.CQRS
     {
     }
 
-    public IEvent[] FlushUncommitedChanges()
+    public IEvent[] FlushUndispatchedEvents()
     {
-      lock (uncommitedChanges)
+      lock (undispatchedEvents)
       {
-        var changes = uncommitedChanges.ToArray();
+        var changes = undispatchedEvents.ToArray();
 
         for (var i = 0; i < changes.Length; i++)
         {
@@ -46,22 +46,22 @@ namespace DDDLite.CQRS
         }
 
         Version = Version + changes.Length;
-        uncommitedChanges.Clear();
+        undispatchedEvents.Clear();
         return changes;
       }
     }
 
-    public IEvent[] GetUncommittedChanges()
+    public IEvent[] GetUndispatchedEvents()
     {
-      lock (uncommitedChanges)
+      lock (undispatchedEvents)
       {
-        return uncommitedChanges.ToArray();
+        return undispatchedEvents.ToArray();
       }
     }
 
     public void LoadFromHistory(IEnumerable<IEvent> histories)
     {
-      lock (uncommitedChanges)
+      lock (undispatchedEvents)
       {
         var events = histories.ToArray();
         if (events.Length == 0)
@@ -84,12 +84,12 @@ namespace DDDLite.CQRS
       }
     }
 
-    public void ApplyChange(IEvent @event)
+    public void ApplyEvent(IEvent @event)
     {
-      lock (uncommitedChanges)
+      lock (undispatchedEvents)
       {
         InvokeEvent(@event);
-        uncommitedChanges.Add(@event);
+        undispatchedEvents.Add(@event);
       }
     }
 

@@ -1,15 +1,18 @@
 namespace DDDLite.CQRS.Store.Npgsql
 {
   using System;
+  using System.Linq;
+  using System.Linq.Expressions;
   using System.Threading.Tasks;
+  using DDDLite.CQRS.Sagas;
   using DDDLite.CQRS.Snapshots;
   using Marten;
 
-  public class NpgsqlSnapshotStore : ISnapshotStore
+  public class NpgsqlSagaStore : ISagaStore
   {
     private readonly DocumentStore store;
 
-    public NpgsqlSnapshotStore(string connectionString)
+    public NpgsqlSagaStore(string connectionString)
     {
       this.store = DocumentStore.For(config =>
       {
@@ -18,21 +21,22 @@ namespace DDDLite.CQRS.Store.Npgsql
       });
     }
 
-    public async Task<TSnapshot> GetByIdAsync<TSnapshot>(Guid id)
-     where TSnapshot : class, ISnapshot
+    public async Task<TSaga> FindAsync<TSaga>(Expression<Func<TSaga, bool>> predicate, bool includeCompleted)
+        where TSaga : class, ISaga, new()
     {
       using (var session = store.LightweightSession())
       {
-        return await session.LoadAsync<TSnapshot>(id);
+        var saga = await session.Query<TSaga>().Where(predicate).FirstOrDefaultAsync();
+        return saga;
       }
     }
 
-    public async Task SaveAsync<TSnapshot>(TSnapshot snapshot)
-     where TSnapshot : class, ISnapshot
+    public async Task SaveAsync<TSaga>(TSaga saga)
+        where TSaga : class, ISaga, new()
     {
       using (var session = store.LightweightSession())
       {
-        session.Store(snapshot);
+        session.Store(saga);
         await session.SaveChangesAsync();
       }
     }

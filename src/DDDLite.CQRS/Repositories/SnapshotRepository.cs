@@ -53,7 +53,7 @@ namespace DDDLite.CQRS.Repositories
         Id = id
       };
 
-      var snapshot = await this.snapshotStore.GetAsync<TSnapshot>(id);
+      var snapshot = await this.snapshotStore.GetByIdAsync<TSnapshot>(id);
       if (snapshot != null)
       {
         aggregateRoot.RestoreFromSnapshot(snapshot);
@@ -70,11 +70,11 @@ namespace DDDLite.CQRS.Repositories
 
     protected async virtual Task<TEventSource> RestoreAggregateRootFromSnapshotAsync(TEventSource aggregateRoot)
     {
-      var snapshot = await this.snapshotStore.GetAsync<TSnapshot>(aggregateRoot.Id);
+      var snapshot = await this.snapshotStore.GetByIdAsync<TSnapshot>(aggregateRoot.Id);
       if (snapshot != null)
       {
         aggregateRoot.RestoreFromSnapshot(snapshot);
-        var events = (await this.Storage.GetAsync<TEventSource>(aggregateRoot.Id, aggregateRoot.Version)).ToList();
+        var events = (await this.Storage.GetByIdAsync<TEventSource>(aggregateRoot.Id, aggregateRoot.Version)).ToList();
         if (events.Count > 0)
         {
           aggregateRoot.LoadFromHistory(events);
