@@ -9,15 +9,18 @@ namespace DDDLite.CQRS
   using DDDLite.CQRS.Exceptions;
   using System.Reflection;
 
-  public abstract class EventSource : AggregateRoot<Guid>, IEventSource, ILogicalDelete
+  public abstract class EventSource : IEventSource, ILogicalDelete
   {
     private readonly List<IEvent> uncommitedChanges = new List<IEvent>();
+
+    public Guid Id { get; set; }
+
+    public long Version { get; set; } = -1;
 
     public bool Deleted { get; set; }
 
     public EventSource()
     {
-      this.Version = -1;
     }
 
     public IEvent[] FlushUncommitedChanges()
@@ -40,18 +43,6 @@ namespace DDDLite.CQRS
           }
 
           @event.Version = Version + i + 1;
-        }
-
-        if (changes.Length > 0)
-        {
-          if (Version == -1)
-          {
-            CreatedAt = changes[0].Timestamp;
-            CreatedById = changes[0].OperatorId;
-          }
-
-          LastUpdatedAt = changes[changes.Length - 1].Timestamp;
-          LastUpdatedById = changes[changes.Length - 1].OperatorId;
         }
 
         Version = Version + changes.Length;
@@ -78,12 +69,6 @@ namespace DDDLite.CQRS
           return;
         }
 
-        if (events[0].Version == 0)
-        {
-          CreatedAt = events[0].Timestamp;
-          CreatedById = events[0].OperatorId;
-        }
-
         foreach (var @event in events)
         {
           if (@event.Version != Version + 1)
@@ -95,8 +80,6 @@ namespace DDDLite.CQRS
 
           Id = @event.Id;
           Version++;
-          LastUpdatedAt = @event.Timestamp;
-          LastUpdatedById = @event.OperatorId;
         }
       }
     }

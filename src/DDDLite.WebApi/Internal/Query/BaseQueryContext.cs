@@ -14,12 +14,12 @@ namespace DDDLite.WebApi.Internal.Query
   using Microsoft.Extensions.Primitives;
   using DDDLite.WebApi.Config;
 
-  internal abstract class BaseQueryContext<TAggregateRoot, TKey> : IQueryContext<TAggregateRoot, TKey>
-      where TAggregateRoot : class, IAggregateRoot<TKey>
+  internal abstract class BaseQueryContext<TEntity, TKey> : IQueryContext<TEntity, TKey>
+      where TEntity : class, IEntity<TKey>
       where TKey : IEquatable<TKey>
   {
-    private static readonly Specification<TAggregateRoot> DefaultFilter = Specification<TAggregateRoot>.Any();
-    private static readonly SortSpecification<TAggregateRoot> DefaultSorter = SortSpecification<TAggregateRoot>.SortByCreatedAtDesc;
+    private static readonly Specification<TEntity> DefaultFilter = Specification<TEntity>.Any();
+    private static readonly SortSpecification<TEntity> DefaultSorter = SortSpecification<TEntity>.SortByCreatedAtDesc;
 
     protected BaseQueryContext(HttpContext context)
     {
@@ -41,16 +41,16 @@ namespace DDDLite.WebApi.Internal.Query
 
     public string[] Includes { get; protected set; }
 
-    public SortSpecification<TAggregateRoot> Sorter { get; protected set; }
+    public SortSpecification<TEntity> Sorter { get; protected set; }
 
-    public Specification<TAggregateRoot> Filter { get; protected set; }
+    public Specification<TEntity> Filter { get; protected set; }
 
     public int? Top { get; protected set; }
 
     public int? Skip { get; protected set; }
 
-    public abstract Task<ResponseValue<TAggregateRoot>> GetValueAsync(TKey id);
-    public abstract ResponseValues<TAggregateRoot> GetValues();
+    public abstract Task<ResponseValue<TEntity>> GetValueAsync(TKey id);
+    public abstract ResponseValues<TEntity> GetValues();
 
     private void ParseParams()
     {
@@ -76,12 +76,12 @@ namespace DDDLite.WebApi.Internal.Query
 
       if (TryGetParam<string>(ApiParams.ORDERBY, out string orderBy))
       {
-        Sorter = new SorterParser<TAggregateRoot>().Parse(orderBy);
+        Sorter = new SorterParser<TEntity>().Parse(orderBy);
       }
 
       if (TryGetParam<string>(ApiParams.FILTER, out string filter))
       {
-        Filter = new FilterParser<TAggregateRoot>(filter).Parse();
+        Filter = new FilterParser<TEntity>(filter).Parse();
       }
 
       if (Top != null)

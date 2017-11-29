@@ -30,7 +30,7 @@ namespace DDDLite.WebApi.Controllers
   [Authorize]
   public abstract class EventSourceApiController<TEventSource, TReadModel> : ApiControllerBase
     where TEventSource : class, IEventSource, new()
-    where TReadModel : class, IAggregateRoot<Guid>
+    where TReadModel : class, IDto
   {
     private readonly ICommandSender commandSender;
     private readonly IRepository<TReadModel, Guid> readModelRepository;

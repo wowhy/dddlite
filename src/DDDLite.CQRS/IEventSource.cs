@@ -6,8 +6,12 @@ namespace DDDLite.CQRS
   using DDDLite.Domain;
   using DDDLite.CQRS.Events;
 
-  public interface IEventSource : IAggregateRoot<Guid>
+  public interface IEventSource : ILogicalDelete
   {
+    Guid Id { get; set; }
+
+    long Version { get; set; }
+
     IEvent[] GetUncommittedChanges();
 
     IEvent[] FlushUncommitedChanges();

@@ -4,7 +4,6 @@ namespace DDDLite.CQRS.Commands
 
   public interface ICommandSender
   {
-    Task SendAsync<TCommand>(TCommand command)
-      where TCommand : class, ICommand;
+    Task SendAsync<TCommand>(TCommand command) where TCommand : class, ICommand;
   }
 }
