@@ -1,10 +1,10 @@
 namespace CQRSCore.CRUD.Domain
 {
   using System;
-
+  using DDDLite.CQRS;
   using DDDLite.Domain;
 
-  public class InventoryItem : AggregateRoot<Guid>
+  public class InventoryItem : Dto
   {
     public InventoryItem()
     {

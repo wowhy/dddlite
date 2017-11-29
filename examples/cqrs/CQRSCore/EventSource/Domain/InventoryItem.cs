@@ -60,10 +60,6 @@ namespace CQRSCore.EventSource.Domain
       {
         Id = Id,
         Version = Version,
-        CreatedAt = CreatedAt,
-        CreatedById = CreatedById,
-        LastUpdatedAt = LastUpdatedAt,
-        LastUpdatedById = LastUpdatedById,
 
         Activated = Activated
       };
@@ -75,10 +71,6 @@ namespace CQRSCore.EventSource.Domain
     {
       this.Id = snapshot.Id;
       this.Version = snapshot.Version;
-      this.CreatedAt = snapshot.CreatedAt;
-      this.CreatedById = snapshot.CreatedById;
-      this.LastUpdatedAt = snapshot.LastUpdatedAt;
-      this.LastUpdatedById = snapshot.LastUpdatedById;
       this.Activated = snapshot.Activated;
     }
   }

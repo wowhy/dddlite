@@ -6,7 +6,7 @@ namespace DDDLite.CQRS.Repositories
   public interface IDomainRepository<TEventSource>
     where TEventSource : class, IEventSource, new ()
   {
-    Task<TEventSource> GetByIdAsync(Guid id, long? expectedVersion);
+    Task<TEventSource> GetByIdAsync(Guid id, long? expectedVersion = null);
 
     Task SaveAsync(TEventSource aggregateRoot, long expectedVersion);
   }
