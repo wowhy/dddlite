@@ -34,6 +34,7 @@ namespace CQRSWebApi
   using StackExchange.Redis;
   using Crud = CQRSCore.CRUD.Domain;
   using EventSource = CQRSCore.EventSource.Domain;
+  using Microsoft.AspNetCore.Http;
 
   public static class StartupExtensions
   {
@@ -53,29 +54,31 @@ namespace CQRSWebApi
       {
         var bus = (KafkaEventBus)scope.ServiceProvider.GetRequiredService<IEventPublisher>();
         var lifetime = scope.ServiceProvider.GetRequiredService<IApplicationLifetime>();
+        var accessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
 
-        var provider = scope.ServiceProvider;
-        provider.BeginRegisterEventHandlers(bus)
-          .Register<InventoryEventHandlers>();
+        accessor.BeginRegisterEventHandlers(bus)
+           .Register<InventoryEventHandlers>();
 
         var cts = new System.Threading.CancellationTokenSource();
         var task = Task.Factory.StartNew(() =>
         {
-          try 
+          try
           {
             bus.Listening(cts.Token);
-          } catch { }
+          }
+          catch { }
 
           bus.Dispose();
         });
 
         lifetime.ApplicationStopping.Register(() =>
         {
-          try 
+          try
           {
             cts.Cancel();
             task.Wait();
-          } catch { }
+          }
+          catch { }
         });
       }
       return app;
@@ -86,10 +89,11 @@ namespace CQRSWebApi
       using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
       {
         var bus = (InMemoryCommandBus)scope.ServiceProvider.GetRequiredService<ICommandSender>();
-        var provider = scope.ServiceProvider;
+        var accessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
 
-        provider.BeginRegisterCommandHandlers(bus)
-          .Register<InventoryCommandHandlers>();
+        // app.BeginRegisterEventHandlers(accessor, bus)
+        accessor.BeginRegisterCommandHandlers(bus)
+           .Register<InventoryCommandHandlers>();
       }
 
       return app;
@@ -118,8 +122,8 @@ namespace CQRSWebApi
       services.AddSingleton<ICommandSender>(p => new InMemoryCommandBus());
       services.AddSingleton<IEventPublisher>(p => new KafkaEventBus(new KafkaEventBusOptions
       {
-        Host = configuration.GetConnectionString("kafka"), 
-        GroupId = "cqrs-demo", 
+        Host = configuration.GetConnectionString("kafka"),
+        GroupId = "cqrs-demo",
         PublishToptic = "cqrs-demo"
       }, p.GetService<ILogger<KafkaEventBus>>()));
 
@@ -128,7 +132,7 @@ namespace CQRSWebApi
 
       services.AddScoped<SnapshotRepository<EventSource.InventoryItem, InventoryItemSnapshot>>();
       services.AddScoped<IDomainRepository<EventSource.InventoryItem>, CacheRepositoryDecorator<EventSource.InventoryItem>>(p => new CacheRepositoryDecorator<EventSource.InventoryItem>(
-        p.GetService<IDistributedCache>(), 
+        p.GetService<IDistributedCache>(),
         p.GetService<SnapshotRepository<EventSource.InventoryItem, InventoryItemSnapshot>>(),
         new MsgPackSerializer()));
 
