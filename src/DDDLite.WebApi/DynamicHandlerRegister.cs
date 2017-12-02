@@ -5,17 +5,19 @@ namespace DDDLite.WebApi
   using System.Linq.Expressions;
   using DDDLite.CQRS.Messaging;
   using Microsoft.AspNetCore.Builder;
+  using Microsoft.AspNetCore.Http;
   using Microsoft.Extensions.DependencyInjection;
 
   public class DynamicHandlerRegister
   {
-    private readonly IServiceProvider provider;
+    private IServiceProvider provider => this.httpContextAccessor.HttpContext.RequestServices;
+    private readonly IHttpContextAccessor httpContextAccessor;
     private readonly IHandlerRegister register;
     private readonly Type handlerType;
 
-    public DynamicHandlerRegister(IServiceProvider provider, IHandlerRegister register, Type handlerType)
+    public DynamicHandlerRegister(IHttpContextAccessor httpContextAccessor, IHandlerRegister register, Type handlerType)
     {
-      this.provider = provider;
+      this.httpContextAccessor = httpContextAccessor;
       this.register = register;
       this.handlerType = handlerType;
     }
