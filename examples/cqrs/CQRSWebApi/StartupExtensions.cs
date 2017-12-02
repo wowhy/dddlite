@@ -54,9 +54,8 @@ namespace CQRSWebApi
       {
         var bus = (KafkaEventBus)scope.ServiceProvider.GetRequiredService<IEventPublisher>();
         var lifetime = scope.ServiceProvider.GetRequiredService<IApplicationLifetime>();
-        var accessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
 
-        accessor.BeginRegisterEventHandlers(bus)
+        scope.ServiceProvider.BeginRegisterEventHandlers(bus)
            .Register<InventoryEventHandlers>();
 
         var cts = new System.Threading.CancellationTokenSource();
@@ -89,10 +88,8 @@ namespace CQRSWebApi
       using (var scope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
       {
         var bus = (InMemoryCommandBus)scope.ServiceProvider.GetRequiredService<ICommandSender>();
-        var accessor = scope.ServiceProvider.GetRequiredService<IHttpContextAccessor>();
 
-        // app.BeginRegisterEventHandlers(accessor, bus)
-        accessor.BeginRegisterCommandHandlers(bus)
+        scope.ServiceProvider.BeginRegisterCommandHandlers(bus)
            .Register<InventoryCommandHandlers>();
       }
 
