@@ -127,10 +127,10 @@ namespace CQRSWebApi
       services.AddSingleton<IEventStore>(p => new InventoryEventStore(connectionString));
       services.AddSingleton<ISnapshotStore>(p => new InventorySnapshotStore(connectionString));
 
-      services.AddScoped<SnapshotRepository<EventSource.InventoryItem, InventoryItemSnapshot>>();
+      services.AddScoped<SnapshotDomainRepository<EventSource.InventoryItem, InventoryItemSnapshot>>();
       services.AddScoped<IDomainRepository<EventSource.InventoryItem>, CacheRepositoryDecorator<EventSource.InventoryItem>>(p => new CacheRepositoryDecorator<EventSource.InventoryItem>(
         p.GetService<IDistributedCache>(),
-        p.GetService<SnapshotRepository<EventSource.InventoryItem, InventoryItemSnapshot>>(),
+        p.GetService<SnapshotDomainRepository<EventSource.InventoryItem, InventoryItemSnapshot>>(),
         new MsgPackSerializer()));
 
       services.AddTransient<InventoryCommandHandlers>();
