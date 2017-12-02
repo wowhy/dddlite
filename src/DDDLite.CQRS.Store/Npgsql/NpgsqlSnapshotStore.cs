@@ -2,6 +2,7 @@ namespace DDDLite.CQRS.Store.Npgsql
 {
   using System;
   using System.Threading.Tasks;
+  using System.Linq;
   using DDDLite.CQRS.Snapshots;
   using Marten;
 
@@ -23,7 +24,7 @@ namespace DDDLite.CQRS.Store.Npgsql
     {
       using (var session = store.LightweightSession())
       {
-        return await session.LoadAsync<TSnapshot>(id);
+        return await session.Query<TSnapshot>().Where(k => k.Id == id).FirstOrDefaultAsync();
       }
     }
 

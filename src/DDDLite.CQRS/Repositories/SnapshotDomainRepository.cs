@@ -8,7 +8,7 @@ namespace DDDLite.CQRS.Repositories
   using DDDLite.CQRS.Events;
   using DDDLite.CQRS.Snapshots;
 
-  public class SnapshotRepository<TEventSource, TSnapshot> : DomainRepository<TEventSource>
+  public class SnapshotDomainRepository<TEventSource, TSnapshot> : DomainRepository<TEventSource>
    where TEventSource : class, IEventSource, ISnapshotDecorator<TSnapshot>, new()
    where TSnapshot : class, ISnapshot
   {
@@ -16,7 +16,7 @@ namespace DDDLite.CQRS.Repositories
 
     protected ISnapshotStore SnapshotStore => this.snapshotStore;
 
-    public SnapshotRepository(
+    public SnapshotDomainRepository(
       IEventStore eventStore,
       IEventPublisher publisher,
       ISnapshotStore snapshotStore) :
