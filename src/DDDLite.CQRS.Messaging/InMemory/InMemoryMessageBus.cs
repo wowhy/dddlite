@@ -7,12 +7,15 @@ namespace DDDLite.CQRS.Messaging.InMemory
   using System.Linq;
 
   using DDDLite.CQRS.Messaging;
+  using Microsoft.Extensions.Logging;
 
   public abstract class InMemoryMessageBus : IHandlerRegister
   {
     private readonly Dictionary<Type, List<Func<IMessage, Task>>> _routes = new Dictionary<Type, List<Func<IMessage, Task>>>();
 
     protected ImmutableDictionary<Type, List<Func<IMessage, Task>>> Routes => _routes.ToImmutableDictionary();
+
+    public ILogger Logger { get; protected set; }
 
     public void RegisterHandler<TMessage>(Func<TMessage, Task> handler) where TMessage : IMessage
     {
@@ -56,9 +59,9 @@ namespace DDDLite.CQRS.Messaging.InMemory
         {
           await handler(@event);
         }
-        catch
+        catch(Exception ex)
         {
-          // nothing
+          this.Logger?.LogError(0, ex, ex.Message);
         }
       }
     }

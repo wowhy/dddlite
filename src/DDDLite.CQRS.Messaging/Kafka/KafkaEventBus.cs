@@ -19,14 +19,13 @@ namespace DDDLite.CQRS.Messaging.Kafka
   public class KafkaEventBus : InMemoryEventBus, IEventPublisher, IDisposable
   {
     private readonly KafkaEventBusOptions options;
-    private readonly ILogger<KafkaEventBus> logger;
     private Producer<Null, IEvent> producer;
     private Consumer<Null, IEvent> consumer;
 
     public KafkaEventBus(KafkaEventBusOptions options, ILogger<KafkaEventBus> logger)
     {
       this.options = options;
-      this.logger = logger;
+      this.Logger = logger;
 
       this.producer = new Producer<Null, IEvent>(new Dictionary<string, object>
       {
@@ -94,7 +93,7 @@ namespace DDDLite.CQRS.Messaging.Kafka
       }
       catch (Exception ex)
       {
-        logger?.LogWarning(0, ex.Message, ex);
+        this.Logger?.LogError(0, ex, ex.Message);
       }
     }
   }
