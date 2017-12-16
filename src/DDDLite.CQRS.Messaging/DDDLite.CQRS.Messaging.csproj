@@ -9,9 +9,9 @@
     <ProjectReference Include="..\DDDLite.CQRS\DDDLite.CQRS.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis.StrongName" Version="1.2.6"/>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.3"/>
-    <PackageReference Include="Confluent.Kafka" Version="0.11.2"/>
+    <PackageReference Include="StackExchange.Redis.StrongName" Version="*"/>
+    <PackageReference Include="Newtonsoft.Json" Version="*"/>
+    <PackageReference Include="Confluent.Kafka" Version="*"/>
     <PackageReference Include="MessagePack" Version="*"/>
     <PackageReference Include="Microsoft.Extensions.Logging" Version="*" />
   </ItemGroup>
