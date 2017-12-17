@@ -5,6 +5,11 @@ using DDDLite.Specifications;
 
 namespace FilterParser
 {
+    public enum Test 
+    {
+        None = 0,
+        Number = 1
+    }
     public class Person : AggregateRoot<Guid>
     {
         public Guid? ItemId {get;set;}
@@ -13,7 +18,7 @@ namespace FilterParser
 
         public bool Checked { get; set; }
 
-        public int Age { get; set; }
+        public Test Age { get; set; }
 
         public decimal Money1 { get; set; }
     }
@@ -65,7 +70,7 @@ namespace FilterParser
 
             for (int i = 0; i < count; i++)
             {
-                var test = new DDDLite.WebApi.Parser.FilterParser<Person>("itemId eq '"+Guid.NewGuid()+"' or name ne '123'").Parse();
+                var test = new DDDLite.WebApi.Parser.FilterParser<Person>("itemId eq '"+Guid.NewGuid()+"' or age eq 1").Parse();
             }
 
             var avg = (double)stop.ElapsedMilliseconds / count;

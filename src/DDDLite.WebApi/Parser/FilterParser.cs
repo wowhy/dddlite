@@ -512,7 +512,8 @@ namespace DDDLite.WebApi.Parser
           {
             if (constExpr.Value is decimal)
             {
-              leftExpr = Expression.Convert(leftExpr, typeof(int));
+              memberType = typeof(int);
+              leftExpr = Expression.Convert(leftExpr, memberType);
               val = Convert.ToInt32(constExpr.Value);
             }
             else if (constExpr.Value is string)

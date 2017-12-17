@@ -29,7 +29,6 @@ namespace DDDLite.WebApi
     }
 
     private readonly IServiceProvider provider;
-    private readonly IHttpContextAccessor httpContextAccessor;
     private readonly IHandlerRegister register;
     private readonly Type handlerType;
 
