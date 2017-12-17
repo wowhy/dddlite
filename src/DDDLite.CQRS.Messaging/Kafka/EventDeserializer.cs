@@ -7,14 +7,9 @@ namespace DDDLite.CQRS.Messaging.Kafka
   {
     public IEnumerable<KeyValuePair<string, object>> Configure(IEnumerable<KeyValuePair<string, object>> config, bool isKey) => config;
 
-    public IEvent Deserialize(byte[] data)
-    {
-      return MessagePack.MessagePackSerializer.Typeless.Deserialize(data) as IEvent;
-    }
-
     public IEvent Deserialize(string topic, byte[] data)
     {
-      throw new NotImplementedException();
+      return MessagePack.MessagePackSerializer.Typeless.Deserialize(data) as IEvent;
     }
   }
 }
