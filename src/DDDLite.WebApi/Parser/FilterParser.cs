@@ -499,33 +499,36 @@ namespace DDDLite.WebApi.Parser
 
         if (constExpr.Value?.GetType() != targetType)
         {
+          var nullable = targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>);
           var val = default(object);
-          if (targetType == typeof(Guid))
+          var realType = nullable ? targetType.GetGenericArguments()[0] : targetType;
+
+          if (realType == typeof(Guid))
           {
             val = Guid.Parse((string)constExpr.Value);
           }
-          else if (targetType == typeof(DateTime))
+          else if (realType == typeof(DateTime))
           {
             val = DateTime.Parse(constExpr.Value.ToString());
           }
-          else if (targetType.IsEnum)
+          else if (realType.IsEnum)
           {
             if (constExpr.Value is decimal)
             {
               leftExpr = Expression.Convert(leftExpr, typeof(int));
-              val  = Convert.ToInt32(constExpr.Value);
+              val = Convert.ToInt32(constExpr.Value);
             }
             else if (constExpr.Value is string)
             {
-              val = Enum.Parse(targetType, (string)constExpr.Value);
+              val = Enum.Parse(realType, (string)constExpr.Value);
             }
           }
           else
           {
-            val = Convert.ChangeType(constExpr.Value, targetType);
+            val = Convert.ChangeType(constExpr.Value, realType);
           }
 
-          rightExpr = Expression.Constant(val);
+          rightExpr = Expression.Constant(val, targetType);
         }
       }
     }
