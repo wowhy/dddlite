@@ -7,6 +7,8 @@ namespace FilterParser
 {
     public class Person : AggregateRoot<Guid>
     {
+        public Guid? ItemId {get;set;}
+
         public string Name { get; set; }
 
         public bool Checked { get; set; }
@@ -63,7 +65,7 @@ namespace FilterParser
 
             for (int i = 0; i < count; i++)
             {
-                var test = new DDDLite.WebApi.Parser.FilterParser<Person>("name ne null or name ne '123'").Parse();
+                var test = new DDDLite.WebApi.Parser.FilterParser<Person>("itemId eq '"+Guid.NewGuid()+"' or name ne '123'").Parse();
             }
 
             var avg = (double)stop.ElapsedMilliseconds / count;

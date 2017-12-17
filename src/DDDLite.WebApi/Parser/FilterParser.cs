@@ -490,28 +490,25 @@ namespace DDDLite.WebApi.Parser
       private void FixedExpressionType(ref Expression leftExpr, ref Expression rightExpr)
       {
         var constExpr = rightExpr as ConstantExpression;
-        var targetType = ((MemberExpression)leftExpr).Type;
-        var innerType = Nullable.GetUnderlyingType(targetType);
-        if (innerType != null)
+        var memberType = ((MemberExpression)leftExpr).Type;
+        var targetType = Nullable.GetUnderlyingType(memberType);
+        if (targetType == null)
         {
-          targetType = innerType;
+          targetType = memberType;
         }
 
         if (constExpr.Value?.GetType() != targetType)
         {
-          var nullable = targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof(Nullable<>);
           var val = default(object);
-          var realType = nullable ? targetType.GetGenericArguments()[0] : targetType;
-
-          if (realType == typeof(Guid))
+          if (targetType == typeof(Guid))
           {
             val = Guid.Parse((string)constExpr.Value);
           }
-          else if (realType == typeof(DateTime))
+          else if (targetType == typeof(DateTime))
           {
             val = DateTime.Parse(constExpr.Value.ToString());
           }
-          else if (realType.IsEnum)
+          else if (targetType.IsEnum)
           {
             if (constExpr.Value is decimal)
             {
@@ -520,15 +517,15 @@ namespace DDDLite.WebApi.Parser
             }
             else if (constExpr.Value is string)
             {
-              val = Enum.Parse(realType, (string)constExpr.Value);
+              val = Enum.Parse(targetType, (string)constExpr.Value);
             }
           }
           else
           {
-            val = Convert.ChangeType(constExpr.Value, realType);
+            val = Convert.ChangeType(constExpr.Value, targetType);
           }
 
-          rightExpr = Expression.Constant(val, targetType);
+          rightExpr = Expression.Constant(val, memberType);
         }
       }
     }
