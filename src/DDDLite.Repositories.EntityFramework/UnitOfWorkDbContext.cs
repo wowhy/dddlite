@@ -38,9 +38,10 @@ namespace DDDLite.Repositories.EntityFramework
       }
       catch (DbUpdateConcurrencyException ex)
       {
-        foreach (var item in this.ChangeTracker.Entries())
+        var entries = this.ChangeTracker.Entries().ToList();
+        for (var i = 0; i < entries.Count; i++)
         {
-          item.State = EntityState.Detached;
+          entries[0].State = EntityState.Detached;
         }
 
         throw new ConcurrencyException(ex);
