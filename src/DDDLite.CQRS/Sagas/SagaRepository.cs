@@ -35,13 +35,12 @@ namespace DDDLite.CQRS.Sagas
 
     public async Task SaveAsync(TSaga saga)
     {
+      await this.store.SaveAsync(saga);
       var commands = saga.FlushUncommittedCommands();
       foreach (var command in commands)
       {
         await sender.SendAsync(command);
       }
-
-      await this.store.SaveAsync(saga);
     }
   }
 }
