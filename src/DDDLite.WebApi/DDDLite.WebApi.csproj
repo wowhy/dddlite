@@ -8,9 +8,7 @@
     <ProjectReference Include="..\DDDLite.CQRS\DDDLite.CQRS.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0"/>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="2.0.0-*"/>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.0.0"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.0.0"/>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="*"/>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="*"/>
   </ItemGroup>
 </Project>

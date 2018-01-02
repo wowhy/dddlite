@@ -8,6 +8,6 @@
     <ProjectReference Include="..\DDDLite.CQRS\DDDLite.CQRS.csproj"/>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Marten" Version="2.3.2"/>
+    <PackageReference Include="Marten" Version="*"/>
   </ItemGroup>
 </Project>

@@ -12,6 +12,8 @@ namespace DDDLite.WebApi
   using Microsoft.AspNetCore.Mvc;
   using Microsoft.Extensions.DependencyInjection;
   using DDDLite.CQRS.Events;
+  using Microsoft.AspNetCore.Mvc.Infrastructure;
+  using Microsoft.Extensions.DependencyInjection.Extensions;
 
   public static class BuilderExtensions
   {
@@ -26,8 +28,11 @@ namespace DDDLite.WebApi
         opt.DefaultApiVersion = new ApiVersion(1, 0);
       });
 
-      services.AddHttpContextAccessor()
-              .AddOperatorProvider();
+
+
+      services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+      services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
+      services.AddOperatorProvider();
 
       services.Configure<MvcJsonOptions>(options =>
       {
@@ -35,11 +40,6 @@ namespace DDDLite.WebApi
       });
 
       return services;
-    }
-
-    public static IServiceCollection AddHttpContextAccessor(this IServiceCollection services)
-    {
-      return services.AddScoped<IHttpContextAccessor, HttpContextAccessor>();
     }
 
     public static IServiceCollection AddOperatorProvider(this IServiceCollection services)
